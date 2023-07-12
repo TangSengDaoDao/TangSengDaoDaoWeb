@@ -12506,10 +12506,10 @@ ws@^7.3.1, ws@^7.4.6:
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.9.tgz#54fa7db29f4c7cec68b1ddd3a89de099942bb591"
   integrity sha512-F+P9Jil7UiSKSkppIiD94dN07AwvFixvLIj1Og1Rl9GGMuNipJnV9JzjD6XuqmAeiswGvUmNLjr5cFuXwNS77Q==
 
-wukongimjssdk@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/wukongimjssdk/-/wukongimjssdk-1.0.0.tgz#dff99d76a1779e1215a4b32765fca088c0d93af3"
-  integrity sha512-HMzTfCLuaTqjduGH+h5e7H0RBimWgBJetMmwMnmI2gwRSkUodK7/WaPqUYsGDwHlgmqR2h78f3gx3djtGHsFvQ==
+wukongimjssdk@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/wukongimjssdk/-/wukongimjssdk-1.0.5.tgz#0d93282f8049b5de392b40ebb187b9576b4a901d"
+  integrity sha512-uCHM7iW+o/H4NRFdcVkt6kjoG9RK9naEnmOL/9yaxvBPu6wGFW4aYhq+FQHRt+wW5vu87DRrCKEsrlbZGG9GRQ==
   dependencies:
     "@types/bignumber.js" "^5.0.0"
     "@types/crypto-js" "^4.0.2"
