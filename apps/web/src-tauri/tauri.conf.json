@@ -68,7 +68,7 @@
           "https://api.githubim.com/v1/common/updater/{{target}}/{{current_version}}"
       ],
       "dialog": false,
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQyOTBCMTNGNDczQTEzREIKUldUYkV6cEhQN0dRMGd2MWkzdUNMTmlhRXVWbXluamlDSUlVajFWK0p5YXAwanJDREhyajJNclIK"
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDkyQUQxQjQ3QzBEMjFBMDYKUldRR0d0TEFSeHV0a21UNDl1Q2ZPZm9lcFdnTCtUTnJWcURIQXdibGxBNndpWHdMY0swWGI4a1AK"
     }
   }
  
