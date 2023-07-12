@@ -7,7 +7,7 @@
     "distDir": "../build"
   },
   "package": {
-    "productName": "唐僧叨叨",
+    "productName": "tangsegndaodao",
     "version": "../package.json"
   },
   "tauri": {
@@ -68,7 +68,7 @@
           "https://api.githubim.com/v1/common/updater/{{target}}/{{current_version}}"
       ],
       "dialog": false,
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEVGMTY1NjkzNzE1ODk0RTQKUldUa2xGaHhrMVlXN3lpSUNSazBqcVNTWFRnUWFrVHZKOHN2SUdKaWgzRXBYRGtvQVlkcWdzN3oK"
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQyOTBCMTNGNDczQTEzREIKUldUYkV6cEhQN0dRMGd2MWkzdUNMTmlhRXVWbXluamlDSUlVajFWK0p5YXAwanJDREhyajJNclIK"
     }
   }
  

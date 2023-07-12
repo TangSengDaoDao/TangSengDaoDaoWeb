@@ -1,6 +1,6 @@
 build:
-	docker build -t tsdaodaoweb .
+	docker build -t tangsengdaodaoweb .
 deploy:
-	docker build -t tsdaodaoweb  .
-	docker tag tsdaodaoweb registry.cn-shanghai.aliyuncs.com/wukongim/tsdaodaoweb:latest
-	docker push registry.cn-shanghai.aliyuncs.com/wukongim/tsdaodaoweb:latest
+	docker build -t tangsengdaodaoweb  .
+	docker tag tangsengdaodaoweb registry.cn-shanghai.aliyuncs.com/wukongim/tangsengdaodaoweb:latest
+	docker push registry.cn-shanghai.aliyuncs.com/wukongim/tangsengdaodaoweb:latest

@@ -1,3 +1,5 @@
+
+
 ## 运行
 
 1. yarn install
@@ -37,7 +39,7 @@ yarn tauri build --target universal-apple-darwin (通用架构，生成可在 Ap
 icon生成
 
 ```
- npx @tauri-apps/tauricon [ICON-PATH]
+tauri icon [ICON-PATH]
 ```
 
 准备一张1024x1024的icon 执行上面命令 即可生成各种尺寸的icon
@@ -65,7 +67,7 @@ tauri signer generate -w ~/.tauri/tsdaodao.key
 
 上面 的命令会自动生成一个公钥、私钥对。公钥可以公开分享，私钥必须严密保存。
 
-在Github Secrets中 配置 TAURI_PRIVATE_KEY 和 TAURI_PRIVATE_KEY_PASSWORD 
+在Github Secrets中 配置 TAURI_PRIVATE_KEY 和 TAURI_KEY_PASSWORD 
 
 
 (参考：https://www.banyudu.com/posts/tauri-version-release-and-update-guide)

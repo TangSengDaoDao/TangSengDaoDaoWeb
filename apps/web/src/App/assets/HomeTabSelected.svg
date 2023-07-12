@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="26px" height="26px" viewBox="0 0 26 26" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>home_01</title>
+    <defs>
+        <linearGradient x1="100%" y1="100%" x2="0%" y2="0%" id="linearGradient-1">
+            <stop stop-color="#FF5A33" offset="0%"></stop>
+            <stop stop-color="#FFA98C" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="PC切图" transform="translate(-33.000000, -106.000000)">
+            <g id="Group-15-Copy" transform="translate(33.000000, 106.000000)">
+                <path d="M13.5,25 C19.8512746,25 25,19.8512746 25,13.5 C25,7.14872538 19.8512746,2 13.5,2 C7.14872538,2 2,7.14872538 2,13.5 C2,15.073038 2.31583219,16.5723095 2.88754349,17.9378613 C3.13929263,18.5391727 3.01561889,22.8206752 3.62073765,23.4225978 C4.2099763,24.0087241 8.47546922,23.8685633 9.08799349,24.1232438 C10.4466062,24.6881394 11.9368836,25 13.5,25 Z" id="Oval-14" fill="url(#linearGradient-1)"></path>
+                <path d="M10.8461538,16.1538462 C10.8461538,17.6195249 12.0343212,18.8076923 13.5,18.8076923 C14.9656788,18.8076923 16.1538462,17.6195249 16.1538462,16.1538462" id="Oval-2" stroke="#FFFFFF" stroke-width="2" opacity="0.804848" stroke-linecap="round" stroke-linejoin="round" fill-rule="nonzero"></path>
+                <rect id="矩形备份-6" fill="#FFFFFF" opacity="0" x="0" y="0" width="26" height="26"></rect>
+            </g>
+        </g>
+    </g>
+</svg>

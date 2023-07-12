@@ -25,8 +25,8 @@ function registerMenus() {
 
   WKApp.menus.register("chat", (context) => {
     const m = new Menus("chat", "/", "会话",
-      <img alt='会话' src={require("./assets/HomeTab.png").default}></img>,
-      <img alt='会话' src={require("./assets/HomeTabSelected.png").default}></img>)
+      <img alt='会话' src={require("./assets/HomeTab.svg").default}></img>,
+      <img alt='会话' src={require("./assets/HomeTabSelected.svg").default}></img>)
     let badge = 0
     for (const conversation of WKSDK.shared().conversationManager.conversations) {
       if (!conversation.channelInfo?.mute) {
@@ -39,8 +39,8 @@ function registerMenus() {
 
   WKApp.menus.register("contacts", (param) => {
     const m = new Menus("contacts", "/contacts", "通讯录",
-      <img alt='通讯录' src={require("./assets/ContactsTab.png").default}></img>,
-      <img alt='通讯录' src={require("./assets/ContactsTabSelected.png").default}></img>)
+      <img alt='通讯录' src={require("./assets/ContactsTab.svg").default}></img>,
+      <img alt='通讯录' src={require("./assets/ContactsTabSelected.svg").default}></img>)
 
     m.badge = WKApp.shared.getFriendApplysUnreadCount()
     return m

@@ -27,30 +27,30 @@ export enum ThemeMode {
 }
 export class WKConfig {
     appName: string = "唐僧叨叨"
-    appVersion:string = "0.0.0" // app版本
+    appVersion: string = "0.0.0" // app版本
     themeColor: string = "#E46342" // 主题颜色
     secondColor: string = "rgba(232, 234, 237)"
     pageSize: number = 15 // 数据页大小
     pageSizeOfMessage: number = 30 // 每次请求消息数量
     fileHelperUID: string = "fileHelper" // 文件助手UID
     systemUID: string = "u_10000" // 系统uid
-   
+
     private _themeMode: ThemeMode = ThemeMode.light // 主题模式
 
     set themeMode(v: ThemeMode) {
         this._themeMode = v
         const body = document.body;
-        if(v === ThemeMode.dark) {
+        if (v === ThemeMode.dark) {
             if (body.hasAttribute('theme-mode')) {
                 body.removeAttribute('theme-mode');
                 body.setAttribute('theme-mode', 'dark');
             } else {
                 body.setAttribute('theme-mode', 'dark');
             }
-        }else {
+        } else {
             body.removeAttribute('theme-mode');
         }
-        StorageService.shared.setItem("theme-mode",`${v}`)
+        StorageService.shared.setItem("theme-mode", `${v}`)
         WKApp.shared.notifyListener()
     }
 
@@ -61,13 +61,13 @@ export class WKConfig {
 }
 
 export class WKRemoteConfig {
-    revokeSecond:number = 2 * 60 // 撤回时间
-    requestSuccess:boolean = false
+    revokeSecond: number = 2 * 60 // 撤回时间
+    requestSuccess: boolean = false
 
     async startRequestConfig() {
         await this.requestConfig()
 
-        if(!this.requestSuccess) {
+        if (!this.requestSuccess) {
             setTimeout(() => {
                 this.startRequestConfig()
             }, 3000);
@@ -75,7 +75,7 @@ export class WKRemoteConfig {
     }
 
     requestConfig() {
-       return WKApp.apiClient.get("common/appconfig").then((result)=>{
+        return WKApp.apiClient.get("common/appconfig").then((result) => {
             this.requestSuccess = true
             this.revokeSecond = result["revoke_second"]
         })
@@ -92,7 +92,7 @@ export class LoginInfo {
     name: string | undefined
     role!: string
     isWork!: boolean
-    sex!:number
+    sex!: number
 
     /**
      * save 保存登录信息
@@ -106,7 +106,7 @@ export class LoginInfo {
         this.setStorageItemForSID("name", this.name ?? "");
         this.setStorageItemForSID("role", this.role ?? "")
         this.setStorageItemForSID("is_work", this.isWork ? "1" : "0")
-        this.setStorageItemForSID("sex", this.sex==1?"1":"0")
+        this.setStorageItemForSID("sex", this.sex == 1 ? "1" : "0")
     }
 
     // 获取查询参数
@@ -142,10 +142,10 @@ export class LoginInfo {
     }
 
     public setStorageItem(key: string, value: string) {
-        StorageService.shared.setItem(key,value)
+        StorageService.shared.setItem(key, value)
     }
     public getStorageItem(key: string): string | null {
-        return  StorageService.shared.getItem(key)
+        return StorageService.shared.getItem(key)
     }
     public removeStorageItem(key: string) {
         StorageService.shared.removeItem(key)
@@ -170,9 +170,9 @@ export class LoginInfo {
         }
 
         const sexStr = this.getStorageItemForSID("sex")
-        if(sexStr === "1") {
+        if (sexStr === "1") {
             this.sex = 1
-        }else {
+        } else {
             this.sex = 0
         }
     }
@@ -206,7 +206,7 @@ export default class WKApp extends ProviderListener {
     static menus = MenusManager.shared // 菜单
     static apiClient = APIClient.shared // api客户端
     static config: WKConfig = new WKConfig() // app配置
-    static remoteConfig:WKRemoteConfig = new WKRemoteConfig() // 远程配置
+    static remoteConfig: WKRemoteConfig = new WKRemoteConfig() // 远程配置
     static loginInfo: LoginInfo = new LoginInfo() // 登录信息
     static endpoints: EndpointCommon = new EndpointCommon() // 常用端点
     static conversationProvider: IConversationProvider // 最近会话相关数据源
@@ -224,17 +224,17 @@ export default class WKApp extends ProviderListener {
     openChannel?: Channel // 当前打开的会话频道
     content?: JSX.Element
 
-    baseContext!:WKBaseContext // 唐僧叨叨基础上下文
-    
+    baseContext!: WKBaseContext // 唐僧叨叨基础上下文
 
-    private _notificationIsClose:boolean = false // 通知是否关闭
+
+    private _notificationIsClose: boolean = false // 通知是否关闭
 
     private wsaddrs = new Array<string>() // ws的连接地址
     private addrUsed = false // 地址是否被使用
 
-    set notificationIsClose(v:boolean) {
+    set notificationIsClose(v: boolean) {
         this._notificationIsClose = v
-        StorageService.shared.setItem("NotificationIsClose",v?"1":"")
+        StorageService.shared.setItem("NotificationIsClose", v ? "1" : "")
     }
 
     get notificationIsClose() {
@@ -246,21 +246,21 @@ export default class WKApp extends ProviderListener {
     startup() {
         WKApp.loginInfo.load() // 加载登录信息
 
-       const themeMode = StorageService.shared.getItem("theme-mode")
-       if(themeMode === "1") {
-           WKApp.config.themeMode = ThemeMode.dark
-       }
+        const themeMode = StorageService.shared.getItem("theme-mode")
+        if (themeMode === "1") {
+            WKApp.config.themeMode = ThemeMode.dark
+        }
 
         WKSDK.shared().config.provider.connectAddrCallback = async (callback: ConnectAddrCallback) => {
-            if(!this.wsaddrs || this.wsaddrs.length == 0) {
-                this.wsaddrs  = await WKApp.dataSource.commonDataSource.imConnectAddrs()
+            if (!this.wsaddrs || this.wsaddrs.length == 0) {
+                this.wsaddrs = await WKApp.dataSource.commonDataSource.imConnectAddrs()
             }
-            if(this.wsaddrs.length>0) {
-                console.log("connectAddrs--->",this.wsaddrs)
+            if (this.wsaddrs.length > 0) {
+                console.log("connectAddrs--->", this.wsaddrs)
                 this.addrUsed = true
                 callback(this.wsaddrs[0])
             }
-            
+
         }
 
         WKApp.endpoints.addOnLogin(() => {
@@ -273,28 +273,28 @@ export default class WKApp extends ProviderListener {
 
         WKSDK.shared().connectManager.addConnectStatusListener((status: ConnectStatus, reasonCode?: number) => {
             if (status === ConnectStatus.ConnectKick) {
-                console.log("被踢--->",reasonCode)
+                console.log("被踢--->", reasonCode)
                 WKApp.shared.logout()
-            }else if(reasonCode == 2) { // 认证失败！
+            } else if (reasonCode == 2) { // 认证失败！
                 WKApp.shared.logout()
-            }else if(status === ConnectStatus.Disconnect) {
-                if(this.addrUsed && this.wsaddrs.length>1) {
+            } else if (status === ConnectStatus.Disconnect) {
+                if (this.addrUsed && this.wsaddrs.length > 1) {
                     const oldwsAddr = this.wsaddrs[0]
-                    this.wsaddrs.splice(0,1)
+                    this.wsaddrs.splice(0, 1)
                     this.wsaddrs.push(oldwsAddr)
                     this.addrUsed = false
-                    console.log("连接失败！切换地址->",this.wsaddrs)
+                    console.log("连接失败！切换地址->", this.wsaddrs)
                 }
-               
+
 
             }
         })
 
         // 通知设置
         const notificationIsClose = StorageService.shared.getItem("NotificationIsClose")
-        if(notificationIsClose === "1") {
+        if (notificationIsClose === "1") {
             this._notificationIsClose = true
-        }else{
+        } else {
             this._notificationIsClose = false
         }
 
@@ -322,7 +322,7 @@ export default class WKApp extends ProviderListener {
         this.notifyListener()
     }
 
-    
+
 
     // 是否登录
     isLogined() {
@@ -339,23 +339,23 @@ export default class WKApp extends ProviderListener {
             return ""
         }
         let avatarTag = this.getChannelAvatarTag()
-        if(!avatarTag) {
+        if (!avatarTag) {
             avatarTag = "0"
         }
         const channelInfo = WKSDK.shared().channelManager.getChannelInfo(channel)
-        if(channelInfo && channelInfo.logo && channelInfo.logo !== "") {
+        if (channelInfo && channelInfo.logo && channelInfo.logo !== "") {
             let logo = channelInfo.logo;
-            if(logo.indexOf("?")!=-1) {
-                logo += "&v="+avatarTag
-            }else {
-                logo += "?v="+avatarTag
+            if (logo.indexOf("?") != -1) {
+                logo += "&v=" + avatarTag
+            } else {
+                logo += "?v=" + avatarTag
             }
             return WKApp.dataSource.commonDataSource.getImageURL(logo)
         }
         const baseURl = WKApp.apiClient.config.apiURL
         if (channel.channelType === ChannelTypePerson) {
             return `${baseURl}users/${channel.channelID}/avatar?v=${avatarTag}`
-        }else if(channel.channelType == ChannelTypeGroup) {
+        } else if (channel.channelType == ChannelTypeGroup) {
             return `${baseURl}groups/${channel.channelID}/avatar?v=${avatarTag}`
         }
         return ""
@@ -368,16 +368,20 @@ export default class WKApp extends ProviderListener {
 
     // 我的用户头像发送改变
     myUserAvatarChange() {
-       this.changeChannelAvatarTag()
+        this.changeChannelAvatarTag()
     }
 
     changeChannelAvatarTag() {
         let myAvatarTag = "channelAvatarTag"
-        WKApp.loginInfo.setStorageItem(myAvatarTag,new Date().getTime()+"")
+        WKApp.loginInfo.setStorageItem(myAvatarTag, new Date().getTime() + "")
     }
     getChannelAvatarTag() {
         let myAvatarTag = "channelAvatarTag"
-       return WKApp.loginInfo.getStorageItem(myAvatarTag)
+        const tag = WKApp.loginInfo.getStorageItem(myAvatarTag)
+        if (!tag) {
+            return ""
+        }
+        return tag
     }
 
     avatarGroup(groupNo: string) {
@@ -386,8 +390,8 @@ export default class WKApp extends ProviderListener {
     }
 
     // 注册频道设置
-    channelSettingRegister(sectionID: string, sectionFnc: (context: RouteContext<any>) => Section | undefined,sort?:number) {
-        WKApp.sectionManager.register(EndpointCategory.channelSetting, sectionID, sectionFnc,sort)
+    channelSettingRegister(sectionID: string, sectionFnc: (context: RouteContext<any>) => Section | undefined, sort?: number) {
+        WKApp.sectionManager.register(EndpointCategory.channelSetting, sectionID, sectionFnc, sort)
     }
 
     // 获取频道设置
@@ -405,7 +409,7 @@ export default class WKApp extends ProviderListener {
         return WKApp.sectionManager.sections(EndpointCategory.channelManage, context)
     }
 
-    chatMenusRegister(sid: string, f: (param:any) => ChatMenus, sort?: number) {
+    chatMenusRegister(sid: string, f: (param: any) => ChatMenus, sort?: number) {
         WKApp.endpointManager.setMethod(sid, (param) => {
             return f(param)
         }, {
@@ -428,7 +432,7 @@ export default class WKApp extends ProviderListener {
     }
 
     // 注册用户信息
-    userInfoRegister(sectionID: string, sectionFnc: (context: RouteContext<any>) => Section | undefined,sort?:number) {
+    userInfoRegister(sectionID: string, sectionFnc: (context: RouteContext<any>) => Section | undefined, sort?: number) {
         WKApp.sectionManager.register(EndpointCategory.userInfo, sectionID, sectionFnc)
     }
 

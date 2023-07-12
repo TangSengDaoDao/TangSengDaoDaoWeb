@@ -315,7 +315,7 @@ export default class BaseModule implements IModule {
 
     registerChatToolbars() {
         WKApp.endpoints.registerChatToolbar("chattoolbar.emoji", (ctx) => {
-            return <EmojiToolbar conversationContext={ctx} icon={require("./assets/toolbars/func_face_normal.png").default}></EmojiToolbar>
+            return <EmojiToolbar conversationContext={ctx} icon={require("./assets/toolbars/func_face_normal.svg").default}></EmojiToolbar>
         })
 
         WKApp.endpoints.registerChatToolbar("chattoolbar.mention", (ctx) => {
@@ -323,14 +323,14 @@ export default class BaseModule implements IModule {
             if (channel.channelType === ChannelTypePerson) {
                 return undefined
             }
-            return <IconClick icon={require("./assets/toolbars/func_mention_normal.png").default} onClick={() => {
+            return <IconClick icon={require("./assets/toolbars/func_mention_normal.svg").default} onClick={() => {
                 ctx.messageInputContext().insertText("@")
             }}></IconClick>
         })
 
         WKApp.endpoints.registerChatToolbar("chattoolbar.screenshot", (ctx) => {
 
-            return <IconClick icon={require("./assets/toolbars/func_screenshot.png").default} onClick={() => {
+            return <IconClick icon={require("./assets/toolbars/func_screenshot.svg").default} onClick={() => {
                 window.open("https://jietu.qq.com")
             }}></IconClick>
         })

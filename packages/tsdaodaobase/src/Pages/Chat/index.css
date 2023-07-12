@@ -180,7 +180,7 @@ body[theme-mode=dark] .wk-chat-conversation-header {
 .wk-chat-conversation-header-channel-avatar img {
     width: 40px;
     height: 40px;
-    border-radius: 50%;
+    border-radius: 40%;
 }
 
 .wk-chat-conversation-header-channel-info {
