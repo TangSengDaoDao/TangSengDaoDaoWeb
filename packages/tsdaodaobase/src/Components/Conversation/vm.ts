@@ -746,17 +746,30 @@ export default class ConversationVM extends ProviderListener {
                 opts.pullMode = PullMode.Up
             }
         }
-        const newMessages = await WKApp.conversationProvider.syncMessages(this.channel, opts)
+        const remoteMessages = await WKApp.conversationProvider.syncMessages(this.channel, opts)
+
+        const newMessages = new Array<Message>()
+        if(remoteMessages && remoteMessages.length>0) {
+            remoteMessages.forEach(msg => {
+                 if (!msg.isDeleted) {
+                    newMessages.push(msg)
+                }
+            });
+        }
         const sendingMessages = this.getSendingMessages(this.channel)
         let allMessages = [...this.toMessageWraps(newMessages), ...sendingMessages]
         allMessages = this.sortMessages(allMessages)
 
-        if (newMessages && newMessages.length > 0) {
-            if (lastRemoteMessageSeq > newMessages[newMessages.length - 1].messageSeq) {
+        if (remoteMessages && remoteMessages.length > 0) {
+            if(lastRemoteMessageSeq <= 0 && remoteMessages.length >= opts.limit) {
+                this.pullupHasMore = true
+            }else if (lastRemoteMessageSeq > remoteMessages[remoteMessages.length - 1].messageSeq) {
                 this.pullupHasMore = true
             } else {
                 this.pullupHasMore = false
             }
+        }else {
+            this.pullupHasMore = false;
         }
         let initMessage: MessageWrap | undefined
         if (initMessageSeq && initMessageSeq > 0) {
@@ -819,6 +832,7 @@ export default class ConversationVM extends ProviderListener {
         if (minMessage == null || minMessage.messageSeq <= 0 ) { // 没有消息直接return
             return
         }
+        console.log("pulldownMessages--->")
 
         this.loading = true
         const opts = new SyncMessageOptions()
@@ -826,11 +840,16 @@ export default class ConversationVM extends ProviderListener {
         opts.pullMode = PullMode.Down
         opts.startMessageSeq = minMessage.messageSeq - 1
 
-        let newMessages = await WKApp.conversationProvider.syncMessages(this.channel, opts)
-        if (!newMessages) {
-            newMessages = new Array<Message>()
+        let remoteMessages = await WKApp.conversationProvider.syncMessages(this.channel, opts)
+        const newMessages = new Array<Message>()
+        if(remoteMessages && remoteMessages.length>0) {
+            remoteMessages.forEach(msg => {
+                 if (!msg.isDeleted) {
+                    newMessages.push(msg)
+                }
+            });
         }
-        if (newMessages.length <= 0 || newMessages[0].messageSeq === 1) {
+        if (remoteMessages.length <= 0 || remoteMessages[0].messageSeq === 1) {
             this.pulldownFinished = true
         }
         this.messagesOfOrigin = [...this.toMessageWraps(newMessages), ...this.messagesOfOrigin]
@@ -845,19 +864,31 @@ export default class ConversationVM extends ProviderListener {
         this.loading = true
         const maxMessage = this.getMessageMax()
         if (maxMessage == null || maxMessage.messageSeq <= 0 ) { // 没有消息直接return
+            console.log("没有maxMessage")
             return
         }
+        console.log("pullupMessages--->")
 
         const opts = new SyncMessageOptions()
         opts.limit = WKApp.config.pageSizeOfMessage
         opts.pullMode = PullMode.Up
         opts.startMessageSeq = maxMessage.messageSeq
-        let newMessages = await WKApp.conversationProvider.syncMessages(this.channel, opts)
-        if (!newMessages) {
-            newMessages = new Array<Message>()
+
+        let remoteMessages = await WKApp.conversationProvider.syncMessages(this.channel, opts)
+        const newMessages = new Array<Message>()
+        if(remoteMessages && remoteMessages.length>0) {
+            remoteMessages.forEach(msg => {
+                 if (!msg.isDeleted) {
+                    newMessages.push(msg)
+                }
+            });
         }
-        if (newMessages.length < opts.limit) {
+        if (remoteMessages.length < opts.limit) {
             this.pullupHasMore = false
+            console.log("没有更多消息了")
+        }else {
+            this.pullupHasMore = true
+            console.log("还有更多消息")
         }
         this.messagesOfOrigin = [...this.messagesOfOrigin, ...this.toMessageWraps(newMessages)]
         this.refreshAndLocateMessages(this.messagesOfOrigin, undefined, false, () => {

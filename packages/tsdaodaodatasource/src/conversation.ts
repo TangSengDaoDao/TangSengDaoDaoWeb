@@ -55,10 +55,8 @@ export class ConversationProvider implements IConversationProvider {
         const messageList = resp && resp["messages"]
         if (messageList) {
             messageList.forEach((msg: any) => {
-                if (msg && msg["message_id"] && msg["is_deleted"] === 0) {
-                    const message = Convert.toMessage(msg);
-                    messages.push(message);
-                }
+                const message = Convert.toMessage(msg);
+                messages.push(message);
             });
             // if (resp.data.more === 1 && messages.length < limit && resp.data["messages"].length) {
             //     opts.maxMessageSeq = resp.data["messages"][0].message_seq;
