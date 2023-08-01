@@ -9,7 +9,7 @@
 
 ## 发布镜像
 
-修改api地址  packages/tsdaodaoweb/src/index.tsx 修改 WKApp.apiClient.config.apiURL = "/api/v1/"
+修改api地址  apps/web/src/index.tsx 修改 WKApp.apiClient.config.apiURL = "/api/v1/"
 
 
 make deploy
