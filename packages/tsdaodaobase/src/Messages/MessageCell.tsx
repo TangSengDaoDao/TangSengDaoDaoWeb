@@ -14,11 +14,14 @@ class MessageBaseCellPropsImp implements MessageBaseCellProps {
 
 }
 export class MessageBaseCell<P extends MessageBaseCellProps = MessageBaseCellPropsImp, S = {}> extends Component<P, S> {
-
+    
 
 }
 
 export class MessageCell<P extends MessageBaseCellProps = MessageBaseCellPropsImp, S = {}> extends MessageBaseCell<P, S> {
+
+    componentDidMount(): void {
+    }
 
     render() {
         return <div>MessageCell</div>

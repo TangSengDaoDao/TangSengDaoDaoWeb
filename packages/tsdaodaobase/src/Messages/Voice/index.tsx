@@ -8,7 +8,6 @@ import MessageTrail from "../Base/tail"
 import MessageBase from "../Base"
 import WKApp from "../../App"
 import { MessageContentTypeConst } from "../../Service/Const"
-import { MessageWrap } from "../../Service/Model"
 var BenzAMRRecorder = require('benz-amr-recorder');
 
 
@@ -224,9 +223,9 @@ export class VoiceCell extends MessageCell<any,VoiceCellState> {
                 }
                 <div className="wk-message-voice-info">
                     <div className="wk-message-voice-waveform">
-                        <WaveCanvas barColor={"rgb(190, 190, 190)"} waveform={this.waveform ?? []} width={200} height={23} />
+                        <WaveCanvas barColor={isSend?"rgb(255, 255, 255,0.5)":"rgb(0, 0, 0,0.2)"} waveform={this.waveform ?? []} width={200} height={23} />
                         <div ref={this.lightWavformRef} className="wk-message-voice-lightWavform">
-                            <WaveCanvas barColor={isSend ? "#fff" : '#2F70F5'} waveform={this.waveform ?? []} width={200} height={23} />
+                            <WaveCanvas barColor={isSend ? "#fff" : WKApp.config.themeColor} waveform={this.waveform ?? []} width={200} height={23} />
                         </div>
                     </div>
                     <div className="wk-message-voice-info-status">

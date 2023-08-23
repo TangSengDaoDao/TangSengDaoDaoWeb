@@ -93,4 +93,11 @@ export default interface ConversationContext {
       * @param tip 是否提醒
       */
      locateMessage(messageSeq:number):any
+
+     /**
+      * 获取消息容器id
+      */
+     getMessageContainerId():string
+
+     getMessageContainer():Element|undefined
 }

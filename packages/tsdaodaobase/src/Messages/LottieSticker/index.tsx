@@ -5,6 +5,7 @@ import { MessageContentTypeConst } from "../../Service/Const"
 import MessageBase from "../Base"
 import { MessageCell } from "../MessageCell"
 import "@lottiefiles/lottie-player/dist/tgs-player";
+import LazyLoad from 'react-lazyload';
 
 
 
