@@ -20,5 +20,6 @@
     "prettier": "^2.5.1",
     "turbo": "latest"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "version": "0.0.0"
 }
