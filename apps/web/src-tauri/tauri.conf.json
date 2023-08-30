@@ -7,7 +7,7 @@
     "distDir": "../build"
   },
   "package": {
-    "productName": "tangsegndaodao",
+    "productName": "tangsengdaodao",
     "version": "../package.json"
   },
   "tauri": {
