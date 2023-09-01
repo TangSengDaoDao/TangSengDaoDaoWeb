@@ -69,6 +69,8 @@ html {
     text-rendering: optimizeLegibility;
     background: var( --background-color);
     color: rgba(9,30,66,.87) ;
+
+    --semi-color-primary: #E46342;
   }
 
   div {

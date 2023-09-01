@@ -7,8 +7,8 @@ import { EndpointManager } from "./Service/Module";
 import ConversationContext from "./Components/Conversation/context";
 
 export class MessageContextMenus {
-  title!:string
-  onClick?:()=>void
+  title!: string
+  onClick?: () => void
 }
 
 export class EndpointCommon {
@@ -55,49 +55,62 @@ export class EndpointCommon {
       const channel = param.channel as Channel
       const conversation = WKSDK.shared().conversationManager.findConversation(channel)
       let initLocateMessageSeq = 0
-      if(conversation && conversation.lastMessage && conversation.unread>0 && conversation.lastMessage.messageSeq  > conversation.unread) {
+      if (conversation && conversation.lastMessage && conversation.unread > 0 && conversation.lastMessage.messageSeq > conversation.unread) {
         initLocateMessageSeq = conversation.lastMessage.messageSeq - conversation.unread
-    }
+      }
       WKApp.routeRight.replaceToRoot(<ChatContentPage key={channel.getChannelKey()} channel={channel} initLocateMessageSeq={initLocateMessageSeq}></ChatContentPage>)
     }, {})
   }
 
-  registerMessageContextMenus(sid: string, handle: (message: Message,context:ConversationContext) => MessageContextMenus|null,sort?:number) {
+  registerMessageContextMenus(sid: string, handle: (message: Message, context: ConversationContext) => MessageContextMenus | null, sort?: number) {
     EndpointManager.shared.setMethod(sid, (param: any) => {
-      return handle(param.message,param.context)
+      return handle(param.message, param.context)
     }, {
       category: EndpointCategory.messageContextMenus,
       sort: sort,
     })
   }
 
-  messageContextMenus(message: Message,ctx:ConversationContext): MessageContextMenus[] {
-    return EndpointManager.shared.invokes(EndpointCategory.messageContextMenus, {message:message,context:ctx})
+  messageContextMenus(message: Message, ctx: ConversationContext): MessageContextMenus[] {
+    return EndpointManager.shared.invokes(EndpointCategory.messageContextMenus, { message: message, context: ctx })
   }
 
-  registerChatToolbar(sid:string,handle:(ctx:ConversationContext)=>React.ReactNode|undefined) {
-      EndpointManager.shared.setMethod(sid,(param)=>{
-        return handle(param)
-      },{
-        category: EndpointCategory.chatToolbars
-      })
+  registerChatToolbar(sid: string, handle: (ctx: ConversationContext) => React.ReactNode | undefined) {
+    EndpointManager.shared.setMethod(sid, (param) => {
+      return handle(param)
+    }, {
+      category: EndpointCategory.chatToolbars
+    })
   }
 
-  chatToolbars(ctx:ConversationContext) :React.ReactNode[] {
-    return EndpointManager.shared.invokes(EndpointCategory.chatToolbars,ctx)
+  chatToolbars(ctx: ConversationContext): React.ReactNode[] {
+    return EndpointManager.shared.invokes(EndpointCategory.chatToolbars, ctx)
   }
 
+  registerChannelHeaderRightItem(id: string, callback: (param: any) => JSX.Element|undefined, sort?: number) {
+    EndpointManager.shared.setMethod(id, (param) => {
+      return callback(param)
+    }, {
+      category: EndpointCategory.channelHeaderRightItems,
+      sort: sort,
+    })
+}
 
-  callOnLogin() {
-    const len = this._onLogins.length;
-    for (var i = 0; i < len; i++) {
-      this._onLogins[i]()
-    }
+channelHeaderRightItems(channel:Channel): JSX.Element[] {
+  return EndpointManager.shared.invokes(EndpointCategory.channelHeaderRightItems,{channel:channel})
+}
+
+
+callOnLogin() {
+  const len = this._onLogins.length;
+  for (var i = 0; i < len; i++) {
+    this._onLogins[i]()
   }
+}
 
 }
 
 export class ChatToolbar {
-  icon!:string
-  onClick?:()=>void
+  icon!: string
+  onClick?: () => void
 }

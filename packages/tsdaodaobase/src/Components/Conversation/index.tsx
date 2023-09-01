@@ -1,4 +1,4 @@
-import { Channel, ChannelTypeGroup, ChannelTypePerson, ConversationAction, WKSDK, Mention, Message, MessageContent, Reminder, ReminderType, Reply, MessageText } from "wukongimjssdk";
+import { Channel, ChannelTypeGroup, ChannelTypePerson, ConversationAction, WKSDK, Mention, Message, MessageContent, Reminder, ReminderType, Reply,MessageText } from "wukongimjssdk";
 import React, { Component, HTMLProps } from "react";
 import Provider from "../../Service/Provider";
 import ConversationVM from "./vm";
@@ -34,7 +34,6 @@ export class Conversation extends Component<ConversationProps> implements Conver
     scrollTimer?: NodeJS.Timer
     updateBrowseToMessageSeqAndReminderDoneing: boolean = false
     private _dragFileCallback?: (file: File) => void
-    private _self = this;
 
     constructor(props: any) {
         super(props)
@@ -161,18 +160,6 @@ export class Conversation extends Component<ConversationProps> implements Conver
     messageInputContext(): MessageInputContext {
         return this._messageInputContext
     }
-    getMessageContainerId(): string {
-        return this.vm.messageContainerId
-    }
-
-    getMessageContainer(): Element|undefined {
-        const el = document.getElementById(this.vm.messageContainerId)
-        console.log("getMessageContainer--->",el)
-        if (!el) {
-            return undefined
-        }
-        return el
-    }
 
 
     componentDidMount() {
@@ -253,7 +240,7 @@ export class Conversation extends Component<ConversationProps> implements Conver
             this.setState({})
         }} key={message.clientMsgNo} id={`${message.contentType === MessageContentTypeConst.time ? "time-" : ""}${message.clientMsgNo}`} className={classNames("wk-message-item", last ? "wk-message-item-last" : undefined, message.locateRemind ? 'wk-message-item-reminder' : undefined)} >
             {
-                MessageCell ? <MessageCell key={message.clientMsgNo} message={message} context={this}/> : null
+                MessageCell ? <MessageCell key={message.clientMsgNo} message={message} context={this} /> : null
             }
 
         </div>
@@ -263,19 +250,12 @@ export class Conversation extends Component<ConversationProps> implements Conver
         if (this.scrollTimer) {
             clearTimeout(this.scrollTimer)
         }
-        const scrollTop = e.target.scrollTop;
-        const scrollHeight = e.target.scrollHeight;
-        const clientHeight = e.clientHeight;
         this.scrollTimer = setTimeout(() => {
             this.handleScrollEnd()
         }, 500)
-        if (this.contextMenusContext) {
-            this.contextMenusContext.hide()
-        }
-
-        const targetScrollTop = scrollTop;
-        const scrollOffsetTop = scrollHeight - (targetScrollTop + clientHeight);
-        // console.log("targetScrollTop---->",targetScrollTop,scrollOffsetTop,this.vm.loading,this.vm.pullupHasMore)
+        this.contextMenusContext.hide()
+        const targetScrollTop = e.target.scrollTop;
+        const scrollOffsetTop = e.target.scrollHeight - (targetScrollTop + e.target.clientHeight);
         if (targetScrollTop <= 250 && !this.vm.loading && !this.vm.pulldownFinished) { // 下拉
             this.vm.pulldownMessages()
         } else if (scrollOffsetTop <= 500 && !this.vm.loading && this.vm.pullupHasMore) { // 上拉
@@ -299,7 +279,6 @@ export class Conversation extends Component<ConversationProps> implements Conver
     }
 
     handleScrollEnd() {
-        console.log("handleScrollEnd---->")
         this.uploadReadedIfNeed()
     }
 
@@ -481,7 +460,6 @@ export class Conversation extends Component<ConversationProps> implements Conver
         this.vm.notifyListener()
     }
 
-
     render() {
         const { chatBg, channel } = this.props
 
@@ -501,7 +479,6 @@ export class Conversation extends Component<ConversationProps> implements Conver
                         this.dragStart()
 
                     }} className={classNames("wk-conversation-content")}>
-
                         <div className="wk-conversation-messages" id={vm.messageContainerId} onScroll={this.handleScroll.bind(this)}>
                             {
                                 vm.messages.map((message, i) => {

@@ -247,6 +247,9 @@ export default class ConversationVM extends ProviderListener {
             if (!message.channel.isEqual(this.channel)) {
                 return
             }
+            if(message.contentType == MessageContentTypeConst.rtcData) {
+                return
+            }
             if(message.header.noPersist) { // 不存储的消息不显示
                 return
             }
@@ -618,7 +621,6 @@ export default class ConversationVM extends ProviderListener {
         }
         if (change) {
             this.refreshNewMsgCount()
-            console.log("refreshNewMsgCount---->")
         }
     }
 

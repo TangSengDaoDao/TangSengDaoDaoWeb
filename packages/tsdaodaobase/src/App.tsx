@@ -19,7 +19,6 @@ import RouteContext from "./Service/Context";
 import { ConnectStatus } from "wukongimjssdk";
 import { WKBaseContext } from "./Components/WKBase";
 import StorageService from "./Service/StorageService";
-import axios from "axios";
 
 export enum ThemeMode {
     light,

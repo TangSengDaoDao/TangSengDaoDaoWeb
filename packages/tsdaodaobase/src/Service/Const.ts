@@ -21,6 +21,7 @@ export class EndpointCategory {
   static friendApplyDataChange:string = "friendApplyDataChange" // 好友申请数据改变
   static chatMenusPopover:string = "chatMenusPopover" // 聊天菜单气泡
   static chatToolbars = "chatToolbars" // 聊天工具栏
+  static channelHeaderRightItems = "channelHeaderRightItems" // 频道头部右侧items
  
 }
 
@@ -57,6 +58,19 @@ export class MessageContentTypeConst {
   static channelUpdate: number = 1005 // 频道更新
   static newGroupOwner: number = 1008 // 成为新群主
   static screenshot:number = 1014 // 截屏消息
+
+  // 音频通话消息号段 9900 - 9999
+  static rtcResult:number = 9989 // 音视频通话结果
+  static rtcSwitchToVideo = 9990 // 切换到视频通话
+  static rtcSwitchToVideoReply = 9991 // 切换到视频回复
+  static rtcCancel:number = 9992 // 取消通话
+  static rtcSwitchToAudio = 9993 // 音视频切换（未接通时）
+  static rtcData:number = 9994 // rtc信令数据类型
+  static rtcMissed:number =9995 //  未接听
+  static rtcReceived:number = 9996 //  收到通话
+  static rtcRefue:number = 9997; // 拒绝通话
+  static rtcAccept:number = 9998; // 接受通话
+  static rtcHangup:number = 9999; // 挂断通话
   
 }
 

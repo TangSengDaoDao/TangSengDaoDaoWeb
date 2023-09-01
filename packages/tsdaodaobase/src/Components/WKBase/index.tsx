@@ -17,6 +17,19 @@ export interface WKBaseState {
     alertTitle?: string
     onAlertOk?: () => void
     conversationSelectFinished?: (channel: Channel[]) => void
+
+    showGlobalModal?: boolean // 显示全局弹窗
+    globalModalOptions?:GlobalModalOptions
+
+}
+
+export class GlobalModalOptions {
+    width?: string
+    height?: string
+    body?: ReactNode
+    footer?: ReactNode
+    className?: string
+    closable?: boolean
 }
 
 export interface WKBaseProps{
@@ -34,6 +47,10 @@ export interface WKBaseContext {
     hideUserInfo(): void
     // 弹出提示框
     showAlert(conf:{content:string,title?:string,onOk?:()=>void}): void
+
+    showGlobalModal(options:GlobalModalOptions):void
+
+    hideGlobalModal():void
 }
 
 export default class WKBase extends Component<WKBaseProps, WKBaseState> implements WKBaseContext {
@@ -73,6 +90,18 @@ export default class WKBase extends Component<WKBaseProps, WKBaseState> implemen
             showUserInfo: false,
             userUID: undefined,
             vercode: undefined,
+        })
+    }
+
+    showGlobalModal(options:GlobalModalOptions) {
+        this.setState({
+            showGlobalModal: true,
+            globalModalOptions: options,
+        })
+    }
+    hideGlobalModal() {
+        this.setState({
+            showGlobalModal: false
         })
     }
 
@@ -142,6 +171,9 @@ export default class WKBase extends Component<WKBaseProps, WKBaseState> implemen
                 }}
                 maskClosable={false}>
                     {alertContent}
+            </Modal>
+            <Modal closable={this.state.globalModalOptions?.closable} className={this.state.globalModalOptions?.className} visible={this.state.showGlobalModal} width={this.state.globalModalOptions?.width} footer={this.state.globalModalOptions?.footer}>
+                {this.state.globalModalOptions?.body}
             </Modal>
         </div>
     }

@@ -1,4 +1,4 @@
-import { Channel, ChannelTypePerson, WKSDK, Message, MessageContentType, ConversationAction, ChannelTypeGroup, ChannelInfo,CMDContent, MessageText  } from "wukongimjssdk";
+import { Channel, ChannelTypePerson, WKSDK, Message, MessageContentType, ConversationAction, ChannelTypeGroup, ChannelInfo, CMDContent, MessageText } from "wukongimjssdk";
 import React, { ElementType } from "react";
 import WKApp, { FriendApply, FriendApplyState, ThemeMode } from "./App";
 import ChannelQRCode from "./Components/ChannelQRCode";
@@ -287,6 +287,9 @@ export default class BaseModule implements IModule {
         if (channelInfo && channelInfo.mute) {
             return
         }
+        if (!message.header.reddot) { // 不显示红点的消息不发通知
+            return
+        }
 
 
         if (window.Notification && Notification.permission !== "denied") {
@@ -295,7 +298,7 @@ export default class BaseModule implements IModule {
                 icon: WKApp.shared.avatarChannel(message.channel),
                 lang: 'zh-CN',
                 tag: "tag",
-                renotify: true,
+                renotify: true
             });
 
             notify.onclick = () => {
@@ -308,6 +311,9 @@ export default class BaseModule implements IModule {
                 setTimeout(function () {
                     notify.close();
                 }, 5000);
+            }
+            notify.onclose = () => {
+                console.log("通知关闭")
             }
 
         }

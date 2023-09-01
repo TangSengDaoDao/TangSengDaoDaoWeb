@@ -47,6 +47,12 @@ export default class ContactsList extends Component<any, ContactsState> {
         }
     }
 
+    componentWillUnmount() {
+        ContactsListManager.shared.setRefreshList = undefined
+        WKApp.dataSource.removeContactsChangeListener(this.contactsChangeListener)
+    }
+
+
     rebuildIndex() {
         console.log("rebuildIndex---->")
         this.buildIndex(this.contactsList())
@@ -75,11 +81,7 @@ export default class ContactsList extends Component<any, ContactsState> {
         })
     }
 
-    componentWillUnmount() {
-
-        WKApp.dataSource.removeContactsChangeListener(this.contactsChangeListener)
-    }
-
+  
     buildIndex(contacts: Contacts[]) {
         const indexItemMap = new Map<string, Contacts[]>()
         let indexList = []

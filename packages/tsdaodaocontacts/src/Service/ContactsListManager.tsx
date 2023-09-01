@@ -5,8 +5,10 @@ export class ContactsListManager {
     }
     public static shared = new ContactsListManager()
 
-    setRefreshList!:()=>void
+    setRefreshList?:()=>void
     refreshList() {
-        this.setRefreshList()
+        if(this.setRefreshList) {
+            this.setRefreshList()
+        }
     }
 }

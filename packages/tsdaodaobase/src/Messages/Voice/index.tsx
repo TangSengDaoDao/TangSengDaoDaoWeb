@@ -8,6 +8,7 @@ import MessageTrail from "../Base/tail"
 import MessageBase from "../Base"
 import WKApp from "../../App"
 import { MessageContentTypeConst } from "../../Service/Const"
+import { MessageWrap } from "../../Service/Model"
 var BenzAMRRecorder = require('benz-amr-recorder');
 
 

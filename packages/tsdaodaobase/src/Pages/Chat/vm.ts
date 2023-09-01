@@ -153,7 +153,6 @@ export class ChatVM extends ProviderListener {
     }
     currentConversationListY() {
         const conversationElem = document.getElementById(this.conversationListID)
-        console.log("conversationElem---->", conversationElem)
         if (!conversationElem) {
             return
         }
