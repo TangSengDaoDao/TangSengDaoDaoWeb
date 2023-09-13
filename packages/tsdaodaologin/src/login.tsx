@@ -91,7 +91,7 @@ class Login extends Component<any, LoginState> {
                                         <p>二维码已失效，点击刷新</p>
                                         <img onClick={() => {
                                             vm.reStartAdvance()
-                                        }} src={require("./assets/refresh.png").default}></img>
+                                        }} src={require("./assets/refresh.png")}></img>
                                     </div> : undefined
                                 }
                             </div>

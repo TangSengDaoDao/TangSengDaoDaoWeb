@@ -132,7 +132,7 @@ export class MeInfoVM extends ProviderListener {
                     cell: ListItemIcon,
                     properties: {
                         title: `我的二维码`,
-                        icon: <img style={{ "width": "24px", "height": "24px" }} src={require("./../../assets/icon_qrcode.png").default}></img>,
+                        icon: <img style={{ "width": "24px", "height": "24px" }} src={require("./../../assets/icon_qrcode.png")}></img>,
                         onClick: () => {
                             context.push(<QRCodeMy disableHeader={true}></QRCodeMy>)
                         }

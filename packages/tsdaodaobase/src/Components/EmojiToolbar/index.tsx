@@ -143,7 +143,7 @@ export class EmojiPanel extends Component<EmojiPanelProps, EmojiPanelState> {
                                     onEmoji(emoji)
                                 }
                             }}>
-                                {/* <img src={require(`./emoji/${emoji.image}`).default}> </img> */}
+                                {/* <img src={require(`./emoji/${emoji.image}`)}> </img> */}
                                 <img src={emoji.image}></img>
                             </li>
                         }) : undefined
@@ -156,7 +156,7 @@ export class EmojiPanel extends Component<EmojiPanelProps, EmojiPanelState> {
                                     onSticker(sticker)
                                 }
                             }}>
-                                {/* <img src={require(`./emoji/${emoji.image}`).default}> </img> */}
+                                {/* <img src={require(`./emoji/${emoji.image}`)}> </img> */}
                                 <tgs-player style={{ width: "74px", height: "74px" }} autoplay mode="normal" src={WKApp.dataSource.commonDataSource.getFileURL(sticker.path)}></tgs-player>
                             </li>
                         }) : undefined
@@ -168,7 +168,7 @@ export class EmojiPanel extends Component<EmojiPanelProps, EmojiPanelState> {
                     e.stopPropagation()
                     this.setState({ category: "emoji" })
                 }}>
-                    <img alt="" src={require("./emoji_tab_icon.png").default}></img>
+                    <img alt="" src={require("./emoji_tab_icon.png")}></img>
                 </div>
                 {
                     stickerCategories.map((stickerCategory) => {

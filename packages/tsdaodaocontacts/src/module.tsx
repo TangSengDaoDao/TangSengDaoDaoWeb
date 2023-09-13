@@ -23,19 +23,19 @@ export default class ContactsModule implements IModule {
         })
 
         WKApp.endpoints.registerContactsHeader("friends.new", (param: any) => {
-            return <IconListItem badge={WKApp.shared.getFriendApplysUnreadCount()} title="新朋友" icon={require("./assets/friend_new.png").default} backgroudColor={"var(--wk-color-secondary)"} onClick={() => {
+            return <IconListItem badge={WKApp.shared.getFriendApplysUnreadCount()} title="新朋友" icon={require("./assets/friend_new.png")} backgroudColor={"var(--wk-color-secondary)"} onClick={() => {
                 WKApp.routeLeft.push(<NewFriend></NewFriend>)
             }} ></IconListItem>
         })
 
         WKApp.endpoints.registerContactsHeader("groups.save", (param: any) => {
-            return <IconListItem title="保存的群" icon={require("./assets/icon_group_save.png").default} backgroudColor={"var(--wk-color-secondary)"} onClick={() => {
+            return <IconListItem title="保存的群" icon={require("./assets/icon_group_save.png")} backgroudColor={"var(--wk-color-secondary)"} onClick={() => {
                 WKApp.routeLeft.push(<GroupSave></GroupSave>)
             }}></IconListItem>
         })
 
         WKApp.endpoints.registerContactsHeader("contacts.blacklist", (param: any) => {
-            return <IconListItem title="黑名单" icon={require("./assets/blacklist.png").default} backgroudColor={"var(--wk-color-secondary)"} onClick={() => {
+            return <IconListItem title="黑名单" icon={require("./assets/blacklist.png")} backgroudColor={"var(--wk-color-secondary)"} onClick={() => {
                 WKApp.routeLeft.push(<Blacklist></Blacklist>)
             }}></IconListItem>
         })
@@ -44,7 +44,7 @@ export default class ContactsModule implements IModule {
             const isDark = WKApp.config.themeMode === ThemeMode.dark 
             return {
                 title: "添加朋友",
-                icon: require(`${isDark?"./assets/popmenus_friendadd_dark.png":"./assets/popmenus_friendadd.png"}`).default,
+                icon: require(`${isDark?"./assets/popmenus_friendadd_dark.png":"./assets/popmenus_friendadd.png"}`),
                 onClick:()=>{
                     WKApp.routeLeft.push(<FriendAdd onBack={()=>{
                         WKApp.routeLeft.pop()

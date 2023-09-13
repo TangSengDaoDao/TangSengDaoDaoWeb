@@ -207,7 +207,7 @@ export default class MessageBase extends Component<MessageBaseProps, any> {
                                     context.resendMessage(message.message)
                                 }}>
                                     <div className="messageFail">
-                                        <img src={require("./msg_status_fail.png").default} alt=""></img>
+                                        <img src={require("./msg_status_fail.png")} alt=""></img>
                                     </div>
                                 </Popconfirm>
                             ) : undefined

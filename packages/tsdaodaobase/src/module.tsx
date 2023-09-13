@@ -349,7 +349,7 @@ export default class BaseModule implements IModule {
             const isDark = WKApp.config.themeMode === ThemeMode.dark
             return {
                 title: "发起群聊",
-                icon: require(`${isDark ? "./assets/popmenus_startchat_dark.png" : "./assets/popmenus_startchat.png"}`).default,
+                icon: require(`${isDark ? "./assets/popmenus_startchat_dark.png" : "./assets/popmenus_startchat.png"}`),
                 onClick: () => {
                     var selectItems: IndexTableItem[]
                     var finishButtonContext: FinishButtonContext
@@ -806,7 +806,7 @@ export default class BaseModule implements IModule {
                 cell: ListItemIcon,
                 properties: {
                     title: "群二维码",
-                    icon: <img style={{ "width": "24px", "height": "24px" }} src={require("./assets/icon_qrcode.png").default}></img>,
+                    icon: <img style={{ "width": "24px", "height": "24px" }} src={require("./assets/icon_qrcode.png")}></img>,
                     onClick: () => {
                         context.push(<ChannelQRCode channel={channel}></ChannelQRCode>, new RouteContextConfig({
                             title: "群二维码名片",

@@ -49,7 +49,7 @@ export class Subscribers extends Component<SubscribersProps> {
                                 onAdd()
                             }
                         }}>
-                            <img src={require("./assets/icon_add_more_gray.png").default}></img>
+                            <img src={require("./assets/icon_add_more_gray.png")}></img>
                         </div> : undefined
                     }
                     {
@@ -58,7 +58,7 @@ export class Subscribers extends Component<SubscribersProps> {
                                 onRemove()
                             }
                         }}>
-                            <img src={require("./assets/icon_delete_more_gray.png").default}></img>
+                            <img src={require("./assets/icon_delete_more_gray.png")}></img>
                         </div> : undefined
                     }
                 </div>

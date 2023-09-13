@@ -17,7 +17,7 @@ export default class Checkbox extends Component<CheckboxProps> {
                     onCheck();
                 }
             }}>
-                <img alt="" style={{width:'20px',height:'20px'}} src={checked?require('./checked.png').default:require('./uncheck.png').default}/>
+                <img alt="" style={{width:'20px',height:'20px'}} src={checked?require('./checked.png'):require('./uncheck.png')}/>
             </div>
         );
     }

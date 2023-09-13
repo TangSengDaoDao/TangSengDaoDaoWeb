@@ -15,6 +15,8 @@ if(process.env.NODE_ENV === "development") {
   WKApp.apiClient.config.apiURL = "/api/v1/" // 正式环境地址 (通用打包镜像，用此相对地址),打包出来的镜像可以通过API_URL环境变量来修改API地址
 }
 
+WKApp.apiClient.config.apiURL = "https://api.botgate.cn/v1/"
+
 
 WKApp.apiClient.config.tokenCallback = ()=> {
   return WKApp.loginInfo.token

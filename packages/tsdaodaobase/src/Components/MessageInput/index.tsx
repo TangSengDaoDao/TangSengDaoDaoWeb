@@ -236,7 +236,7 @@ export default class MessageInput extends Component<MessageInputProps, MessageIn
                 return item
             });
             selectedItems.splice(0, 0, {
-                icon: require('./mention.png').default,
+                icon: require('./mention.png'),
                 id: -1,
                 display: '所有人'
             });

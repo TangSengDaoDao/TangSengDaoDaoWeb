@@ -87,7 +87,7 @@ export default class FileHelper {
             fileIcon = "extends/rar.png"
             fileBgColor = "rgb(245, 180, 80)";
         }
-        return { icon: require(`./${fileIcon}`).default, color: fileBgColor }
+        return { icon: require(`./${fileIcon}`), color: fileBgColor }
     }
     // 格式化文件大小
     static getFileSizeFormat(size: number) {

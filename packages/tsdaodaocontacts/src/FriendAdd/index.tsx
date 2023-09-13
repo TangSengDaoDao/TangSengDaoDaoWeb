@@ -72,7 +72,7 @@ export class FriendAdd extends Component<FriendAddProps,FriendAddState> {
                 <div className="wk-friendadd-content-qrcode">
                         我的{WKApp.config.appName}号：{WKApp.loginInfo.shortNo} <img onClick={()=>{
                             WKApp.routeLeft.push(<QRCodeMy></QRCodeMy>)
-                        }} src={require("./assets/icon_qrcode.png").default}></img>
+                        }} src={require("./assets/icon_qrcode.png")}></img>
                 </div>  
             </div>
         </div>

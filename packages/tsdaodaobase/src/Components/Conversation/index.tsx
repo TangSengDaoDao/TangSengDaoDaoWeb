@@ -728,7 +728,7 @@ class ConversationPositionView extends Component<ConversationPositionViewProps, 
                             }}>
                                 {
                                     this.getReminderIcon(type) ? (
-                                        loading.get(type) ? <Spin spinning={true}></Spin> : <img src={require(`${this.getReminderIcon(type)}`).default}></img>
+                                        loading.get(type) ? <Spin spinning={true}></Spin> : <img src={require(`${this.getReminderIcon(type)}`)}></img>
                                     ) : undefined
                                 }
 
@@ -754,7 +754,7 @@ class ConversationPositionView extends Component<ConversationPositionViewProps, 
                             })
                         }
                     }}>
-                        {loading.get(-1) ? <Spin spinning={true}></Spin> : <img src={require("./assets/message_down.png").default}></img>}
+                        {loading.get(-1) ? <Spin spinning={true}></Spin> : <img src={require("./assets/message_down.png")}></img>}
                         {
                             unreadCount > 0 ? <div className="wk-conversation-unread-count">{unreadCount}</div> : null
                         }
