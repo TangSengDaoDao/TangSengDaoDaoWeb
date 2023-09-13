@@ -4,7 +4,7 @@ import { listen } from '@tauri-apps/api/event'
 // import Provider from "limbase/src/Service/Provider";
 import { MainPage } from "../Pages/Main";
 import { Notification as NotificationUI, Button } from '@douyinfe/semi-ui';
-import { checkUpdate, installUpdate, UpdateManifest } from '@tauri-apps/api/updater'
+import { UpdateManifest, checkUpdate, installUpdate } from '@tauri-apps/api/updater'
 import { relaunch } from '@tauri-apps/api/process'
 import { os } from "@tauri-apps/api";
 
