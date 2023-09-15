@@ -69,7 +69,9 @@ export class VoiceCell extends MessageCell<any,VoiceCellState> {
         this.timeRef = React.createRef()
         const { message } = props
         this.content = message.content
-        this.waveform = Uint8Array.from(Buffer.from(this.content.waveform, "base64"))
+        if(this.content.waveform && this.content.waveform.length>0) {
+            this.waveform = new Uint8Array(atob(this.content.waveform).split('').map(char => char.charCodeAt(0)));
+        }
         this.timeFormat = this.formatSecond(this.content.timeTrad)
     }
 
