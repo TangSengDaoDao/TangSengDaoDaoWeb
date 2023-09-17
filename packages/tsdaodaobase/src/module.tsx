@@ -42,6 +42,7 @@ import { TypingManager } from "./Service/TypingManager";
 import APIClient from "./Service/APIClient";
 import { ChannelAvatar } from "./Components/ChannelAvatar";
 import { ScreenshotCell, ScreenshotContent } from "./Messages/Screenshot";
+import ImageToolbar from "./Components/ImageToolbar";
 
 export default class BaseModule implements IModule {
     id(): string {
@@ -337,8 +338,13 @@ export default class BaseModule implements IModule {
         WKApp.endpoints.registerChatToolbar("chattoolbar.screenshot", (ctx) => {
 
             return <IconClick icon={require("./assets/toolbars/func_screenshot.svg").default} onClick={() => {
-                window.open("https://jietu.qq.com")
+                window.open("https://www.snipaste.com")
             }}></IconClick>
+        })
+
+        WKApp.endpoints.registerChatToolbar("chattoolbar.image", (ctx) => {
+
+            return <ImageToolbar icon={require("./assets/toolbars/func_image_normal.svg").default} conversationContext={ctx}></ImageToolbar>
         })
 
 

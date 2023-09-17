@@ -1,0 +1,207 @@
+
+
+
+.wk-imagetoolbar {
+   
+}
+
+.wk-imagetoolbar-content {
+    padding: 10px;
+}
+
+.wk-imagetoolbar-content-icon  img{
+    width: 20px;
+    height: 20px;
+}
+
+.wk-imagetoolbar-content-icon {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+
+.wk-imagedialog {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    align-items: center;
+
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    -webkit-app-region: no-drag;
+    z-index: 100;
+}
+
+.wk-imagedialog-mask {
+    position: absolute;
+    background-color: rgba(0,0,0,.3);
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.wk-imagedialog-content {
+    width: 420px;
+    position: relative;
+    padding: 28px;
+    background: var(--wk-color-item);
+    -webkit-box-shadow: 0 2px 8px 0 rgba(0,0,0,.2);
+    box-shadow: 0 2px 8px 0 rgba(0,0,0,.2);
+    border-radius: 4px;
+    overflow: hidden;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    max-height: 580px;
+}
+
+.wk-imagedialog-content-close {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 28px;
+    right: 28px;
+    font-size: 18px;
+    text-align: center;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 1;
+    line-height: 18px;
+}
+
+.wk-imagedialog-content-close svg {
+    fill: var(--wk-text-item);
+}
+
+.wk-imagedialog-content-title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.wk-imagedialog-content-body {
+    width: 100%;
+    font-size: 14px;
+    text-align: center;
+    margin-top: 28px;
+}
+
+.wk-imagedialog-content-preview {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    text-align: left;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    position: relative;
+    border-radius: 4px 4px 4px 4px;
+}
+
+.wk-imagedialog-content-previewImg {
+    width: auto;
+    height: auto;
+    max-width: 240px;
+    max-height: 240px;
+    background-size: auto 100%;
+    background-position: 50%;
+    margin: 0 auto 16px;
+}
+
+.wk-imagedialog-content-preview-file {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.wk-imagedialog-content-preview--filecontent {
+    -webkit-flex: 1 1;
+    -ms-flex: 1 1;
+    flex: 1 1;
+    width: 100%;
+    height: 78px;
+    padding: 12px 0px 12px 20px;
+    overflow: hidden;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-flow: column nowrap;
+    -ms-flex-flow: column nowrap;
+    flex-flow: column nowrap;
+    -webkit-justify-content: space-between;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    background-color: rgb(247, 247, 247);
+}
+
+body[theme-mode=dark] .wk-imagedialog-content-preview--filecontent {
+    background-color: var(--wk-color-secondary);
+}
+
+.wk-imagedialog-content-preview-file-icon {
+    height: 78px;
+    width: 78px;
+    display: flex;
+    align-items: center;
+    border-radius: 0px 0px 0px 10px;
+}
+
+.wk-imagedialog-content-preview-file-thumbnail {
+    width: 48px;
+    height: 48px;
+    margin: auto 16px auto auto;
+}
+
+.wk-imagedialog-content-preview--filecontent-name {
+    color: var(--wk-text-item);
+    white-space: nowrap;
+    overflow-x: hidden;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    line-height: normal;
+}
+
+.wk-imagedialog-content-preview--filecontent-size {
+    font-size: 12px;
+    color: var(--wk-color-font-tip);
+}
+
+.wk-imagedialog-footer {
+    margin-top: 28px;
+    justify-content: flex-end;
+    display: flex;
+}
+
+.wk-imagedialog-footer button{
+    background-color: #fff;
+    border: 1px solid #dee0e3;
+    color: #1f2329;
+    border-radius: 4px;
+    height: 32px;
+    min-width: 100px;
+    padding: 0 16px;
+    cursor: pointer;
+}
+
+.wk-imagedialog-footer-okbtn {
+    margin-left: 16px;
+    color: white !important;
+    border: none !important;
+}
+
