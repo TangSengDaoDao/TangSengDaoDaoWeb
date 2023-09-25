@@ -24,6 +24,7 @@
 
     --wk-message-item: white;
     --wk-message-color: #0F0F0F;
+    
   }
 
   *, *:before, *:after {
@@ -41,6 +42,9 @@
 
     --wk-message-item: #0F0F0F;
     --wk-message-color: white;
+
+    --semi-color-primary: #E46342;
+    --semi-color-primary-hover: rgb(228, 99, 66,0.5);
 
   }
 

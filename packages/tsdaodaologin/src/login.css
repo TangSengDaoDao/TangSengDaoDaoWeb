@@ -173,6 +173,7 @@
 
 .wk-login-content-scanlogin-qrcode-title {
     margin-top: 30px;
+    color: rgba(9,30,66,.87);
 }
 
 .wk-login-content-scanlogin-qrcode-desc li {
@@ -180,6 +181,7 @@
     text-align: left;
     margin: 0.75rem 0;
     display: flex;
+    color: rgba(9,30,66,.87);
 }
 
 .wk-login-content-scanlogin-qrcode-desc li::before {
