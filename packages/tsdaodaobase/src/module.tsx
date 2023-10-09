@@ -341,10 +341,9 @@ export default class BaseModule implements IModule {
                 window.open("https://www.snipaste.com")
             }}></IconClick>
         })
-
         WKApp.endpoints.registerChatToolbar("chattoolbar.image", (ctx) => {
 
-            return <ImageToolbar icon={require("./assets/toolbars/func_image_normal.svg").default} conversationContext={ctx}></ImageToolbar>
+            return <ImageToolbar icon={require("./assets/toolbars/func_screenshot.svg").default} conversationContext={ctx}></ImageToolbar>
         })
 
 

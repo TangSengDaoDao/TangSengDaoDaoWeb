@@ -179,7 +179,7 @@ export class DefaultEmojiService implements EmojiService {
 
     emojiRegExp() {
         if(!this.emojiKeys) {
-            this.emojiKeys = []
+            this.emojiKeys = new Array<string>()
            const keys = this.emojiMap.keys()
            for (let emojiKey of keys) {
                 this.emojiKeys.push(emojiKey)

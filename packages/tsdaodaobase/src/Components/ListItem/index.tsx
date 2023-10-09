@@ -26,7 +26,7 @@ export class ListItem extends Component<ListItemProps>{
                 {subTitle}
             </div>
             {/* <div className="wk-list-item-arrow">
-                <img src={require("./assets/arrow_right.png")}></img>
+                <img src={require("./assets/arrow_right.png)}></img>
             </div> */}
         </div>
     }

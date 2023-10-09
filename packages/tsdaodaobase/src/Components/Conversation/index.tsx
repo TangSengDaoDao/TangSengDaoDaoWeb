@@ -286,7 +286,7 @@ export class Conversation extends Component<ConversationProps> implements Conver
         const viewport = document.getElementById(this.vm.messageContainerId)
         const visiableMessages = this.allVisiableMessages(viewport)
         if (visiableMessages && visiableMessages.length > 0) {
-            const unreadMessages = []
+            const unreadMessages = new Array<Message>()
             for (const visiableMessage of visiableMessages) {
                 if (!visiableMessage.remoteExtra.readed && visiableMessage.fromUID !== WKApp.loginInfo.uid && visiableMessage.setting.receiptEnabled) {
                     unreadMessages.push(visiableMessage.message)
@@ -411,18 +411,19 @@ export class Conversation extends Component<ConversationProps> implements Conver
         }
     }
     // 所有可见的消息
-    allVisiableMessages(vp: HTMLElement | null) {
+    allVisiableMessages(vp: HTMLElement | null):Array<MessageWrap> {
+        const visiableMessages = new Array<MessageWrap>()
         if (!this.vm.messages || this.vm.messages.length === 0) {
-            return
+            return visiableMessages
         }
         let viewport = vp
         if (!viewport) {
             viewport = document.getElementById(this.vm.messageContainerId)
         }
         if (!viewport) {
-            return
+            return visiableMessages
         }
-        const visiableMessages = []
+        
         const targetScrollTop = viewport.scrollTop;
         for (let index = 0; index < this.vm.messages.length; index++) {
             const message = this.vm.messages[index];

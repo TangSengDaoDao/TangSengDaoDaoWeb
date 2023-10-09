@@ -53,6 +53,7 @@ export default class APIClient {
                     if(self.logoutCallback) {
                         self.logoutCallback()
                     }
+                    break;
                 default:
                     msg = "未知错误"
                     break;
