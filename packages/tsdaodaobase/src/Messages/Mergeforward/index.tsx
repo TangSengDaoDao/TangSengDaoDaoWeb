@@ -60,6 +60,9 @@ export default class MergeforwardContent extends MessageContent {
         message.fromUID = messageMap["from_uid"]
 
         let payloadObj = messageMap["payload"]
+        if (!payloadObj) {
+            payloadObj = {}
+        }
         let contentType = 0
         if (payloadObj) {
             contentType = payloadObj.type
