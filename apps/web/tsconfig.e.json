@@ -1,0 +1,15 @@
+{
+  "exclude": ["node_modules", "src"],
+  "include": ["src-election/**/*"],
+  "compilerOptions": {
+    "outDir": "./out-election",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "noEmit": false,
+    "baseUrl": "./",
+    "skipLibCheck":true,
+    "sourceMap": false
+  }
+}

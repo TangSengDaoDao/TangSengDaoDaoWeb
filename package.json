@@ -9,8 +9,10 @@
     "react-error-overlay": "6.0.9"
   },
   "scripts": {
-    "build": "turbo run build",
     "dev": "turbo run dev --parallel",
+    "dev-ele": "turbo run dev-ele --parallel",
+    "build": "turbo run build",
+    "build-ele": "turbo run build-ele",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },

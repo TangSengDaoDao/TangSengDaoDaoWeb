@@ -1,14 +1,22 @@
 {
   "$schema": "https://turborepo.org/schema.json",
   "pipeline": {
+    "dev": {
+      "cache": false
+    },
+    "dev-ele": {
+      "dependsOn": ["^dev"],
+      "cache": false
+    },
     "build": {
       "outputs": [".next/**"]
     },
+    "build-ele": {
+      "outputs": [".next/**"],
+      "dependsOn": ["^build"]
+    },
     "lint": {
       "outputs": []
-    },
-    "dev": {
-      "cache": false
     }
   }
 }
