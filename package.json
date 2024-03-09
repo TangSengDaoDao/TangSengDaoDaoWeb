@@ -6,11 +6,15 @@
   ],
   "resolutions": {
     "//": "See https://github.com/facebook/create-react-app/issues/11773",
-    "react-error-overlay": "6.0.9"
+    "react-error-overlay": "6.0.11"
   },
   "scripts": {
-    "build": "turbo run build",
+    "bootstrap": "yarn install",
     "dev": "turbo run dev --parallel",
+    "dev-ele": "turbo run dev-ele --parallel",
+    "build": "turbo run build",
+    "build-ele": "turbo run build-ele",
+    "clean": "turbo run clean && rimraf node_modules",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
@@ -18,8 +22,8 @@
     "eslint": "^7.32.0",
     "eslint-config-custom": "*",
     "prettier": "^2.5.1",
+    "rimraf": "^5.0.5",
     "turbo": "latest"
   },
-  "dependencies": {},
   "version": "0.0.0"
 }

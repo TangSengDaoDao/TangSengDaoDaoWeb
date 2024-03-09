@@ -34,3 +34,7 @@ yarn-error.log*
 lib/
 out/
 build
+out-election/
+dist-ele/
+icon.icns
+icons.iconset
