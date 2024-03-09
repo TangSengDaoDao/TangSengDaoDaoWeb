@@ -1,9 +1,9 @@
 module.exports = {
-  productName: "唐僧叨叨", //项目名
+  productName: "tangsengdaodao", //项目名
   appId: "com.tsdaodao.im",
   copyright: "Copyright © tsdaodao", //版权
   directories: {
-    output: "output/app", // 输出文件夹
+    output: "dist-ele", // 输出文件夹
   },
   npmRebuild: false,
   asar: false,
@@ -11,17 +11,19 @@ module.exports = {
   electronDownload: {
     mirror: "https://registry.npmmirror.com/-/binary/electron/",
   },
-  files: ["out-election/**/*", "build/**/*"], // 需要打包的文件
+  files: ["resources/**/*","out-election/**/*", "build/**/*"], // 需要打包的文件
   extraMetadata: {
     main: "out-election/main/index.js",
   },
   mac: {
-    category: "public.app-category.utilities",
-    icon: "public/icon.icns",
+    category: "public.app-category.instant-messaging",
+    artifactName: "${productName}-${version}-${arch}.${ext}",
+    icon: "resources/icons/icon.icns",
+    target: ["dmg", "zip"]
   },
   dmg: {
     // background: 'build/appdmg.png', // dmg安装窗口背景图
-    icon: "public/icon.icns", // 客户端图标
+    icon: "resources/icons/icon.icns", // 客户端图标
     iconSize: 100, // 安装图标大小
     // 安装窗口中包含的项目和配置
     contents: [
@@ -31,8 +33,10 @@ module.exports = {
     window: { width: 500, height: 500 }, // 安装窗口大小
   },
   win: {
-    icon: "public/icon.icns",
+    icon: "resources/icons/icon.ico",
+    verifyUpdateCodeSignature: false,
     target: ["nsis", "zip"],
+    artifactName: "${productName}-Setup-${version}.${ext}"
   },
   nsis: {
     oneClick: false, // 是否一键安装
@@ -43,10 +47,9 @@ module.exports = {
     // installerHeaderIcon: "./build/icon.ico", // 安装时头部图标
     createDesktopShortcut: true, // 创建桌面图标
     createStartMenuShortcut: true, // 创建开始菜单图标
-    shortcutName: "唐僧叨叨", // 图标名称
   },
   linux: {
     target: ["AppImage", "deb"],
-    icon: "public/icon.icns",
+    icon: "resources/icons/icon.icns",
   },
 };

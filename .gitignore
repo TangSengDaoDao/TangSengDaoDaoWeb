@@ -35,6 +35,6 @@ lib/
 out/
 build
 out-election/
-output/
+dist-ele/
 icon.icns
 icons.iconset
