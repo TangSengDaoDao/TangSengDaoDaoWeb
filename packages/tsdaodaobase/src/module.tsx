@@ -246,8 +246,8 @@ export default class BaseModule implements IModule {
         // 好友申请
         const friendApply = new FriendApply();
         friendApply.uid = param.apply_uid;
-        friendApply.name = param.apply_name;
-        friendApply.state = FriendApplyState.apply;
+        friendApply.to_name = param.apply_name;
+        friendApply.status = FriendApplyState.apply;
         friendApply.remark = param.remark;
         friendApply.token = param.token;
         friendApply.unread = true;
@@ -272,7 +272,7 @@ export default class BaseModule implements IModule {
           for (const friendApply of friendApplys) {
             if (toUID === friendApply.uid) {
               friendApply.unread = false;
-              friendApply.state = FriendApplyState.accepted;
+              friendApply.status = FriendApplyState.accepted;
               WKApp.shared.updateFriendApply(friendApply);
               WKApp.endpointManager.invokes(
                 EndpointCategory.friendApplyDataChange
@@ -489,7 +489,11 @@ export default class BaseModule implements IModule {
         <IconClick
           icon={require("./assets/toolbars/func_screenshot.svg").default}
           onClick={() => {
-            window.open("https://www.snipaste.com");
+            if ((window as any).__POWERED_ELECTRON__) {
+              (window as any).ipc.send('screenshots-start', {})
+            } else {
+              window.open("https://www.snipaste.com");
+            }
           }}
         ></IconClick>
       );
