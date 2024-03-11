@@ -17,9 +17,14 @@ module.exports = {
   },
   mac: {
     category: "public.app-category.instant-messaging",
-    artifactName: "${productName}-${version}-${arch}.${ext}",
-    icon: "resources/icons/icon.icns",
-    target: ["dmg", "zip"]
+    target: [
+      {
+        target: 'dmg',
+        arch: ['x64', 'arm64']
+      }
+    ],
+    artifactName: '${productName}-${os}-${version}-${arch}.${ext}',
+    icon: "resources/icons/icon.icns"
   },
   dmg: {
     // background: 'build/appdmg.png', // dmg安装窗口背景图

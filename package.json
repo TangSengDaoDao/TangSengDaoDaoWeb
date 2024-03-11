@@ -14,6 +14,10 @@
     "dev-ele": "turbo run dev-ele --parallel",
     "build": "turbo run build",
     "build-ele": "turbo run build-ele",
+    "build-ele:mac": "turbo run build-ele:mac",
+    "build-ele:win": "turbo run build-ele:win",
+    "build-ele:linux": "turbo run build-ele:linux",
+    "build-ele:linux-arm64": "turbo run build-ele:linux-arm64",
     "clean": "turbo run clean && rimraf node_modules",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""

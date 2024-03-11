@@ -11,7 +11,7 @@
     "start:electron": "cross-env NODE_ENV=development electron .",
     "build": "cross-env REACT_APP_VERSION=$npm_package_version react-app-rewired build",
     "build:analyzer": "cross-env ANALYZER=true REACT_APP_VERSION=$npm_package_version react-app-rewired build",
-    "build-ele:mac": "tsc -p tsconfig.e.json && electron-builder --mac -c",
+    "build-ele:mac": "tsc -p tsconfig.e.json && electron-builder -p never -m -c",
     "build-ele:win": "tsc -p tsconfig.e.json && electron-builder --win -c",
     "build-ele": "tsc -p tsconfig.e.json && electron-builder -mw -c",
     "test": "react-app-rewired test",

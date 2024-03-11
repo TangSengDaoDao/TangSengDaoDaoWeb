@@ -15,6 +15,22 @@
       "outputs": [".next/**"],
       "dependsOn": ["^build"]
     },
+    "build-ele:mac": {
+      "outputs": [".next/**"],
+      "dependsOn": ["^build"]
+    },
+    "build-ele:win": {
+      "outputs": [".next/**"],
+      "dependsOn": ["^build"]
+    },
+    "build-ele:linux": {
+      "outputs": [".next/**"],
+      "dependsOn": ["^build"]
+    },
+    "build-ele:linux-arm64": {
+      "outputs": [".next/**"],
+      "dependsOn": ["^build"]
+    },
     "lint": {
       "outputs": []
     },
