@@ -1,0 +1,29 @@
+/**
+* =====================================
+* 滚动条美化
+**/
+
+/* 亮色 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #b8b8b8;
+  background-clip: padding-box;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #878787;
+}
+
+/* 暗色 */
+body[theme-mode=dark] ::-webkit-scrollbar-thumb {
+  background: #565656;
+}
+
+body[theme-mode=dark] ::-webkit-scrollbar-thumb:hover {
+  background: #424242; /* 更深的灰色 */
+}

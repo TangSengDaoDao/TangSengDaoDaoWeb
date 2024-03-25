@@ -110,11 +110,13 @@ export class EmojiPanel extends Component<EmojiPanelProps, EmojiPanelState> {
         this.setState({
             emojis: this.emojiService.getAllEmoji()
         })
-        this.requestStickerCategory()
+        // 获取表情
+        // this.requestStickerCategory()
     }
 
     requestStickerCategory() {
         if (!stickerCategories || stickerCategories.length === 0) {
+            console.log('====',stickerCategories)
             WKApp.dataSource.commonDataSource.userStickerCategory().then((result) => {
                 stickerCategories = result
                 this.setState({})

@@ -457,9 +457,9 @@ export default class WKApp extends ProviderListener {
             for (const friendApplyObj of friendApplyObjs) {
                 const f = new FriendApply()
                 f.uid = friendApplyObj.uid
-                f.name = friendApplyObj.name
+                f.to_name = friendApplyObj.to_name
                 f.remark = friendApplyObj.remark
-                f.state = friendApplyObj.state
+                f.status = friendApplyObj.status
                 f.token = friendApplyObj.token
                 f.unread = friendApplyObj.unread
                 f.createdAt = friendApplyObj.createdAt
@@ -472,35 +472,41 @@ export default class WKApp extends ProviderListener {
         return friendApplys
     }
 
-    public getFriendApplysUnreadCount() {
-        const friendApplys = this.getFriendApplys()
+    public async getFriendApplysUnreadCount() {
+        // const friendApplys = this.getFriendApplys()
         let unreadCount = 0
-        if (friendApplys && friendApplys.length > 0) {
-            for (const friendApply of friendApplys) {
-                if (friendApply.unread) {
-                    unreadCount++
-                }
-            }
-        }
+        // if (friendApplys && friendApplys.length > 0) {
+        //     for (const friendApply of friendApplys) {
+        //         if (friendApply.unread) {
+        //             unreadCount++
+        //         }
+        //     }
+        // }
+        if (!WKApp.loginInfo.isLogined()) {
+            return unreadCount;
+          }
+          const res = await WKApp.apiClient.get(`/user/reddot/friendApply`);
+        unreadCount = res.count;
         return unreadCount
     }
 
-    public friendApplyMarkAllReaded() {
-        let friendApplys = this.getFriendApplys()
-        if (!friendApplys) {
-            friendApplys = new Array<FriendApply>()
-        }
-        var change = false
-        for (const friendApply of friendApplys) {
-            if (friendApply.unread) {
-                friendApply.unread = false
-                change = true
-            }
-        }
-        if (change) {
-            WKApp.loginInfo.setStorageItem(this.getFriendApplysKey(), JSON.stringify(friendApplys))
-            WKApp.endpointManager.invokes(EndpointCategory.friendApplyDataChange)
-        }
+    public async friendApplyMarkAllReaded(): Promise<void> {
+        // let friendApplys = this.getFriendApplys()
+        // if (!friendApplys) {
+        //     friendApplys = new Array<FriendApply>()
+        // }
+        // var change = false
+        // for (const friendApply of friendApplys) {
+        //     if (friendApply.unread) {
+        //         friendApply.unread = false
+        //         change = true
+        //     }
+        // }
+        // if (change) {
+        //     WKApp.loginInfo.setStorageItem(this.getFriendApplysKey(), JSON.stringify(friendApplys))
+        //     WKApp.endpointManager.invokes(EndpointCategory.friendApplyDataChange)
+        // }
+        await WKApp.apiClient.delete(`/user/reddot/friendApply`);
     }
 
     public addFriendApply(friendApply: FriendApply) {
@@ -572,13 +578,14 @@ export enum FriendApplyState {
 }
 // 好友申请
 export class FriendApply {
-    uid!: string
-    name!: string
-    remark?: string
-    token?: string
-    state!: FriendApplyState
-    unread: boolean = false // 是否未读
-    createdAt!: number // 创建时间
+    uid!: string;
+    to_uid!: string;
+    to_name!: string;
+    remark?: string;
+    token?: string;
+    status!: FriendApplyState;
+    unread: boolean = false; // 是否未读
+    createdAt!: number; // 创建时间
 }
 
 

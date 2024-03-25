@@ -1,0 +1,61 @@
+name: "pubulish-electron"
+on:
+  push:
+    tags:
+      - "v*" # 推送事件匹配 v*, 例如 v1.0，v20.15.10 等来触发工作流
+jobs:
+  release:
+    name: build and release electron app
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest,macos-latest]
+    steps:
+      - name: Check out git repository
+        uses: actions/checkout@v3.0.0
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3.0.0
+        with:
+          node-version: 18
+
+      - name: Install and Build
+        run: yarn install --network-timeout=30000 && yarn build
+
+      - name: build windows app
+        if: matrix.os == 'windows-latest'
+        run: |
+          yarn build-ele:win
+
+      - name: build mac app
+        if: matrix.os == 'macos-latest'
+        run: |
+          yarn build-ele:mac
+
+      - name: Cleanup Artifacts for Windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          mkdir artifacts
+          mv apps/web/dist-ele/*.exe artifacts
+
+      - name: Cleanup Artifacts for MacOS
+        if: matrix.os == 'macos-latest'
+        run: |
+          mkdir artifacts
+          mv apps/web/dist-ele/*.dmg artifacts
+
+      - name: upload artifacts
+        uses: actions/upload-artifact@v3.0.0
+        with:
+          name: ${{ matrix.os }}
+          path: artifacts
+
+      - name: release
+        uses: softprops/action-gh-release@v0.1.14
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: "artifacts/**"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
