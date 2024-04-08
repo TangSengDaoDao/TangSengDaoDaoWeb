@@ -251,13 +251,6 @@ function regShortcut() {
     );
     screenshots.startCapture();
   });
-
-  globalShortcut.register("esc", () => {
-    if (screenshots.$win?.isFocused()) {
-      screenshots.endCapture();
-    }
-  });
-
   // 打开所有窗口控制台
   globalShortcut.register("ctrl+shift+i", () => {
     let windows = BrowserWindow.getAllWindows();
@@ -382,6 +375,21 @@ app.on("ready", () => {
       screenShotWindowId = 0;
     }
   };
+
+  // 截图添加快捷键esc
+  screenshots.on('windowCreated', ($win) => {
+    $win.on('focus', () => {
+      globalShortcut.register('esc', () => {
+        if ($win?.isFocused()) {
+          screenshots.endCapture();
+        }
+      });
+    });
+
+    $win.on('blur', () => {
+      globalShortcut.unregister('esc');
+    });
+  });
 
   // 点击确定按钮回调事件
   screenshots.on("ok", (e, buffer, bounds) => {
