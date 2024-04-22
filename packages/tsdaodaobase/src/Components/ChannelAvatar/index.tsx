@@ -39,7 +39,7 @@ export class ChannelAvatar extends Component<ChannelAvatarProps>{
         event.target.value = ''  // 防止选中一个文件取消后不能再选中同一个文件
     }
     showFile(file: any) {
-        const { context,onFileUpload } = this.props
+        const { context,onFileUpload,channel } = this.props
         let finishButtonContext:FinishButtonContext
         if (context) {
             context.push(<WKAvatarEditor ref={(rf)=>{
@@ -65,7 +65,7 @@ export class ChannelAvatar extends Component<ChannelAvatarProps>{
                                 }else{
                                     finishButtonContext.loading(true)
                                     await this.uploadAvatar(file)
-                                    WKApp.shared.changeChannelAvatarTag()
+                                    WKApp.shared.changeChannelAvatarTag(channel)
                                     finishButtonContext.loading(false)
                                     context.pop()
                                     this.setState({})

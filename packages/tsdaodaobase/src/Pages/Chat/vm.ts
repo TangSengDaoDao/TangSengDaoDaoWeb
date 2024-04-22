@@ -59,9 +59,12 @@ export class ChatVM extends ProviderListener {
     }
 
     didMount(): void {
-
         // 根据连接状态设置标题
         this.setConnectTitleWithConnectStatus(WKSDK.shared().connectManager.status)
+
+        if(WKSDK.shared().connectManager.status == ConnectStatus.Connected){ // 如果已经连接则直接加载
+            this.reloadRequestConversationList()
+        }
 
         // 监听im连接状态
         this.connectStatusListener = (status: ConnectStatus, reasonCode?: number) => {
@@ -184,7 +187,6 @@ export class ChatVM extends ProviderListener {
 
     // 排序最近会话列表
     sortConversations(conversations?: Array<ConversationWrap>) {
-        console.log("sortConversations---->")
         let newConversations = conversations;
         if (!newConversations) {
             newConversations = this.conversations
@@ -237,5 +239,7 @@ export class ChatVM extends ProviderListener {
         this.sortConversations()
 
         this.notifyListener()
+
+        WKApp.menus.refresh()
     }
 }

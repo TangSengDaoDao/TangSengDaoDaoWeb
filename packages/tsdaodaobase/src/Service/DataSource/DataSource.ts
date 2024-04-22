@@ -57,7 +57,7 @@ export class DataSource {
         }
     }
 
-    private notifyContactsChange() {
+    public notifyContactsChange() {
         if (this.contactsChangeListeners) {
             this.contactsChangeListeners.forEach((listener: ContactsChangeListener) => {
                 if (listener) {
@@ -140,8 +140,8 @@ export interface ICommonDataSource {
     searchUser(keyword: string): Promise<any>
 
     /**
- * 用户贴图类别
- */
+     * 用户贴图类别
+     */
     userStickerCategory(): Promise<any>
 
     /**

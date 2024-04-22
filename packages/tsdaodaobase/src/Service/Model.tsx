@@ -25,7 +25,7 @@ export class ConversationWrap {
 
     public get avatar() {
         if(this.channelInfo&& this.channelInfo.logo && this.channelInfo.logo !== "") {
-            return `${WKApp.dataSource.commonDataSource.getImageURL(this.channelInfo.logo)}?v=${WKApp.shared.getChannelAvatarTag()}`
+            return `${WKApp.dataSource.commonDataSource.getImageURL(this.channelInfo.logo)}?v=${WKApp.shared.getChannelAvatarTag(this.channel)}`
         }
         return WKApp.shared.avatarChannel(this.channel)
     }

@@ -10,7 +10,7 @@ import { Sex, SexSelect } from "../SexSelect";
 import { ListItemAvatar } from "../ListItemAvatar";
 import axios from "axios";
 import { Toast } from "@douyinfe/semi-ui";
-import WKSDK from "wukongimjssdk";
+import WKSDK, { Channel } from "wukongimjssdk";
 import { ChannelInfoListener } from "wukongimjssdk";
 import { ChannelInfo, ChannelTypePerson } from "wukongimjssdk";
 export class MeInfoVM extends ProviderListener {
@@ -95,7 +95,7 @@ export class MeInfoVM extends ProviderListener {
                         avatar: <img style={{ "width": "24px", "height": "24px", "borderRadius": "50%" }} src={WKApp.shared.avatarUser(WKApp.loginInfo.uid || "")}></img>,
                         onFileUpload: async (f: File) => {
                             await this.uploadAvatar(f)
-                            WKApp.shared.changeChannelAvatarTag()
+                            WKApp.shared.changeChannelAvatarTag(new Channel(WKApp.loginInfo.uid||"", ChannelTypePerson))
                         }
                     }
                 }),

@@ -61,7 +61,7 @@ export class ContactsSelect extends Component<ContactsSelectProps> {
                             this.finishButtonContext.disable(true)
                         }
                     }
-                   
+
                     if(onSelect) {
                         onSelect(items)
                     }

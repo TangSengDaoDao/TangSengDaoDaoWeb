@@ -26,7 +26,7 @@ export default class IconListItem extends Component<IconListItemProps> {
                 </div>
                 {
                     badge && badge > 0 ? <div className="wk-iconlistitem-content-badge">
-                        <Badge count={1} type="danger"></Badge>
+                        <Badge count={badge} type="danger"></Badge>
                     </div> : undefined
                 }
             </div>

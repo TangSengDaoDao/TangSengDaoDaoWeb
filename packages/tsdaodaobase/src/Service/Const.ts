@@ -22,7 +22,8 @@ export class EndpointCategory {
   static chatMenusPopover:string = "chatMenusPopover" // 聊天菜单气泡
   static chatToolbars = "chatToolbars" // 聊天工具栏
   static channelHeaderRightItems = "channelHeaderRightItems" // 频道头部右侧items
- 
+  static organizational = "organizational" // 组织架构
+  static organizationalLayer = "organizationalLayer" // 组织架构弹框
 }
 
 
@@ -71,7 +72,7 @@ export class MessageContentTypeConst {
   static rtcRefue:number = 9997; // 拒绝通话
   static rtcAccept:number = 9998; // 接受通话
   static rtcHangup:number = 9999; // 挂断通话
-  
+
 }
 
 // 用户关系
@@ -87,7 +88,7 @@ export const unsupportMessageTypes = []
 
 export enum MessageReasonCode {
   	// ReasonUnknown 未知错误
-	reasonUnknown, 
+	reasonUnknown,
 	// ReasonSuccess 成功
 	reasonSuccess,
 	// ReasonAuthFail 认证失败

@@ -12,7 +12,7 @@ export default class MenusManager {
       `${EndpointID.menusPrefix}${sid}`, (param) => f(param),
       { category: EndpointCategory.menus,sort:sort });
   }
-  menusList(): Menus[] {
+   menusList(): Menus[] {
     return EndpointManager.shared.invokes<Menus>(EndpointCategory.menus, {});
   }
 

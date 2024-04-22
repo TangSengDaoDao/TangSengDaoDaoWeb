@@ -81,6 +81,7 @@ import ImageToolbar from "./Components/ImageToolbar";
 
 export default class BaseModule implements IModule {
   messageTone?: Howl;
+
   id(): string {
     return "base";
   }
@@ -207,7 +208,6 @@ export default class BaseModule implements IModule {
         WKSDK.shared().channelManager.fetchChannelInfo(
           new Channel(param.channel_id, param.channel_type)
         );
-        this.tipsAudio();
       } else if (cmdContent.cmd === "typing") {
         TypingManager.shared.addTyping(
           new Channel(
@@ -218,6 +218,7 @@ export default class BaseModule implements IModule {
           cmdContent.param.from_name
         );
       } else if (cmdContent.cmd === "groupAvatarUpdate") {
+        WKApp.shared.changeChannelAvatarTag(new Channel(param.group_no, ChannelTypeGroup));
         // 群头像更新
         WKSDK.shared().channelManager.fetchChannelInfo(
           new Channel(param.group_no, ChannelTypeGroup)
@@ -253,6 +254,8 @@ export default class BaseModule implements IModule {
         friendApply.unread = true;
         friendApply.createdAt = message.timestamp;
         WKApp.shared.addFriendApply(friendApply);
+        WKApp.shared.setFriendApplysUnreadCount();
+        this.tipsAudio();
       } else if (cmdContent.cmd === "friendAccept") {
         // 接受好友申请
         const toUID = param.to_uid;
@@ -311,6 +314,7 @@ export default class BaseModule implements IModule {
       } else if (cmdContent.cmd === "syncReminders") {
         // 同步提醒项
         WKSDK.shared().reminderManager.sync();
+        this.tipsAudio();
       } else if (cmdContent.cmd === "messageRevoke") {
         // 消息撤回
         const channel = message.channel;
@@ -329,12 +333,14 @@ export default class BaseModule implements IModule {
             ConversationAction.update
           );
         }
+      } else if (cmdContent.cmd === "userAvatarUpdate") { // 用户头像更新
+         WKApp.shared.changeChannelAvatarTag(new Channel(param.uid, ChannelTypePerson));
+         WKApp.dataSource.notifyContactsChange();
       }
     });
 
     WKSDK.shared().chatManager.addMessageListener((message: Message) => {
       console.log("收到消息->", message);
-
       if (TypingManager.shared.hasTyping(message.channel)) {
         TypingManager.shared.removeTyping(message.channel);
       }
@@ -386,7 +392,6 @@ export default class BaseModule implements IModule {
     this.registerMessageContextMenus(); // 注册消息上下文菜单
 
     this.registerChatToolbars(); // 注册聊天工具栏
-    this.tipsAudio();
   }
 
   tipsAudio() {
@@ -429,7 +434,12 @@ export default class BaseModule implements IModule {
       // 不显示红点的消息不发通知
       return;
     }
-
+    if (description == undefined || description === "") {
+      return;
+    }
+    if (message.header.noPersist) {
+      return;
+    }
     if (window.Notification && Notification.permission !== "denied") {
       const notify = new Notification(
         channelInfo ? channelInfo.orgData.displayName : "通知",
@@ -501,7 +511,7 @@ export default class BaseModule implements IModule {
     WKApp.endpoints.registerChatToolbar("chattoolbar.image", (ctx) => {
       return (
         <ImageToolbar
-          icon={require("./assets/toolbars/func_file.svg").default}
+          icon={require("./assets/toolbars/func_screenshot.svg").default}
           conversationContext={ctx}
         ></ImageToolbar>
       );
@@ -513,48 +523,16 @@ export default class BaseModule implements IModule {
       const isDark = WKApp.config.themeMode === ThemeMode.dark;
       return {
         title: "发起群聊",
-        icon: require(`${
-          isDark
+        icon: require(`${isDark
             ? "./assets/popmenus_startchat_dark.png"
             : "./assets/popmenus_startchat.png"
-        }`),
+          }`),
         onClick: () => {
-          var selectItems: IndexTableItem[];
-          var finishButtonContext: FinishButtonContext;
-          WKApp.routeLeft.push(
-            <ContactsSelect
-              showFinishButton={true}
-              onFinishButtonContext={(context) => {
-                finishButtonContext = context;
-              }}
-              onSelect={(items) => {
-                selectItems = items;
-              }}
-              showHeader={true}
-              onBack={() => {
-                WKApp.routeLeft.pop();
-              }}
-              onFinished={() => {
-                if (selectItems && selectItems.length > 0) {
-                  finishButtonContext.loading(true);
-                  WKApp.dataSource.channelDataSource
-                    .createChannel(
-                      selectItems.map((item) => {
-                        return item.id;
-                      })
-                    )
-                    .then(() => {
-                      finishButtonContext.loading(false);
-                      WKApp.routeLeft.pop();
-                    })
-                    .catch((err) => {
-                      Toast.error(err.msg);
-                      finishButtonContext.loading(false);
-                    });
-                }
-              }}
-            ></ContactsSelect>
-          );
+          const channel: any = {
+            channelID: localStorage.uid,
+            channelType: 1,
+          };
+          WKApp.endpoints.organizationalLayer(channel);
         },
       };
     });
@@ -751,11 +729,9 @@ export default class BaseModule implements IModule {
         const relation = channelInfo?.orgData?.follow;
         const status = channelInfo?.orgData.status;
 
-        console.log("userInfoRegister---refresh.....");
         if (data.isSelf) {
           return;
         }
-        console.log("userInfoRegister---refresh2.....", channelInfo);
 
         const rows = new Array();
         if (relation === UserRelation.friend) {
@@ -849,7 +825,6 @@ export default class BaseModule implements IModule {
         //         title: "投诉",
         //     }
         // }))
-        console.log("userInfoRegister---refresh3.....", rows);
         return new Section({
           rows: rows,
         });
@@ -992,6 +967,7 @@ export default class BaseModule implements IModule {
             cell: Subscribers,
             properties: {
               context: context,
+              channel: channel,
               key: channel.getChannelKey(),
               onAdd: () => {
                 context.push(
@@ -1139,7 +1115,8 @@ export default class BaseModule implements IModule {
                 <img
                   style={{ width: "24px", height: "24px", borderRadius: "50%" }}
                   src={WKApp.shared.avatarChannel(channel)}
-                ></img>
+                  alt=""
+                />
               ),
               onClick: () => {
                 context.push(
@@ -1164,7 +1141,8 @@ export default class BaseModule implements IModule {
                 <img
                   style={{ width: "24px", height: "24px" }}
                   src={require("./assets/icon_qrcode.png")}
-                ></img>
+                  alt=""
+                />
               ),
               onClick: () => {
                 context.push(
@@ -1545,7 +1523,7 @@ export default class BaseModule implements IModule {
                       onFinish: async () => {
                         context.pop();
                       },
-                      onFinishContext: (context) => {},
+                      onFinishContext: (context) => { },
                     }
                   );
                 },
