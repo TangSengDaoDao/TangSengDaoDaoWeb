@@ -1,36 +1,78 @@
+# 唐僧叨叨PC端
 
+* WEB版本
+* Electron版本
+* Tauri版
 
-![](docs/pc11.png)
+## Web版本运行
 
-![](docs/pc22.png)
+1. 安装依赖
 
+```shell
+yarn install
+```
+2. 开发调试
 
-## 运行
+```shell
+yarn dev
+```
+3. 编译
 
-1. yarn install
+```shell
+yarn build
+```
+### 发布镜像
 
-2.  yarn dev 
+修改api地址  packages/tsdaodaoweb/src/index.tsx 修改 WKApp.apiClient.config.apiURL = "/api/v1/"
 
-
-## 发布镜像
-
-修改api地址  apps/web/src/index.tsx 修改 WKApp.apiClient.config.apiURL = "/api/v1/"
-
-
+```shell
 make deploy
+```
 
+## Electron版本运行
 
-## PC端运行
+1. 安装依赖
+```shell
+yarn install
+```
+
+2. 开发调试
+
+```shell
+yarn dev-ele
+```
+
+3. 编译
+
+```shell
+yarn build
+```
+
+4. Mac APP 打包
+
+```shell
+yarn build-ele:mac
+```
+
+5. Windows APP 打包
+
+```shell
+yarn build-ele:win
+```
+
+## Tauri版本运行
 
 tauri 环境安装 (https://tauri.app/v1/guides/getting-started/prerequisites)
 
-#### 调试
+1. 开发调试
 
+```shell
 yarn tauri dev
+```
 
-#### 打包
+2. 打包
 
-yarn tauri build  
+yarn tauri build
 （window打包的时候 要去掉package.json里的 build里的REACT_APP_VERSION=$npm_package_version 要不然执行yarn tauri build 会报错）
 (如果需要打包M1架构的包 需要安装 aarch64-apple-darwin（执行：rustup target add aarch64-apple-darwin））
 
@@ -43,13 +85,13 @@ yarn tauri build --target universal-apple-darwin (通用架构，生成可在 Ap
 
 icon生成
 
-```
+```shell
 tauri icon [ICON-PATH]
 ```
 
 准备一张1024x1024的icon 执行上面命令 即可生成各种尺寸的icon
 
-```
+```shell
 icon.icns = macOS
 icon.ico = MS Windows
 *.png = Linux
@@ -59,20 +101,22 @@ icon.ico = MS Windows
 
 添加依赖
 
- yarn workspace @tsdaodao/web add react-avatar-editor
+```shell
+yarn workspace @tsdaodao/web add react-avatar-editor
+```
 
 
 
  ## 使用Github Action 自动构建各端PC版本
 
   需要先全局安装 @tauri-apps/cli
-yarn global add  @tauri-apps/cli   
+yarn global add  @tauri-apps/cli
 
 tauri signer generate -w ~/.tauri/tsdaodao.key
 
 上面 的命令会自动生成一个公钥、私钥对。公钥可以公开分享，私钥必须严密保存。
 
-在Github Secrets中 配置 TAURI_PRIVATE_KEY 和 TAURI_KEY_PASSWORD 
+在Github Secrets中 配置 TAURI_PRIVATE_KEY 和 TAURI_KEY_PASSWORD
 
 
 (参考：https://www.banyudu.com/posts/tauri-version-release-and-update-guide)
