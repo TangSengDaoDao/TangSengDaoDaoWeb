@@ -11,6 +11,7 @@ import { ProviderListener } from "../../Service/Provider";
 import WKApp from "../../App";
 import RouteContext from "../../Service/Context";
 import { GroupRole } from "../../Service/Const";
+import { Convert } from "../../Service/Convert";
 
 export class UserInfoRouteData {
   uid!: string;
@@ -29,8 +30,6 @@ export class UserInfoVM extends ProviderListener {
   fromChannelInfo?: ChannelInfo;
   channelInfo?: ChannelInfo;
   vercode?: string;
-  short_no?: string;
-  channelInfoListener!: ChannelInfoListener;
   subscriberChangeListener?: SubscriberChangeListener;
 
   constructor(uid: string, fromChannel?: Channel, vercode?: string) {
@@ -63,28 +62,7 @@ export class UserInfoVM extends ProviderListener {
 
     this.reloadFromChannelInfo();
 
-    this.channelInfoListener = (channelInfo: ChannelInfo) => {
-      if (
-        channelInfo.channel.channelType === ChannelTypePerson &&
-        channelInfo.channel.channelID === this.uid
-      ) {
-        this.reloadChannelInfo();
-      }
-      if (this.fromChannel) {
-        if (channelInfo.channel.isEqual(this.fromChannel)) {
-          this.reloadFromChannelInfo();
-        }
-      }
-      this.notifyListener();
-    };
-    WKSDK.shared().channelManager.addListener(this.channelInfoListener);
-
-    const channel = new Channel(this.uid, ChannelTypePerson);
-    this.channelInfo = WKSDK.shared().channelManager.getChannelInfo(channel);
-    WKSDK.shared().channelManager.fetchChannelInfo(channel);
-    if (this.channelInfo) {
-      this.notifyListener();
-    }
+    this.reloadChannelInfo();
   }
 
   didUnMount(): void {
@@ -93,7 +71,6 @@ export class UserInfoVM extends ProviderListener {
         this.subscriberChangeListener
       );
     }
-    WKSDK.shared().channelManager.removeListener(this.channelInfoListener);
   }
 
   reloadSubscribers() {
@@ -139,21 +116,10 @@ export class UserInfoVM extends ProviderListener {
   }
 
   shouldShowShort() {
-    if(!this.short_no){
-        return false
+    if (this.channelInfo?.orgData?.short_no) {
+      return true
     }
-
-    if (this.short_no === "") {
-      return false;
-    } else {
-      if (!this.fromChannel) {
-        return true;
-      }
-      if (this.myIsManagerOrCreator()) {
-        return true;
-      }
-      return true;
-    }
+    return false
   }
 
   relation(): number {
@@ -223,15 +189,16 @@ export class UserInfoVM extends ProviderListener {
   }
 
   async reloadChannelInfo() {
-    this.channelInfo = WKSDK.shared().channelManager.getChannelInfo(
-      new Channel(this.uid, ChannelTypePerson)
-    );
-    if (this.uid && this.channelInfo) {
-      const res = await WKApp.apiClient.get(`users/${this.uid}`, {
-        param: { group_no: this.channelInfo?.channel?.channelID },
-      });
-      this.short_no = res.short_no;
+    const res = await WKApp.apiClient.get(`users/${this.uid}`, {
+      param: { group_no: this.fromChannel?.channelID || '' },
+    });
+    this.channelInfo = Convert.userToChannelInfo(res);
+    if (!this.vercode || this.vercode == "") {
+      if (res.vercode && res.vercode !== "") {
+        this.vercode = res.vercode
+      }
     }
+
     this.notifyListener();
   }
   reloadFromChannelInfo() {

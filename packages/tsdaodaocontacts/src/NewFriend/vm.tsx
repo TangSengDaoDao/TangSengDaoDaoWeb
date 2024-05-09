@@ -33,7 +33,8 @@ export class NewFriendVM extends ProviderListener {
       .friendSure(apply.token || "")
       .then(() => {
         apply.status = FriendApplyState.accepted;
-        WKApp.shared.updateFriendApply(apply);
+        // WKApp.shared.updateFriendApply(apply);
+        this.delFriendApply(apply);
         this.sureLoading = false;
         this.notifyListener();
       })
@@ -70,6 +71,9 @@ export class NewFriendVM extends ProviderListener {
   }
 
   async clearFriendApply(): Promise<void> {
+    if (WKApp.loginInfo.isLogined()) {
+      WKApp.loginInfo.setStorageItem(`${WKApp.loginInfo.uid}-friend-applys-unread-count`, '0')
+    }
     await WKApp.apiClient.delete(`/user/reddot/friendApply`);
   }
 

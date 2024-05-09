@@ -11760,6 +11760,11 @@ send@0.18.0:
     range-parser "~1.2.1"
     statuses "2.0.1"
 
+sensitive-word-tool@^1.1.9:
+  version "1.1.9"
+  resolved "https://registry.npmjs.org/sensitive-word-tool/-/sensitive-word-tool-1.1.9.tgz#e4dd5f077e4ca1bf3cb6ff14597071ac1e1f1e80"
+  integrity sha512-wcte3zwF6Fd/xoPtbqS6FgTZGe/hoIPJ8olDcvf1C2coix2va7kq7R5Ciy+mwvMjcROGyRvB6QGzjdfj1IZdzw==
+
 serialize-error@^7.0.1:
   version "7.0.1"
   resolved "https://registry.npmmirror.com/serialize-error/-/serialize-error-7.0.1.tgz#f1360b0447f61ffb483ec4157c737fab7d778e18"

@@ -14,7 +14,7 @@ import RouteContext, { FinishButtonContext } from "../../Service/Context";
 import { Image } from '@douyinfe/semi-ui';
 
 
-export interface UserInfoProps extends HTMLProps<any>{
+export interface UserInfoProps extends HTMLProps<any> {
     uid: string
     fromChannel?: Channel // 从那个频道进来的
     sections?: Section[]
@@ -25,6 +25,66 @@ export interface UserInfoProps extends HTMLProps<any>{
 export default class UserInfo extends Component<UserInfoProps> {
 
 
+    getBottomPanel(vm: UserInfoVM, context: RouteContext<any>) {
+        if (vm.isSelf()) {
+            return undefined
+        }
+
+        var content = <></>
+        if (vm.relation() === UserRelation.friend) {
+            content = <Button theme='solid' type="primary" onClick={() => {
+                WKApp.shared.baseContext.hideUserInfo()
+                WKApp.endpoints.showConversation(new Channel(vm.uid, ChannelTypePerson))
+            }}>发送消息</Button>
+        } else {
+            if (!vm.vercode || vm.vercode == "") { // 没有验证码，不显示添加好友按钮
+                return undefined
+            }
+            content = <Button onClick={() => {
+                let msg = "我是"
+                if (vm.fromChannelInfo) {
+                    msg += `群聊"${vm.fromChannelInfo.title}"的${WKApp.loginInfo.name}`
+                } else {
+                    msg += `${WKApp.loginInfo.name}`
+                }
+                var finishButtonContext: FinishButtonContext
+                context.push(<FriendApplyUI placeholder={msg} onMessage={(m) => {
+                    msg = m
+                    if (!m || m === "") {
+                        finishButtonContext.disable(true)
+                    } else {
+                        finishButtonContext.disable(false)
+                    }
+                }}></FriendApplyUI>, {
+                    title: "申请添加朋友",
+                    showFinishButton: true,
+                    onFinishContext: (ctx) => {
+                        finishButtonContext = ctx
+                        finishButtonContext.disable(false)
+                    },
+                    onFinish: async () => {
+                        finishButtonContext.loading(true)
+                        await WKApp.dataSource.commonDataSource.friendApply({
+                            uid: vm.uid,
+                            remark: msg,
+                            vercode: vm.vercode || ""
+                        }).then(() => {
+                            WKApp.shared.baseContext.hideUserInfo()
+                        }).catch((err) => {
+                            Toast.error(err.msg)
+                        })
+                        finishButtonContext.loading(false)
+                    }
+                })
+            }} >添加好友</Button>
+        }
+
+        return <div className="wk-userInfo-footer">
+            <div className="wk-userinfo-footer-sendbutton">
+                {content}
+            </div>
+        </div>
+    }
 
     render() {
         const { uid, onClose, fromChannel, vercode } = this.props
@@ -66,7 +126,7 @@ export default class UserInfo extends Component<UserInfoProps> {
                                                     }
                                                     {
                                                         vm.shouldShowShort() ? <li>
-                                                            {WKApp.config.appName}号： {vm.channelInfo?.orgData.short_no}
+                                                            {WKApp.config.appName}号： {vm.channelInfo?.orgData.short_no || ''}
                                                         </li> : undefined
                                                     }
 
@@ -86,54 +146,7 @@ export default class UserInfo extends Component<UserInfoProps> {
                         <br></br>
                     </div>
                     {
-                        vm.isSelf() ? undefined : <div className="wk-userInfo-footer">
-                            <div className="wk-userinfo-footer-sendbutton">
-                                {
-                                    vm.relation() === UserRelation.friend ? <Button theme='solid' type="primary" onClick={() => {
-                                        WKApp.shared.baseContext.hideUserInfo()
-                                        WKApp.endpoints.showConversation(new Channel(vm.uid, ChannelTypePerson))
-                                    }}>发送消息</Button> : <Button onClick={() => {
-                                        let msg = "我是"
-                                        if (vm.fromChannelInfo) {
-                                            msg += `群聊"${vm.fromChannelInfo.title}"的${WKApp.loginInfo.name}`
-                                        } else {
-                                            msg += `${WKApp.loginInfo.name}`
-                                        }
-                                        var finishButtonContext: FinishButtonContext
-                                        context.push(<FriendApplyUI placeholder={msg} onMessage={(m) => {
-                                            msg = m
-                                            if (!m || m === "") {
-                                                finishButtonContext.disable(true)
-                                            } else {
-                                                finishButtonContext.disable(false)
-                                            }
-                                        }}></FriendApplyUI>, {
-                                            title: "申请添加朋友",
-                                            showFinishButton: true,
-                                            onFinishContext: (ctx) => {
-                                                finishButtonContext = ctx
-                                                finishButtonContext.disable(false)
-                                            },
-                                            onFinish: async () => {
-                                                finishButtonContext.loading(true)
-                                                await WKApp.dataSource.commonDataSource.friendApply({
-                                                    uid: vm.uid,
-                                                    remark: msg,
-                                                    vercode: vm.vercode || ""
-                                                }).then(() => {
-                                                    console.log("WKApp.shared.baseContext-->",WKApp.shared.baseContext)
-                                                    WKApp.shared.baseContext.hideUserInfo()
-                                                }).catch((err) => {
-                                                    Toast.error(err.msg)
-                                                })
-                                                finishButtonContext.loading(false)
-                                            }
-                                        })
-                                    }} >添加好友</Button>
-                                }
-
-                            </div>
-                        </div>
+                        this.getBottomPanel(vm, context)
                     }
 
                 </div>

@@ -87,10 +87,10 @@ export class ChannelSettingVM extends ProviderListener {
             this.subscribers = WKSDK.shared().channelManager.getSubscribes(this.channel)
             if(this.subscribers && this.subscribers.length>0) {
                 for (const subscriber of this.subscribers) {
+                    subscriber.channel = this.channel
                     if(subscriber.uid === WKApp.loginInfo.uid) {
                         this.subscriberOfMe = subscriber
                         this.routeData.subscriberOfMe = this.subscriberOfMe
-                        break
                     }
                 }
             }

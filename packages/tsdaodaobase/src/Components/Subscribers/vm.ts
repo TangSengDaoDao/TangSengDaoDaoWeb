@@ -24,7 +24,7 @@ export class SubscribersVM extends ProviderListener {
     }
 
     get subscribersTop():Subscriber[] {
-        
+
         let showMemberNum = this.shouldShowMemberNum()
 
         const subscribers = this.routeData.subscribers

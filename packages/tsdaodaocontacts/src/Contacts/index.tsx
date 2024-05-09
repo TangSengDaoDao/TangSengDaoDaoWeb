@@ -6,9 +6,10 @@ import { toSimplized } from "@tsdaodao/base";
 import { getPinyin } from "@tsdaodao/base";
 import classnames from "classnames";
 import { Toast } from "@douyinfe/semi-ui";
-import { Channel, ChannelTypePerson, WKSDK } from "wukongimjssdk";
+import { Channel, ChannelTypePerson, WKSDK,ChannelInfoListener,ChannelInfo } from "wukongimjssdk";
 import { ContactsListManager } from "../Service/ContactsListManager";
 import { Card } from "@tsdaodao/base/src/Messages/Card";
+import WKAvatar from "@tsdaodao/base/src/Components/WKAvatar";
 
 
 
@@ -22,6 +23,7 @@ export class ContactsState {
 
 export default class ContactsList extends Component<any, ContactsState> {
     contactsChangeListener!: ContactsChangeListener
+    channelInfoListener!: ChannelInfoListener
     contextMenusContext!: ContextMenusContext
     baseContext!: WKBaseContext
     constructor(props: any) {
@@ -38,9 +40,30 @@ export default class ContactsList extends Component<any, ContactsState> {
             this.rebuildIndex()
         }
 
+        this.channelInfoListener = (channelInfo:ChannelInfo)=>{
+            if(channelInfo.channel.channelType !== ChannelTypePerson) {
+                return
+            }
+            //是否包含
+            let exist = false
+            WKApp.dataSource.contactsList.forEach((v)=>{
+                if(v.uid === channelInfo.channel.channelID) {
+                    exist = true
+                    v.name = channelInfo.title
+                    v.remark = channelInfo?.orgData.remark 
+                    return
+                }
+            })
+            if(exist) {
+                this.rebuildIndex()
+            }
+        }
+
         WKApp.dataSource.addContactsChangeListener(this.contactsChangeListener)
 
         this.rebuildIndex()
+
+        WKSDK.shared().channelManager.addListener(this.channelInfoListener)
 
         ContactsListManager.shared.setRefreshList = () => {
             this.setState({})
@@ -50,6 +73,7 @@ export default class ContactsList extends Component<any, ContactsState> {
     componentWillUnmount() {
         ContactsListManager.shared.setRefreshList = undefined
         WKApp.dataSource.removeContactsChangeListener(this.contactsChangeListener)
+        WKSDK.shared().channelManager.removeListener(this.channelInfoListener)
     }
 
 
@@ -81,7 +105,7 @@ export default class ContactsList extends Component<any, ContactsState> {
         })
     }
 
-  
+
     buildIndex(contacts: Contacts[]) {
         const indexItemMap = new Map<string, Contacts[]>()
         let indexList = []
@@ -148,7 +172,7 @@ export default class ContactsList extends Component<any, ContactsState> {
                                 {i === 0 ? indexName : ""}
                             </div>
                             <div className="wk-contacts-section-item-avatar">
-                                <img src={item.avatar}></img>
+                                <WKAvatar channel={new Channel(item.uid, ChannelTypePerson)}></WKAvatar>
                             </div>
                             <div className="wk-contacts-section-item-name">
                                 {name}
@@ -212,7 +236,6 @@ export default class ContactsList extends Component<any, ContactsState> {
                                     WKSDK.shared().chatManager.send(card, channel)
                                 }
                                 Toast.success("分享成功！")
-                                
                             }
                         }, "分享名片")
                     }

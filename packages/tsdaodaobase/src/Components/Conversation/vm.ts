@@ -1,4 +1,4 @@
-import { Channel, ChannelTypeGroup, ChannelTypePerson, ConversationAction, WKSDK, Message, MessageContent, MessageStatus, Subscriber, Conversation, MessageExtra,CMDContent, PullMode } from "wukongimjssdk";
+import { Channel, ChannelTypeGroup, ChannelTypePerson, ConversationAction, WKSDK, Message, MessageContent, MessageStatus, Subscriber, Conversation, MessageExtra, CMDContent, PullMode, MessageContentType } from "wukongimjssdk";
 import WKApp from "../../App";
 import { SyncMessageOptions } from "../../Service/DataSource/DataProvider";
 import { MessageWrap } from "../../Service/Model";
@@ -12,6 +12,7 @@ import { MessageListener, MessageStatusListener } from "wukongimjssdk";
 import { SendackPacket, Setting } from "wukongimjssdk";
 import MergeforwardContent from "../../Messages/Mergeforward";
 import { TypingListener, TypingManager } from "../../Service/TypingManager";
+import { ProhibitwordsService } from "../../Service/ProhibitwordsService";
 
 export default class ConversationVM extends ProviderListener {
 
@@ -247,10 +248,10 @@ export default class ConversationVM extends ProviderListener {
             if (!message.channel.isEqual(this.channel)) {
                 return
             }
-            if(message.contentType == MessageContentTypeConst.rtcData) {
+            if (message.contentType == MessageContentTypeConst.rtcData) {
                 return
             }
-            if(message.header.noPersist) { // 不存储的消息不显示
+            if (message.header.noPersist) { // 不存储的消息不显示
                 return
             }
             if (!message.send && message.header.reddot) {
@@ -276,7 +277,7 @@ export default class ConversationVM extends ProviderListener {
             } else if (cmdContent.cmd === 'syncMessageExtra') { // 同步消息扩展
                 console.log("messageExtra---->", message.channel)
                 if (message.channel.isEqual(this.channel)) {
-                    WKSDK.shared().chatManager.syncMessageExtras(this.channel, this.findMaxExtraVersion()).then((messageExtras)=>{
+                    WKSDK.shared().chatManager.syncMessageExtras(this.channel, this.findMaxExtraVersion()).then((messageExtras) => {
                         this.updateMessageByMessageExtras(messageExtras)
                     })
                 }
@@ -353,8 +354,8 @@ export default class ConversationVM extends ProviderListener {
             WKSDK.shared().conversationManager.openConversation = conversation
         }
 
-        this.requestMessagesOfFirstPage(undefined,()=>{
-            if(this.onFirstMessagesLoaded) {
+        this.requestMessagesOfFirstPage(undefined, () => {
+            if (this.onFirstMessagesLoaded) {
                 this.onFirstMessagesLoaded()
             }
         })
@@ -572,7 +573,7 @@ export default class ConversationVM extends ProviderListener {
         let extraVersion = 0
         for (let i = this.messages.length - 1; i >= 0; i--) {
             const message = this.messages[i]
-            if(message.remoteExtra.extraVersion>extraVersion) {
+            if (message.remoteExtra.extraVersion > extraVersion) {
                 extraVersion = message.remoteExtra.extraVersion
             }
         }
@@ -641,7 +642,6 @@ export default class ConversationVM extends ProviderListener {
                 this.unreadCount = this.lastMessage.messageSeq - this.browseToMessageSeq
             }
         }
-        console.log("oldUnreadCount--->", oldUnreadCount, this.unreadCount)
         if (oldUnreadCount != this.unreadCount) {
             const conversation = WKSDK.shared().conversationManager.findConversation(this.channel)
             if (conversation) {
@@ -751,9 +751,9 @@ export default class ConversationVM extends ProviderListener {
         const remoteMessages = await WKApp.conversationProvider.syncMessages(this.channel, opts)
 
         const newMessages = new Array<Message>()
-        if(remoteMessages && remoteMessages.length>0) {
+        if (remoteMessages && remoteMessages.length > 0) {
             remoteMessages.forEach(msg => {
-                 if (!msg.isDeleted) {
+                if (!msg.isDeleted) {
                     newMessages.push(msg)
                 }
             });
@@ -763,14 +763,14 @@ export default class ConversationVM extends ProviderListener {
         allMessages = this.sortMessages(allMessages)
 
         if (remoteMessages && remoteMessages.length > 0) {
-            if(lastRemoteMessageSeq <= 0 && remoteMessages.length >= opts.limit) {
+            if (lastRemoteMessageSeq <= 0 && remoteMessages.length >= opts.limit) {
                 this.pullupHasMore = true
-            }else if (lastRemoteMessageSeq > remoteMessages[remoteMessages.length - 1].messageSeq) {
+            } else if (lastRemoteMessageSeq > remoteMessages[remoteMessages.length - 1].messageSeq) {
                 this.pullupHasMore = true
             } else {
                 this.pullupHasMore = false
             }
-        }else {
+        } else {
             this.pullupHasMore = false;
         }
         let initMessage: MessageWrap | undefined
@@ -816,7 +816,16 @@ export default class ConversationVM extends ProviderListener {
         let newMessages = messages
         this.distinctMessages(newMessages)
         newMessages = this.insertTimeOrHistorySplit(newMessages)
+        for (let i = 0; i < newMessages.length; i++) {
+            const message = newMessages[i]
+            if (message.contentType === MessageContentType.text) {
+                message.content.text = ProhibitwordsService.shared.filter(message.content.text)
+            }
+        }
         this.messages = this.genMessageLinkedData(newMessages)
+
+
+
         this.notifyListener(() => {
             if (callback) {
                 callback()
@@ -831,7 +840,7 @@ export default class ConversationVM extends ProviderListener {
         if (minMessage?.messageSeq === 1) { // 如果最小messageSeq=1 说明下拉没消息了直接return
             return
         }
-        if (minMessage == null || minMessage.messageSeq <= 0 ) { // 没有消息直接return
+        if (minMessage == null || minMessage.messageSeq <= 0) { // 没有消息直接return
             return
         }
         console.log("pulldownMessages--->")
@@ -844,9 +853,9 @@ export default class ConversationVM extends ProviderListener {
 
         let remoteMessages = await WKApp.conversationProvider.syncMessages(this.channel, opts)
         const newMessages = new Array<Message>()
-        if(remoteMessages && remoteMessages.length>0) {
+        if (remoteMessages && remoteMessages.length > 0) {
             remoteMessages.forEach(msg => {
-                 if (!msg.isDeleted) {
+                if (!msg.isDeleted) {
                     newMessages.push(msg)
                 }
             });
@@ -865,7 +874,7 @@ export default class ConversationVM extends ProviderListener {
     async pullupMessages() {
         this.loading = true
         const maxMessage = this.getMessageMax()
-        if (maxMessage == null || maxMessage.messageSeq <= 0 ) { // 没有消息直接return
+        if (maxMessage == null || maxMessage.messageSeq <= 0) { // 没有消息直接return
             console.log("没有maxMessage")
             return
         }
@@ -878,9 +887,9 @@ export default class ConversationVM extends ProviderListener {
 
         let remoteMessages = await WKApp.conversationProvider.syncMessages(this.channel, opts)
         const newMessages = new Array<Message>()
-        if(remoteMessages && remoteMessages.length>0) {
+        if (remoteMessages && remoteMessages.length > 0) {
             remoteMessages.forEach(msg => {
-                 if (!msg.isDeleted) {
+                if (!msg.isDeleted) {
                     newMessages.push(msg)
                 }
             });
@@ -888,7 +897,7 @@ export default class ConversationVM extends ProviderListener {
         if (remoteMessages.length < opts.limit) {
             this.pullupHasMore = false
             console.log("没有更多消息了")
-        }else {
+        } else {
             this.pullupHasMore = true
             console.log("还有更多消息")
         }

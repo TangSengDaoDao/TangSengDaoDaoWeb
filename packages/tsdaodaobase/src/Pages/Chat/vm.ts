@@ -1,4 +1,4 @@
-import WKSDK from "wukongimjssdk";
+import WKSDK, { MessageContentType } from "wukongimjssdk";
 import { ChannelInfoListener } from "wukongimjssdk";
 import { ConnectStatus, ConnectStatusListener } from "wukongimjssdk";
 import { ConversationAction, ConversationListener } from "wukongimjssdk";
@@ -7,6 +7,7 @@ import WKApp, { MessageDeleteListener } from "../../App";
 import { ConversationWrap } from "../../Service/Model";
 import { ProviderListener } from "../../Service/Provider";
 import { animateScroll, scroller } from 'react-scroll';
+import { ProhibitwordsService } from "../../Service/ProhibitwordsService";
 
 export class ChatVM extends ProviderListener {
     conversations: ConversationWrap[] = new Array()
@@ -85,6 +86,9 @@ export class ChatVM extends ProviderListener {
             }
             if (action === ConversationAction.add) {
                 console.log("ConversationAction-----add")
+                if(conversation.lastMessage?.content && conversation.lastMessage?.contentType === MessageContentType.text) {
+                    conversation.lastMessage.content.text = ProhibitwordsService.shared.filter(conversation.lastMessage?.content.text)
+                }
                 this.conversations = [new ConversationWrap(conversation), ...this.conversations]
                 this.notifyListener()
             } else if (action === ConversationAction.update) {
@@ -92,6 +96,9 @@ export class ChatVM extends ProviderListener {
                 const existConversation = this.findConversation(conversation.channel)
                 if (existConversation) {
                     existConversation.conversation = conversation
+                    if(existConversation.lastMessage?.content && existConversation.lastMessage?.contentType === MessageContentType.text) {
+                        existConversation.lastMessage.content.text = ProhibitwordsService.shared.filter(existConversation.lastMessage?.content.text)
+                    }
                 }
 
                 this.sortConversations()
@@ -232,6 +239,9 @@ export class ChatVM extends ProviderListener {
         const conversations = await WKSDK.shared().conversationManager.sync({})
         if (conversations && conversations.length > 0) {
             for (const conversation of conversations) {
+                if(conversation.lastMessage?.content && conversation.lastMessage?.contentType == MessageContentType.text) {
+                    conversation.lastMessage.content.text = ProhibitwordsService.shared.filter(conversation.lastMessage.content.text)
+                }
                 conversationWraps.push(new ConversationWrap(conversation))
             }
         }

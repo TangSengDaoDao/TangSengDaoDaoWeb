@@ -76,15 +76,17 @@ export class Subscribers extends Component<SubscribersProps> {
                       ></img>
                     </div>
                   ) : undefined} */}
-                  {WKApp.endpoints.organizationalTool(
-                    channel,
-                    <div className="wk-subscribers-item">
-                      <img
-                        src={require("./assets/icon_add_more_gray.png")}
-                        alt=""
-                      />
-                    </div>
-                  )}
+                  {vm.showAdd()
+                    ? WKApp.endpoints.organizationalTool(
+                      channel,
+                      <div className="wk-subscribers-item">
+                        <img
+                          src={require("./assets/icon_add_more_gray.png")}
+                          alt=""
+                        />
+                      </div>
+                    )
+                    : undefined}
                   {vm.showRemove() ? (
                     <div
                       className="wk-subscribers-item"
@@ -108,12 +110,20 @@ export class Subscribers extends Component<SubscribersProps> {
                       context.push(
                         <IndexTable
                           items={vm.subscribers.map((s) => {
+                            const vercode = s.orgData?.vercode;
                             return new IndexTableItem(
                               s.uid,
                               s.remark || s.name,
-                              WKApp.shared.avatarUser(s.uid)
+                              WKApp.shared.avatarUser(s.uid),
                             );
                           })}
+                          onSelect={(item: IndexTableItem[]) => {
+                            const optItem = item[0];
+                            WKApp.shared.baseContext.showUserInfo(
+                              optItem.id,
+                              channel,
+                            );
+                          }}
                         ></IndexTable>,
                         new RouteContextConfig({
                           title: "成员列表",

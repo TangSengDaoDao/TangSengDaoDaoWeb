@@ -6,11 +6,13 @@ import {
   ThemeMode,
 } from "@tsdaodao/base";
 import React from "react";
+import ReactDOM from "react-dom";
 import Blacklist from "./Blacklist";
 import { FriendAdd } from "./FriendAdd";
 import GroupSave from "./GroupSave";
 import { NewFriend } from "./NewFriend";
 import { ContactsListManager } from "./Service/ContactsListManager";
+import { OrganizationalGroupNew } from "./Organizational/GroupNew/index";
 
 export default class ContactsModule implements IModule {
   id(): string {
@@ -30,18 +32,20 @@ export default class ContactsModule implements IModule {
     );
 
     // 获取好友未申请添加数量
-    let unreadCount = 0;
-    if (WKApp.loginInfo.isLogined()) {
-      WKApp.apiClient.get(`/user/reddot/friendApply`).then((res) => {
-        unreadCount = res.count;
-        WKApp.menus.refresh();
-      });
-    }
+    // let unreadCount = 0;
+    // if(WKApp.loginInfo.isLogined()){
+    //   WKApp.apiClient.get(`/user/reddot/friendApply`).then(res=>{
+    //     unreadCount = res.count;
+    //     console.log('====', unreadCount)
+    //     WKApp.mittBus.emit('friend-applys-unread-count', unreadCount)
+    //     WKApp.menus.refresh();
+    //   })
+    // }
 
     WKApp.endpoints.registerContactsHeader("friends.new", (param: any) => {
       return (
         <IconListItem
-          badge={unreadCount}
+          badge={ WKApp.shared.getFriendApplysUnreadCount() }
           title="新朋友"
           icon={require("./assets/friend_new.png")}
           backgroudColor={"var(--wk-color-secondary)"}
@@ -101,5 +105,43 @@ export default class ContactsModule implements IModule {
         },
       };
     });
+    // this.registerOrganizational();
+
+    WKApp.endpoints.registerOrganizationalTool(
+      "contacts.organizational.group.add",
+      (param) => {
+        const channel = param.channel as any;
+        return (
+          <OrganizationalGroupNew channel={channel} render={param.render} />
+        );
+      }
+    );
+
+    WKApp.endpoints.registerOrganizationalLayer(
+      "contacts.organizational.layer",
+      (param) => {
+        const channel = param.channel as any;
+        const div = document.createElement("div");
+        const ref: any = React.createRef();
+        document.body.appendChild(div);
+
+        const remove = () => {
+          if (!ref.current) return;
+          ReactDOM.unmountComponentAtNode(div);
+          document.body.removeChild(div);
+        };
+
+        ReactDOM.render(
+          <OrganizationalGroupNew
+            ref={ref}
+            channel={channel}
+            remove={remove}
+          />,
+          div
+        );
+
+        ref.current.onShowModal();
+      }
+    );
   }
 }

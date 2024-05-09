@@ -69,8 +69,6 @@ import { DefaultEmojiService } from "./Service/EmojiService";
 import IconClick from "./Components/IconClick";
 import EmojiToolbar from "./Components/EmojiToolbar";
 import MergeforwardContent, { MergeforwardCell } from "./Messages/Mergeforward";
-import ChannelManagerList from "./Components/ChannelManagerList";
-import ChannelBlacklist from "./Components/ChannelBlacklist";
 import { UserInfoRouteData } from "./Components/UserInfo/vm";
 import { IconAlertCircle } from "@douyinfe/semi-icons";
 import { TypingManager } from "./Service/TypingManager";
@@ -78,6 +76,7 @@ import APIClient from "./Service/APIClient";
 import { ChannelAvatar } from "./Components/ChannelAvatar";
 import { ScreenshotCell, ScreenshotContent } from "./Messages/Screenshot";
 import ImageToolbar from "./Components/ImageToolbar";
+import { ProhibitwordsService } from "./Service/ProhibitwordsService";
 
 export default class BaseModule implements IModule {
   messageTone?: Howl;
@@ -86,6 +85,8 @@ export default class BaseModule implements IModule {
     return "base";
   }
   init(): void {
+
+
     APIClient.shared.logoutCallback = () => {
       WKApp.shared.logout();
     };
@@ -314,7 +315,6 @@ export default class BaseModule implements IModule {
       } else if (cmdContent.cmd === "syncReminders") {
         // 同步提醒项
         WKSDK.shared().reminderManager.sync();
-        this.tipsAudio();
       } else if (cmdContent.cmd === "messageRevoke") {
         // 消息撤回
         const channel = message.channel;
@@ -334,8 +334,8 @@ export default class BaseModule implements IModule {
           );
         }
       } else if (cmdContent.cmd === "userAvatarUpdate") { // 用户头像更新
-         WKApp.shared.changeChannelAvatarTag(new Channel(param.uid, ChannelTypePerson));
-         WKApp.dataSource.notifyContactsChange();
+        WKApp.shared.changeChannelAvatarTag(new Channel(param.uid, ChannelTypePerson));
+        WKApp.dataSource.notifyContactsChange();
       }
     });
 
@@ -388,7 +388,6 @@ export default class BaseModule implements IModule {
     this.registerUserInfo(); // 注册用户资料功能
 
     this.registerChannelSettings(); // 注册频道设置功能
-    this.registerChannelManages(); // 注册频道管理功能
     this.registerMessageContextMenus(); // 注册消息上下文菜单
 
     this.registerChatToolbars(); // 注册聊天工具栏
@@ -511,7 +510,7 @@ export default class BaseModule implements IModule {
     WKApp.endpoints.registerChatToolbar("chattoolbar.image", (ctx) => {
       return (
         <ImageToolbar
-          icon={require("./assets/toolbars/func_screenshot.svg").default}
+          icon={require("./assets/toolbars/func_upload_image.svg").default}
           conversationContext={ctx}
         ></ImageToolbar>
       );
@@ -524,8 +523,8 @@ export default class BaseModule implements IModule {
       return {
         title: "发起群聊",
         icon: require(`${isDark
-            ? "./assets/popmenus_startchat_dark.png"
-            : "./assets/popmenus_startchat.png"
+          ? "./assets/popmenus_startchat_dark.png"
+          : "./assets/popmenus_startchat.png"
           }`),
         onClick: () => {
           const channel: any = {
@@ -1036,7 +1035,7 @@ export default class BaseModule implements IModule {
                         return new IndexTableItem(
                           item.uid,
                           item.name,
-                          item.avatar
+                          item.avatar,
                         );
                       })}
                   ></UserSelect>,
@@ -1427,223 +1426,6 @@ export default class BaseModule implements IModule {
         });
       },
       90000
-    );
-  }
-
-  registerChannelManages() {
-    WKApp.shared.channelManageRegister(
-      "channel.setting.manage.invite",
-      (context) => {
-        const data = context.routeData() as ChannelSettingRouteData;
-        const channel = data.channel;
-        const channelInfo = data.channelInfo;
-        return new Section({
-          subtitle:
-            "启用后，群成员需要群主或管理员确认才能邀请朋友进群。扫描二维码进群将同时停用。",
-          rows: [
-            new Row({
-              cell: ListItemSwitch,
-              properties: {
-                title: "群聊邀请确认",
-                checked: channelInfo?.orgData?.invite === 1,
-                onCheck: (v: boolean, ctx: ListItemSwitchContext) => {
-                  ctx.loading = true;
-                  ChannelSettingManager.shared
-                    .invite(v, channel)
-                    .then(() => {
-                      ctx.loading = false;
-                      data.refresh();
-                    })
-                    .catch((err) => {
-                      ctx.loading = false;
-                    });
-                },
-              },
-            }),
-          ],
-        });
-      }
-    );
-
-    WKApp.shared.channelManageRegister(
-      "channel.setting.manage.transfer",
-      (context) => {
-        const data = context.routeData() as ChannelSettingRouteData;
-        const channel = data.channel;
-        const subscriberOfMe = data.subscriberOfMe;
-        if (!subscriberOfMe || subscriberOfMe.role !== GroupRole.owner) {
-          return;
-        }
-        return new Section({
-          rows: [
-            new Row({
-              cell: ListItem,
-              properties: {
-                title: "群主管理权转让",
-                onClick: () => {
-                  context.push(
-                    <UserSelect
-                      cantMulit={true}
-                      onSelect={(items) => {
-                        const item = items[0];
-                        WKApp.shared.baseContext.showAlert({
-                          content: "你将自动放弃群主身份",
-                          onOk: () => {
-                            WKApp.dataSource.channelDataSource
-                              .channelTransferOwner(channel, item.id)
-                              .then(() => {
-                                context.popToRoot();
-                              })
-                              .catch((err) => {
-                                Toast.error(err.msg);
-                              });
-                          },
-                        });
-                      }}
-                      users={data.subscribers
-                        .filter(
-                          (subscriber) =>
-                            !(
-                              subscriber.uid === WKApp.loginInfo.uid ||
-                              subscriber.uid === WKApp.config.fileHelperUID ||
-                              subscriber.uid === WKApp.config.systemUID
-                            )
-                        )
-                        .map((item) => {
-                          return new IndexTableItem(
-                            item.uid,
-                            item.name,
-                            item.avatar
-                          );
-                        })}
-                    ></UserSelect>,
-                    {
-                      title: "选择新的群主",
-                      showFinishButton: false,
-                      onFinish: async () => {
-                        context.pop();
-                      },
-                      onFinishContext: (context) => { },
-                    }
-                  );
-                },
-              },
-            }),
-          ],
-        });
-      }
-    );
-
-    WKApp.shared.channelManageRegister(
-      "channel.setting.manage.mute",
-      (context) => {
-        const data = context.routeData() as ChannelSettingRouteData;
-        const channel = data.channel;
-        const channelInfo = data.channelInfo;
-        return new Section({
-          title: "成员设置",
-          subtitle: "全员禁言启用后，只允许群主和管理员发言。",
-          rows: [
-            new Row({
-              cell: ListItemSwitch,
-              properties: {
-                title: "全员禁言",
-                checked: channelInfo?.orgData?.forbidden === 1,
-                onCheck: (v: boolean, ctx: ListItemSwitchContext) => {
-                  ctx.loading = true;
-                  ChannelSettingManager.shared
-                    .forbidden(v, channel)
-                    .then(() => {
-                      ctx.loading = false;
-                      data.refresh();
-                    })
-                    .catch((err) => {
-                      ctx.loading = false;
-                    });
-                },
-              },
-            }),
-          ],
-        });
-      }
-    );
-
-    WKApp.shared.channelManageRegister(
-      "channel.setting.manage.prohibitAddFriend",
-      (context) => {
-        const data = context.routeData() as ChannelSettingRouteData;
-        const channel = data.channel;
-        const channelInfo = data.channelInfo;
-        return new Section({
-          rows: [
-            new Row({
-              cell: ListItemSwitch,
-              properties: {
-                title: "禁止群成员互加好友",
-                checked: channelInfo?.orgData?.forbidden_add_friend === 1,
-                onCheck: (v: boolean, ctx: ListItemSwitchContext) => {
-                  ctx.loading = true;
-                  ChannelSettingManager.shared
-                    .forbiddenAddFriend(v, channel)
-                    .then(() => {
-                      ctx.loading = false;
-                      data.refresh();
-                    })
-                    .catch((err) => {
-                      ctx.loading = false;
-                    });
-                },
-              },
-            }),
-          ],
-        });
-      }
-    );
-    WKApp.shared.channelManageRegister(
-      "channel.setting.manage.blacklist",
-      (context) => {
-        return new Section({
-          rows: [
-            new Row({
-              cell: ListItem,
-              properties: {
-                title: "群黑名单",
-                onClick: () => {
-                  context.push(
-                    <ChannelBlacklist
-                      routeContext={context}
-                    ></ChannelBlacklist>,
-                    {
-                      title: "群黑名单",
-                    }
-                  );
-                },
-              },
-            }),
-          ],
-        });
-      }
-    );
-    WKApp.shared.channelManageRegister(
-      "channel.setting.manage.managerlist",
-      (context) => {
-        const data = context.routeData() as ChannelSettingRouteData;
-        const subscriberOfMe = data.subscriberOfMe;
-        if (subscriberOfMe?.role !== GroupRole.owner) {
-          return;
-        }
-        return new Section({
-          title: "群主、管理员",
-          rows: [
-            new Row({
-              cell: ChannelManagerList,
-              properties: {
-                routeContext: context,
-              },
-            }),
-          ],
-        });
-      }
     );
   }
 }

@@ -27,6 +27,7 @@ import RouteContext from "./Service/Context";
 import { ConnectStatus } from "wukongimjssdk";
 import { WKBaseContext } from "./Components/WKBase";
 import StorageService from "./Service/StorageService";
+import { ProhibitwordsService } from "./Service/ProhibitwordsService";
 
 export enum ThemeMode {
   light,
@@ -315,7 +316,8 @@ export default class WKApp extends ProviderListener {
 
   startMain() {
     this.connectIM();
-    WKApp.dataSource.contactsSync();
+    WKApp.dataSource.contactsSync(); // 同步通讯录
+    ProhibitwordsService.shared.sync(); // 同步敏感词
   }
 
   connectIM() {

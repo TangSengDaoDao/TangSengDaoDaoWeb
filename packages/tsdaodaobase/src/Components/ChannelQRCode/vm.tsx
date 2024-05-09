@@ -2,6 +2,7 @@ import { Channel } from "wukongimjssdk";
 import WKApp from "../../App";
 import { ChannelQrcodeResp } from "../../Service/DataSource/DataSource";
 import { ProviderListener } from "../../Service/Provider";
+import { Toast } from "@douyinfe/semi-ui";
 
 
 export class ChannelQRCodeVM extends ProviderListener {
@@ -17,8 +18,13 @@ export class ChannelQRCodeVM extends ProviderListener {
        this.requestQRCode()
     }
 
-    async requestQRCode() {
-        this.qrcodeResp = await WKApp.dataSource.channelDataSource.qrcode(this.channel)
-        this.notifyListener()
+    requestQRCode() {
+        WKApp.dataSource.channelDataSource.qrcode(this.channel).then((resp)=>{
+            this.qrcodeResp = resp
+            this.notifyListener()
+        }).catch((err) => {
+            Toast.error(err.msg)
+        })
+        
     }
 }
