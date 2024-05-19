@@ -1,7 +1,5 @@
 # 唐僧叨叨 PC 端
 
-唐僧叨叨 PC 端支持 Web 端、Mac 端、Windows 端、Linux 端，是一款高颜值 IM 即时通讯聊天软件，让企业轻松拥有自己的即时通讯软件。由[悟空 IM](https://githubim.com/)提供动力。
-
 <a href="https://zh-hans.react.dev/" target="_blank" rel="noopener" style="display:inline-block;">
 	<img src="https://img.shields.io/badge/React-17.0.2-%236CB52D.svg?logo=React" alt="React" />
 </a> &nbsp
@@ -33,8 +31,14 @@
 	<img src="https://img.shields.io/badge/WukongIm-1.2.10-%236CB52D.svg?logo=WukonIm" alt="Wukongim" />
 </a> &nbsp
 
+📚 [在线文档](https://tsdaodao.com/) | 🚀 [演示地址](https://web.botgate.cn/)（账号/密码：15900000002/a1234567）
+
+## 简介
+唐僧叨叨 PC 端支持 Web 端、Mac 端、Windows 端、Linux 端，是一款高颜值 IM 即时通讯聊天软件，让企业轻松拥有自己的即时通讯软件。由[悟空 IM](https://githubim.com/)提供动力。
+
 ## Web 版本运行
 
+> [!TIP]
 > 本地开发建议`node v18.17.1`、 `yarn 1.22.17`
 
 1. 安装依赖
@@ -92,6 +96,7 @@ yarn build
 
 4. Mac APP 打包
 
+	 > [!TIP]
    > 注意先运行`yarn build`编译
 
 ```shell
@@ -100,6 +105,7 @@ yarn build-ele:mac
 
 5. Windows APP 打包
 
+	 > [!TIP]
    > 注意先运行`yarn build`编译
 
 ```shell
@@ -109,6 +115,7 @@ yarn build-ele:win
 
 5. Linux APP 打包
 
+	 > [!TIP]
    > 注意先运行`yarn build`编译
 
 ```shell
