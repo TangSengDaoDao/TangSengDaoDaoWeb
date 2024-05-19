@@ -1,46 +1,61 @@
-
-# 建议版本
-
-node v18.17.1
-
-yarn 1.22.17
-
-electron v17.1.2
-
 # 唐僧叨叨PC端
+唐僧叨叨PC端支持Web端、Mac端、Windows端、Linux端，是一款高颜值IM即时通讯聊天软件，让企业轻松拥有自己的即时通讯软件。
 
-* WEB版本
-* Electron版本
-* Tauri版
+<a href="https://zh-hans.react.dev/" target="_blank" rel="noopener" style="display:inline-block;">
+	<img src="https://img.shields.io/badge/React-17.0.2-%236CB52D.svg?logo=React" alt="React">
+</a> &nbsp
+<a href="https://ts.nodejs.cn/" target="_blank" rel="noopener" style="display:inline-block;">
+	<img src="https://img.shields.io/badge/TypeScript-5.0.4-%236CB52D.svg?logo=TypeScript&logoColor=FFF" alt="TypeScript">
+</a> &nbsp
+<a href="https://www.electronjs.org/zh/" target="_blank" rel="noopener" style="display:inline-block;">
+	<img src="https://img.shields.io/badge/Electron-26.0.0-%236CB52D.svg?logo=Electron&logoColor=FFF" alt="Electron">
+</a> &nbsp
+<a href="https://webpack.docschina.org/" target="_blank" rel="noopener" style="display:inline-block;">
+	<img src="https://img.shields.io/badge/Webpack-5.88.2-%236CB52D.svg?logo=Webpack" alt="Webpack">
+</a> &nbsp
+<a href="https://www.electron.build/" target="_blank" rel="noopener" style="display:inline-block;">
+	<img src="https://img.shields.io/badge/ElectronBuilder-24.9.1-%236CB52D.svg?logo=ElectronBuilder&logoColor=FFF" alt="ElectronBuilder">
+</a> &nbsp
+<a href="https://semi.design/zh-CN/" target="_blank" rel="noopener" style="display:inline-block;">
+	<img src="https://img.shields.io/badge/Semi UI-2.24.2-%236CB52D.svg?logo=SemiUI" alt="SemiUI">
+</a> &nbsp
+<a href="https://githubim.com/" target="_blank" rel="noopener" style="display:inline-block;">
+	<img src="https://img.shields.io/badge/WukongIm-1.2.10-%236CB52D.svg?logo=WukonIm" alt="Wukongim">
+</a> &nbsp
 
-## Web版本运行
+## Web 版本运行
+
+> 本地开发建议`node v18.17.1`、 `yarn 1.22.17` 、
 
 1. 安装依赖
 
 ```shell
 yarn install
 ```
+
 2. 开发调试
 
 ```shell
 yarn dev
 ```
+
 3. 编译
 
 ```shell
 yarn build
 ```
-### 发布镜像
 
-修改api地址  packages/tsdaodaoweb/src/index.tsx 修改 WKApp.apiClient.config.apiURL = "/api/v1/"
+4. 发布镜像
+   > 修改 api 地址 packages/tsdaodaoweb/src/index.tsx 修改 WKApp.apiClient.config.apiURL = "/api/v1/"
 
 ```shell
 make deploy
 ```
 
-## Electron版本运行
+## Electron 版本运行
 
 1. 安装依赖
+
 ```shell
 yarn install
 ```
@@ -59,79 +74,15 @@ yarn build
 
 4. Mac APP 打包
 
+   > 注意先运行`yarn build`编译
+
 ```shell
 yarn build-ele:mac
 ```
 
 5. Windows APP 打包
+   > 注意先运行`yarn build`编译
 
 ```shell
 yarn build-ele:win
 ```
-
-## Tauri版本运行
-
-tauri 环境安装 (https://tauri.app/v1/guides/getting-started/prerequisites)
-
-1. 开发调试
-
-```shell
-yarn tauri dev
-```
-
-2. 打包
-
-yarn tauri build
-（window打包的时候 要去掉package.json里的 build里的REACT_APP_VERSION=$npm_package_version 要不然执行yarn tauri build 会报错）
-(如果需要打包M1架构的包 需要安装 aarch64-apple-darwin（执行：rustup target add aarch64-apple-darwin））
-
-yarn tauri build --target aarch64-apple-darwin （M1架构的包）
-
-yarn tauri build --target universal-apple-darwin (通用架构，生成可在 Apple 芯片和基于 Intel 的 Mac 上运行的通用 macOS 二进制文件。)
-
-
-## 其他技巧
-
-icon生成
-
-```shell
-tauri icon [ICON-PATH]
-```
-
-准备一张1024x1024的icon 执行上面命令 即可生成各种尺寸的icon
-
-```shell
-icon.icns = macOS
-icon.ico = MS Windows
-*.png = Linux
-```
-
-**注意**
-
-添加依赖
-
-```shell
-yarn workspace @tsdaodao/web add react-avatar-editor
-```
-
-
-
- ## 使用Github Action 自动构建各端PC版本
-
-  需要先全局安装 @tauri-apps/cli
-yarn global add  @tauri-apps/cli
-
-tauri signer generate -w ~/.tauri/tsdaodao.key
-
-上面 的命令会自动生成一个公钥、私钥对。公钥可以公开分享，私钥必须严密保存。
-
-在Github Secrets中 配置 TAURI_PRIVATE_KEY 和 TAURI_KEY_PASSWORD
-
-
-(参考：https://www.banyudu.com/posts/tauri-version-release-and-update-guide)
-
- ## 自动更新
-
-1. 修改 tauri.conf.json 里的 updater.pubkey的内容（上面通过tauri signer generate 生成的公钥）
-
-2. 修改 tauri.conf.json 里的 updater.endpoints 的内容为自己服务器的更新地址

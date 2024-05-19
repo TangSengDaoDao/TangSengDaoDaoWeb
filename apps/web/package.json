@@ -8,8 +8,8 @@
     "start": "cross-env BROWSER=none REACT_APP_VERSION=$npm_package_version react-app-rewired start",
     "dev": "cross-env MODE=dev BROWSER=none REACT_APP_VERSION=$npm_package_version react-app-rewired start",
     "dev-ele": "kill-port 3000 && concurrently -k -n=web,ele -c=green,blue \"yarn dev\" \"wait-on tcp:3000 && npm-run-all watch\"",
-    "watch": "tsc-watch -p tsconfig.e.json --onSuccess \"npm-run-all start:electron\"",
     "start:electron": "cross-env NODE_ENV=development electron .",
+    "watch": "tsc-watch -p tsconfig.e.json --onSuccess \"npm-run-all start:electron\"",
     "build": "cross-env REACT_APP_VERSION=$npm_package_version react-app-rewired build",
     "build:analyzer": "cross-env ANALYZER=true REACT_APP_VERSION=$npm_package_version react-app-rewired build",
     "build-ele:mac": "tsc -p tsconfig.e.json && electron-builder -p never -m -c",
@@ -17,8 +17,7 @@
     "build-ele": "tsc -p tsconfig.e.json && electron-builder -mw -c",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject",
-    "clean": "rimraf node_modules out-election build dist-ele .turbo",
-    "tauri": "tauri"
+    "clean": "rimraf node_modules out-election build dist-ele .turbo"
   },
   "dependencies": {
     "@tauri-apps/api": "^1.1.0",
