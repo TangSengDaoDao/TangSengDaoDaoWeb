@@ -62,7 +62,8 @@ yarn build
 
 4.  发布镜像
 
-        > 修改 api 地址 packages/tsdaodaoweb/src/index.tsx 修改 WKApp.apiClient.config.apiURL = "/api/v1/"
+> [!TIP]
+> 修改 api 地址 packages/tsdaodaoweb/src/index.tsx 修改 WKApp.apiClient.config.apiURL = "/api/v1/"
 
 ```shell
 make deploy
@@ -98,8 +99,8 @@ yarn build
 
 4. Mac APP 打包
 
-   > [!TIP]
-   > 注意先运行`yarn build`编译
+> [!TIP]
+> 注意先运行`yarn build`编译
 
 ```shell
 yarn build-ele:mac
@@ -107,8 +108,8 @@ yarn build-ele:mac
 
 5. Windows APP 打包
 
-   > [!TIP]
-   > 注意先运行`yarn build`编译
+> [!TIP]
+> 注意先运行`yarn build`编译
 
 ```shell
 yarn build-ele:win
@@ -116,8 +117,8 @@ yarn build-ele:win
 
 5. Linux APP 打包
 
-   > [!TIP]
-   > 注意先运行`yarn build`编译
+> [!TIP]
+> 注意先运行`yarn build`编译
 
 ```shell
 yarn build-ele:linux
