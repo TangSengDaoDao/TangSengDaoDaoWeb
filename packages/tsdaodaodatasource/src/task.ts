@@ -18,10 +18,13 @@ export class MediaMessageUploadTask extends MessageTask {
     async start(): Promise<void> {
         const mediaContent = this.message.content as MediaMessageContent
         if(mediaContent.file) {
+            const fileNameSuffix = mediaContent.file.name.substring(
+                mediaContent.file.name.lastIndexOf(".")
+            );
             const param = new FormData();
             param.append("file", mediaContent.file);
             const fileName = this.getUUID();
-            const path = `/${this.message.channel.channelType}/${this.message.channel.channelID}/${fileName}${mediaContent.extension??""}`
+            const path = `/${this.message.channel.channelType}/${this.message.channel.channelID}/${fileName}${fileNameSuffix ?? ""}`;
             const uploadURL = await  this.getUploadURL(path)
             if(uploadURL) {
                 this.uploadFile(mediaContent.file,uploadURL)
@@ -52,7 +55,7 @@ export class MediaMessageUploadTask extends MessageTask {
                 this.canceler = c
             }),
             onUploadProgress: e => {
-                var completeProgress = ((e.loaded / e.total) | 0);
+                var completeProgress = ((e.loaded / e.total) || 0);
                 this._progress = completeProgress
                 this.update()
             }
