@@ -1,11 +1,10 @@
-import { FriendApplyState, WKApp, WKViewQueueHeader, Provider } from "@tsdaodao/base";
 import React from "react";
+import { FriendApplyState, WKApp, WKViewQueueHeader, Provider } from "@tsdaodao/base";
 import { Component, ReactNode } from "react";
 import { Button } from '@douyinfe/semi-ui';
-import "./index.css"
 import { NewFriendVM } from "./vm";
-import "./index.css"
 import { FriendAdd } from "../FriendAdd";
+import "./index.css";
 
 export class NewFriend extends Component {
 
