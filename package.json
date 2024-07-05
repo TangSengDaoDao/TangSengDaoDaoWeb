@@ -1,11 +1,12 @@
 {
+  "name": "tsdd",
   "private": true,
+  "version": "0.0.0",
   "workspaces": [
     "apps/*",
     "packages/*"
   ],
   "resolutions": {
-    "//": "See https://github.com/facebook/create-react-app/issues/11773",
     "react-error-overlay": "6.0.11"
   },
   "scripts": {
@@ -18,7 +19,7 @@
     "build-ele:win": "turbo run build-ele:win",
     "build-ele:linux": "turbo run build-ele:linux",
     "build-ele:linux-arm64": "turbo run build-ele:linux-arm64",
-    "clean": "turbo run clean && rimraf node_modules",
+    "clean": "turbo run clean && rimraf node_modules && rimraf .turbo",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
@@ -27,7 +28,11 @@
     "eslint-config-custom": "*",
     "prettier": "^2.5.1",
     "rimraf": "^5.0.5",
-    "turbo": "latest"
+    "turbo": "2.0.6"
   },
-  "version": "0.0.0"
+  "packageManager": "yarn@1.22.19",
+  "engines": {
+    "node": ">=18.0.0",
+    "yarn": ">=1.22.19"
+  }
 }
