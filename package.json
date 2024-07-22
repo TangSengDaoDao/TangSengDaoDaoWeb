@@ -19,7 +19,7 @@
     "build-ele:linux": "turbo run build-ele:linux",
     "build-ele:linux-arm64": "turbo run build-ele:linux-arm64",
     "bootstrap": "yarn install",
-    "clean": "turbo run clean && rimraf node_modules && rimraf .turbo",
+    "clean": "turbo run clean && rimraf node_modules .turbo",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },

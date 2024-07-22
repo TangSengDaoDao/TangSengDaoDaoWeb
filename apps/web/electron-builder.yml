@@ -7,7 +7,7 @@ npmRebuild: false
 asar: false
 buildDependenciesFromSource: true
 electronDownload:
-  mirror: https://registry.npmmirror.com/-/binary/electron/
+  mirror: https://npmmirror.com/mirrors/electron/
 files:
   - resources/**/*
   - out-election/**/*
