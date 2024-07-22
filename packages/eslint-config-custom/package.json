@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "clean": "rimraf node_modules out-election"
+    "clean": "rimraf node_modules .turbo"
   },
   "dependencies": {
     "@typescript-eslint/parser": "^6.16.0",
