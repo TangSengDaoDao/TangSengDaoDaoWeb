@@ -9,7 +9,7 @@
 .wk-newfriend-content {
     height: calc(100% - var( --wk-height-viewqueueheader));
     width: 100%;
-   
+    overflow-y: auto;
 }
 
 .wk-newfriend-content  li {

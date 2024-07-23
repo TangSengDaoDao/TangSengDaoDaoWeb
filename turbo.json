@@ -1,6 +1,6 @@
 {
   "$schema": "https://turborepo.org/schema.json",
-  "pipeline": {
+  "tasks": {
     "dev": {
       "cache": false
     },
@@ -37,5 +37,6 @@
     "clean": {
       "dependsOn": ["^clean"]
     }
-  }
+  },
+  "ui": "stream"
 }
