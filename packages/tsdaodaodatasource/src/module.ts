@@ -181,6 +181,7 @@ export default class DataSourceModule implements IModule {
                     messageIDs.push(message.messageID)
                 }
             }
+            
             return WKApp.apiClient.post("message/readed", { "channel_id": channel.channelID, "channel_type": channel.channelType, "message_ids": messageIDs }).catch((err) => {
                 console.log("消息已读未读上报失败！", err)
             })

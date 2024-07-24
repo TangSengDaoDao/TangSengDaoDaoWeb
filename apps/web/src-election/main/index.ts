@@ -31,6 +31,8 @@ let isWin = !isOsx;
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
+
+
 let mainMenu: (Electron.MenuItemConstructorOptions | Electron.MenuItem)[] = [
   {
     label: "唐僧叨叨",

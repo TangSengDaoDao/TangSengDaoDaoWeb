@@ -30,6 +30,7 @@ WKApp.apiClient.config.tokenCallback = () => {
 };
 WKApp.config.appVersion = `${process.env.REACT_APP_VERSION || "0.0.0"}`;
 
+
 WKApp.loginInfo.load(); // 加载登录信息
 
 WKApp.shared.registerModule(new BaseModule()); // 基础模块

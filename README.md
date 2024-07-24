@@ -115,6 +115,8 @@ yarn build-ele:mac
 yarn build-ele:win
 ```
 
+`注意，此命令需要在apps/web下执行`
+
 5. Linux APP 打包
 
 > [!TIP]

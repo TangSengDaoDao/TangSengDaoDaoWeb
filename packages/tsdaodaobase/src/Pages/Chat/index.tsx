@@ -165,7 +165,10 @@ export class ChatContentPage extends Component<
   }
 }
 
-export default class ChatPage extends Component<any> {
+export class ChatState {
+
+}
+export default class ChatPage extends Component<any,ChatState> {
   vm!: ChatVM;
   constructor(props: any) {
     super(props);
@@ -177,7 +180,7 @@ export default class ChatPage extends Component<any> {
 
   componentWillUnmount() {}
 
-  render(): ReactNode {
+  render() {
     return (
       <Provider
         create={() => {
@@ -278,7 +281,7 @@ class ChatMenusPopover extends Component<
     });
   }
 
-  render(): React.ReactNode {
+  render() {
     const { chatMenus } = this.state;
     const { onItem } = this.props;
     return (

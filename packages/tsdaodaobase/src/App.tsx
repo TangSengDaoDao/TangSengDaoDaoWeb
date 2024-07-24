@@ -65,6 +65,12 @@ export class WKConfig {
   get themeMode() {
     return this._themeMode;
   }
+
+  // 公共资源地址
+  get publicUrl() {
+    console.log("process.env.publicUrl ---->",process.env.PUBLIC_URL )
+    return process.env.publicUrl  || ""
+  }
 }
 
 export class WKRemoteConfig {

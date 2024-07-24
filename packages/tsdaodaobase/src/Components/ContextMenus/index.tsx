@@ -98,7 +98,7 @@ export default class ContextMenus extends Component<ContextMenusProps, ContextMe
     componentWillUnmount() {
     }
 
-    render(): ReactNode {
+    render() {
         const { showContextMenus, contextOrigin } = this.state
         const { menus } = this.props
         return <>

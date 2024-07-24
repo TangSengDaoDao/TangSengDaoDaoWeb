@@ -121,7 +121,7 @@ export default class WKBase extends Component<WKBaseProps, WKBaseState> implemen
         })
     }
 
-    render(): ReactNode {
+    render() {
         const { showUserInfo, userUID,fromChannel,vercode, showConversationSelect,conversationSelectTitle, conversationSelectFinished, onAlertOk,alertContent,alertTitle } = this.state
         return <div className="wk-base">
             {this.props.children}

@@ -7,6 +7,9 @@ import { WKApp, Provider } from "@tsdaodao/base"
 import { LoginStatus, LoginType, LoginVM } from "./login_vm";
 import classNames from "classnames";
 
+
+
+
 type LoginState = {
     loginStatus: string
     loginUUID: string
@@ -17,9 +20,6 @@ type LoginState = {
 
 class Login extends Component<any, LoginState> {
 
-
-
-
     render() {
 
         return <Provider create={() => {
@@ -29,7 +29,7 @@ class Login extends Component<any, LoginState> {
                 <div className="wk-login-content">
                     <div className="wk-login-content-phonelogin" style={{ "display": vm.loginType === LoginType.phone ? "block" : "none" }}>
                         <div className="wk-login-content-logo">
-                            <img src={"/logo.png"} alt="logo" />
+                            <img src={`/logo.png`} alt="logo" />
                         </div>
                         <div className="wk-login-content-slogan">
                             更愉快的与朋友交流
