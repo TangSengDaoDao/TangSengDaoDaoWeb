@@ -68,8 +68,8 @@ export class WKConfig {
 
   // 公共资源地址
   get publicUrl() {
-    console.log("process.env.publicUrl ---->",process.env.PUBLIC_URL )
-    return process.env.publicUrl  || ""
+    console.log("process.env.publicUrl ---->", process.env.PUBLIC_URL);
+    return process.env.publicUrl || "";
   }
 }
 
@@ -382,7 +382,9 @@ export default class WKApp extends ProviderListener {
 
   // 我的用户头像发送改变
   myUserAvatarChange() {
-    this.changeChannelAvatarTag(new Channel(WKApp.loginInfo.uid||"", ChannelTypePerson));
+    this.changeChannelAvatarTag(
+      new Channel(WKApp.loginInfo.uid || "", ChannelTypePerson)
+    );
   }
 
   changeChannelAvatarTag(channel: Channel) {
@@ -390,17 +392,17 @@ export default class WKApp extends ProviderListener {
     if (channel) {
       myAvatarTag = `channelAvatarTag:${channel.channelType}${channel.channelID}`;
     }
-    console.log('changeChannelAvatarTag0----->')
+    console.log("changeChannelAvatarTag0----->");
     const t = new Date().getTime();
     WKApp.loginInfo.setStorageItem(myAvatarTag, `${t}`);
   }
-  getChannelAvatarTag(channel? :Channel) {
+  getChannelAvatarTag(channel?: Channel) {
     let myAvatarTag = "channelAvatarTag";
     if (channel) {
       myAvatarTag = `channelAvatarTag:${channel.channelType}${channel.channelID}`;
     }
     const tag = WKApp.loginInfo.getStorageItem(myAvatarTag);
-    if(!tag) {
+    if (!tag) {
       return "";
     }
     return tag;
@@ -531,13 +533,16 @@ export default class WKApp extends ProviderListener {
     return friendApplys;
   }
 
-  public setFriendApplysUnreadCount(){
-    if(WKApp.loginInfo.isLogined()){
-      WKApp.apiClient.get(`/user/reddot/friendApply`).then(res=>{
-        WKApp.mittBus.emit('friend-applys-unread-count', res.count)
-        WKApp.loginInfo.setStorageItem(`${WKApp.loginInfo.uid}-friend-applys-unread-count`, res.count);
+  public setFriendApplysUnreadCount() {
+    if (WKApp.loginInfo.isLogined()) {
+      WKApp.apiClient.get(`/user/reddot/friendApply`).then((res) => {
+        WKApp.mittBus.emit("friend-applys-unread-count", res.count);
+        WKApp.loginInfo.setStorageItem(
+          `${WKApp.loginInfo.uid}-friend-applys-unread-count`,
+          res.count
+        );
         WKApp.menus.refresh();
-      })
+      });
     }
   }
 
@@ -552,7 +557,9 @@ export default class WKApp extends ProviderListener {
     //   }
     // }
     if (WKApp.loginInfo.isLogined()) {
-      const num = WKApp.loginInfo.getStorageItem(`${WKApp.loginInfo.uid}-friend-applys-unread-count`)
+      const num = WKApp.loginInfo.getStorageItem(
+        `${WKApp.loginInfo.uid}-friend-applys-unread-count`
+      );
       unreadCount = Number(num);
     }
     return unreadCount;
@@ -578,7 +585,10 @@ export default class WKApp extends ProviderListener {
     //   WKApp.endpointManager.invokes(EndpointCategory.friendApplyDataChange);
     // }
     if (WKApp.loginInfo.isLogined()) {
-      WKApp.loginInfo.setStorageItem(`${WKApp.loginInfo.uid}-friend-applys-unread-count`, '0')
+      WKApp.loginInfo.setStorageItem(
+        `${WKApp.loginInfo.uid}-friend-applys-unread-count`,
+        "0"
+      );
     }
     await WKApp.apiClient.delete(`/user/reddot/friendApply`);
   }

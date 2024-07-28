@@ -10,14 +10,16 @@
     "react-error-overlay": "6.0.11"
   },
   "scripts": {
-    "dev": "turbo run dev --parallel",
+    "dev-web": "turbo run dev-web --parallel",
     "dev-ele": "turbo run dev-ele --parallel",
-    "build": "turbo run build",
+    "build-web": "turbo run build-web",
+    "build-web:rsdoctor": "turbo run build-web:rsdoctor",
     "build-ele": "turbo run build-ele",
     "build-ele:mac": "turbo run build-ele:mac",
     "build-ele:win": "turbo run build-ele:win",
     "build-ele:linux": "turbo run build-ele:linux",
     "build-ele:linux-arm64": "turbo run build-ele:linux-arm64",
+    "preview": "turbo run preview",
     "bootstrap": "yarn install",
     "clean": "turbo run clean && rimraf node_modules .turbo",
     "lint": "turbo run lint",
