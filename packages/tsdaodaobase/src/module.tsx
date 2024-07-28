@@ -443,15 +443,16 @@ export default class BaseModule implements IModule {
       return;
     }
     if (window.Notification && Notification.permission !== "denied") {
+      const options = {
+        body: description,
+        icon: WKApp.shared.avatarChannel(message.channel),
+        lang: "zh-CN",
+        tag: "tag",
+        renotify: true,
+      };
       const notify = new Notification(
         channelInfo ? channelInfo.orgData.displayName : "通知",
-        {
-          body: description,
-          icon: WKApp.shared.avatarChannel(message.channel),
-          lang: "zh-CN",
-          tag: "tag",
-          renotify: true,
-        }
+        options
       );
 
       notify.onclick = () => {

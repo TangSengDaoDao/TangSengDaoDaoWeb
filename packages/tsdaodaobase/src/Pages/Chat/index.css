@@ -298,8 +298,8 @@ body[theme-mode=dark] .wk-chat-popover {
 }
 
 .wk-chatmenuspopover li img {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     color: white;
 }
 
@@ -307,6 +307,12 @@ body[theme-mode=dark] .wk-chat-popover {
     margin-left: 10px;
     font-size: 14px;
 }
+
+.wk-chatmenuspopover-avatar{
+    display: flex;
+    align-items: center;
+}
+
 
 .wk-chat-conversation-header-right-item {
     position: relative;
