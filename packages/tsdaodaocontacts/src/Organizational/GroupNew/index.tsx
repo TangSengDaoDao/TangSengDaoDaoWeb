@@ -14,6 +14,8 @@ import {
 import { BasicTreeNodeData } from "@douyinfe/semi-foundation/lib/cjs/tree/foundation";
 import { WKApp, ThemeMode, WKViewQueueHeader } from "@tsdaodao/base";
 import WKAvatar from "@tsdaodao/base/src/Components/WKAvatar";
+import { ContactsStatus } from "@tsdaodao/base/src/Service/DataSource/DataSource";
+
 import "./index.css";
 
 interface IPorpsOrganizationalGroupNew {
@@ -185,7 +187,8 @@ export class OrganizationalGroupNew extends Component<
       }
 
       OTree.push({
-        label: employeesNum > 0 ? `${item.name}(${employeesNum})` : `${item.name}`,
+        label:
+          employeesNum > 0 ? `${item.name}(${employeesNum})` : `${item.name}`,
         value: item.dept_id,
         key: item.short_no,
         icon: (
@@ -291,12 +294,14 @@ export class OrganizationalGroupNew extends Component<
 
   getFriendData() {
     const setFriendData: any[] = [];
-    WKApp.dataSource.contactsList.map((item) => {
-      setFriendData.push({
-        name: item.name,
-        uid: item.uid,
+    WKApp.dataSource.contactsList
+      .filter((c) => c.status !== ContactsStatus.Blacklist)
+      .map((item) => {
+        setFriendData.push({
+          name: item.remark || item.name,
+          uid: item.uid,
+        });
       });
-    });
     this.setState({
       friendData: [...setFriendData],
       friendSearchData: [...setFriendData],
