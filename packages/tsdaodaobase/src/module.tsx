@@ -1037,10 +1037,13 @@ export default class BaseModule implements IModule {
                         (subscriber) => subscriber.uid !== WKApp.loginInfo.uid
                       )
                       .map((item) => {
+                        const uid = item.uid;
+                        const name = item.remark || item.name;
+                        const avatar = item.avatar;
                         return new IndexTableItem(
-                          item.uid,
-                          item.name,
-                          item.avatar
+                          uid,
+                          name,
+                          avatar
                         );
                       })}
                   ></UserSelect>,
