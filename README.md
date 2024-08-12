@@ -25,7 +25,7 @@
 	<img src="https://img.shields.io/badge/Semi UI-2.24.2-%236CB52D.svg?logo=SemiUI" alt="SemiUI">
 </a> &nbsp;
 <a href="https://turbo.build/repo" target="_blank" rel="noopener" style="display:inline-block;">
-	<img src="https://img.shields.io/badge/turbo-1.4.7-%236CB52D.svg?logo=Turbo&logoColor=FFF" alt="Turbo" />
+	<img src="https://img.shields.io/badge/turbo-2.0.9-%236CB52D.svg?logo=Turbo&logoColor=FFF" alt="Turbo" />
 </a> &nbsp;
 <a href="https://githubim.com/" target="_blank" rel="noopener" style="display:inline-block;">
 	<img src="https://img.shields.io/badge/WukongIm-1.2.10-%236CB52D.svg?logo=WukonIm" alt="Wukongim" />
