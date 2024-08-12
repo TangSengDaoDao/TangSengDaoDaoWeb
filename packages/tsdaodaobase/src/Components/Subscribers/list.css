@@ -1,0 +1,34 @@
+
+
+.wk-subscrierlist {
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    overflow: scroll;
+}
+
+.wk-subscrierlist-list-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    cursor: pointer;
+}
+
+.wk-subscrierlist-item-name {
+    margin-left: 1rem;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 10rem;
+}
+
+.wk-subscrierlist-item-content {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.wk-subscrierlist-item-desc {
+    font-size: 14px;
+    color: #666;
+}

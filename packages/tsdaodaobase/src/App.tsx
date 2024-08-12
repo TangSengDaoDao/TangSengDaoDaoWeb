@@ -65,12 +65,6 @@ export class WKConfig {
   get themeMode() {
     return this._themeMode;
   }
-
-  // 公共资源地址
-  get publicUrl() {
-    console.log("process.env.publicUrl ---->",process.env.PUBLIC_URL )
-    return process.env.publicUrl  || ""
-  }
 }
 
 export class WKRemoteConfig {
@@ -378,6 +372,11 @@ export default class WKApp extends ProviderListener {
   avatarUser(uid: string) {
     const c = new Channel(uid, ChannelTypePerson);
     return this.avatarChannel(c);
+  }
+
+  avatarOrg(orgID: string){
+    const baseURl = WKApp.apiClient.config.apiURL;
+    return `${baseURl}organizations/${orgID}/logo`;
   }
 
   // 我的用户头像发送改变

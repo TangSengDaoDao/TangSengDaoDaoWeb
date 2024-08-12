@@ -1,14 +1,11 @@
 {
   "name": "tsdd",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.5.0",
   "workspaces": [
     "apps/*",
     "packages/*"
   ],
-  "resolutions": {
-    "react-error-overlay": "6.0.11"
-  },
   "scripts": {
     "dev": "turbo run dev --parallel",
     "dev-ele": "turbo run dev-ele --parallel",
@@ -23,6 +20,9 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
+  "resolutions": {
+    "react-error-overlay": "6.0.9"
+  },
   "devDependencies": {
     "eslint": "^7.32.0",
     "eslint-config-custom": "*",
@@ -30,7 +30,7 @@
     "rimraf": "^5.0.5",
     "turbo": "2.0.9"
   },
-  "packageManager": "yarn@4.3.1",
+  "packageManager": "yarn@1.22.19",
   "engines": {
     "node": ">=18.0.0",
     "yarn": ">=1.22.19"

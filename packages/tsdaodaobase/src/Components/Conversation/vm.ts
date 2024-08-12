@@ -1,4 +1,4 @@
-import { Channel, ChannelTypeGroup, ChannelTypePerson, ConversationAction, WKSDK, Message, MessageContent, MessageStatus, Subscriber, Conversation, MessageExtra, CMDContent, PullMode, MessageContentType } from "wukongimjssdk";
+import { Channel, ChannelTypeGroup, ChannelTypePerson, ConversationAction, WKSDK, Message, MessageContent, MessageStatus, Subscriber, Conversation, MessageExtra, CMDContent, PullMode, MessageContentType, ChannelInfo } from "wukongimjssdk";
 import WKApp from "../../App";
 import { SyncMessageOptions } from "../../Service/DataSource/DataProvider";
 import { MessageWrap } from "../../Service/Model";
@@ -13,11 +13,13 @@ import { SendackPacket, Setting } from "wukongimjssdk";
 import MergeforwardContent from "../../Messages/Mergeforward";
 import { TypingListener, TypingManager } from "../../Service/TypingManager";
 import { ProhibitwordsService } from "../../Service/ProhibitwordsService";
+import { SuperGroup } from "../../Utils/const";
 
 export default class ConversationVM extends ProviderListener {
 
     loading: boolean = false // 消息是否加载中
     channel: Channel
+    channelInfo?: ChannelInfo // 当前会话的频道详情
     messages: MessageWrap[] = [] // 消息集合 
     currentConversation?: Conversation // 当前最近会话
     messagesOfOrigin: MessageWrap[] = [] // 原始消息集合（不包含时间消息等本地消息）
@@ -275,7 +277,6 @@ export default class ConversationVM extends ProviderListener {
                     this.notifyListener()
                 }
             } else if (cmdContent.cmd === 'syncMessageExtra') { // 同步消息扩展
-                console.log("messageExtra---->", message.channel)
                 if (message.channel.isEqual(this.channel)) {
                     WKSDK.shared().chatManager.syncMessageExtras(this.channel, this.findMaxExtraVersion()).then((messageExtras) => {
                         this.updateMessageByMessageExtras(messageExtras)
@@ -301,14 +302,17 @@ export default class ConversationVM extends ProviderListener {
         }, {})
 
         if (this.channel.channelType === ChannelTypeGroup) {
-            this.reloadSubscribers()
-            WKSDK.shared().channelManager.addSubscriberChangeListener((channel: Channel) => {
-                if (!this.channel.isEqual(channel)) {
-                    return
-                }
-                this.reloadSubscribers()
-            })
-            WKSDK.shared().channelManager.syncSubscribes(this.channel)
+
+            // 加载频道信息
+            this.channelInfo = WKSDK.shared().channelManager.getChannelInfo(this.channel)
+            if (this.channelInfo) {
+                this.loadChannelInfoFinished()
+            } else {
+                WKSDK.shared().channelManager.fetchChannelInfo(this.channel).then(() => {
+                    this.channelInfo = WKSDK.shared().channelManager.getChannelInfo(this.channel)
+                    this.loadChannelInfoFinished()
+                })
+            }
 
         }
 
@@ -350,7 +354,6 @@ export default class ConversationVM extends ProviderListener {
                 this.browseToMessageSeq = conversation.lastMessage?.messageSeq || 0
             }
 
-            console.log(" this.unreadCount---->", this.unreadCount)
             WKSDK.shared().conversationManager.openConversation = conversation
         }
 
@@ -371,6 +374,40 @@ export default class ConversationVM extends ProviderListener {
 
         TypingManager.shared.removeTypingListener(this.typingListener)
 
+    }
+
+    // 加载频道信息完成
+   async loadChannelInfoFinished() {
+        if(this.channel.channelType !== ChannelTypeGroup) {
+            return
+        }
+        this.reloadSubscribers()
+        WKSDK.shared().channelManager.addSubscriberChangeListener((channel: Channel) => {
+            if (!this.channel.isEqual(channel)) {
+                return
+            }
+            this.reloadSubscribers()
+        })
+
+        if(this.channelInfo?.orgData?.group_type == SuperGroup) { 
+            // 如果是超级群则只获取第一页成员
+          this.subscribers = await this.getFirstPageMembers()
+          WKSDK.shared().channelManager.subscribeCacheMap.set(this.channel.getChannelKey(), this.subscribers)
+          WKSDK.shared().channelManager.notifySubscribeChangeListeners(this.channel)
+          this.notifyListener()
+        }else {
+            WKSDK.shared().channelManager.syncSubscribes(this.channel)
+        }
+
+       
+    }
+
+    // 获取第一页成员列表（超大群）
+    getFirstPageMembers() {
+      return WKApp.dataSource.channelDataSource.subscribers(this.channel,{
+              limit: 100,
+              page: 1
+         })
     }
 
     // 标记提醒已完成
@@ -582,7 +619,6 @@ export default class ConversationVM extends ProviderListener {
 
     // 向列表追加消息
     appendMessage(messageWrap: MessageWrap) {
-        console.log("appendMessage--->", messageWrap)
         const senderIsSelf = messageWrap.fromUID === WKApp.loginInfo.uid
         this.updateLastMessageIfNeed(messageWrap)
         if (this.pullupHasMore) {

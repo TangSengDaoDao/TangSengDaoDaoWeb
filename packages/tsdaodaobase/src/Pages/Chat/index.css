@@ -240,23 +240,21 @@ body[theme-mode=dark] .wk-chat-conversation-header-channel-info-name  {
     border-left: var(--wk-line);
     margin-right: calc( 0px - var(--wk-wdith-chat-channelsetting));
     background-color: var(--wk-color-secondary);
+
+    box-shadow: 0 .25rem .5rem .125rem rgba(114,114,114,0.25098);
+    border-left: none;
 }
 
 
-@media screen and (max-width: 1275px) {
-    .wk-chat-channelsetting {
-        box-shadow: 0 .25rem .5rem .125rem rgba(114,114,114,0.25098);
-        border-left: none;
-    }
-
-    body[theme-mode=dark] .wk-chat-channelsetting  {
-        box-shadow: 0 .25rem .5rem .125rem rgba(0,0,0,0.25098);
-    }
-    .wk-chat-content-right.wk-chat-channelsetting-open .wk-chat-content-chat {
-        width: 100%;
-    }
+body[theme-mode=dark] .wk-chat-channelsetting  {
+    box-shadow: 0 .25rem .5rem .125rem rgba(0,0,0,0.25098);
 }
 
+
+
+.wk-chat-content-right.wk-chat-channelsetting-open .wk-chat-content-chat {
+    width: 100%;
+}
 
 .wk-chat-content-right.wk-chat-channelsetting-open .wk-chat-channelsetting {
     margin-right: 0px;

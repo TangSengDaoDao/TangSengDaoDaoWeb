@@ -43,8 +43,15 @@ export default class ChannelSetting extends Component<ChannelSettingProps> {
             vm.routeData.refresh = ()=>{
                 vm.notifyListener()
             }
+
+           let  memberCount = vm.subscribers.length
+
+            const channelInfo = WKSDK.shared().channelManager.getChannelInfo(channel)
+            if(channelInfo && channelInfo.orgData.member_count) {
+                memberCount = channelInfo.orgData.member_count
+            }
            
-            return <RoutePage title={ vm.channel.channelType === ChannelTypeCustomerService?"聊天信息":`聊天信息（${vm.subscribers.length}）`} onClose={() => {
+            return <RoutePage title={ vm.channel.channelType === ChannelTypeCustomerService?"聊天信息":`聊天信息（${memberCount}）`} onClose={() => {
                 if (onClose) {
                     onClose()
                 }

@@ -1,23 +1,40 @@
-
-
 .wk-base {
   width: 100%;
   height: 100%;
 }
 
-.wk-base-modal .semi-modal-content  {
+.wk-base-modal .semi-modal-content {
   border: none !important;
   padding: 0px !important;
 }
 
 .wk-base-modal .semi-modal-close {
-    display: none;
+  display: none;
 }
 
 .wk-base-modal .semi-modal-body-wrapper {
-    margin: 0px;
+  margin: 0px;
 }
 
-.wk-base-modal-userinfo .semi-modal-body{
+.wk-base-modal-userinfo .semi-modal-body {
   height: 500px;
+}
+
+/* 加入组织 */
+.wk-base-modal-join-org .semi-modal-content {
+  border: none !important;
+  padding: 12px !important;
+}
+.wk-base-modal-join-org .semi-modal-header {
+  margin: 12px !important;
+}
+.wk-base-modal-join-org .semi-modal-body-wrapper {
+  margin: 0px;
+}
+.wk-base-modal-join-org .semi-modal-body {
+  height: 420px;
+}
+
+.semi-button.semi-button-primary:focus-visible, .semi-button.semi-button-secondary:focus-visible, .semi-button.semi-button-tertiary:focus-visible, .semi-button.semi-button-warning:focus-visible, .semi-button.semi-button-danger:focus-visible {
+  outline: none;
 }

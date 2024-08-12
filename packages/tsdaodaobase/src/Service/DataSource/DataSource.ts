@@ -1,4 +1,4 @@
-import { Channel, ChannelInfo, ConversationExtra, Message } from "wukongimjssdk";
+import { Channel, ChannelInfo, ConversationExtra, Message, Subscriber } from "wukongimjssdk";
 import { APIResp } from "../APIClient";
 
 export type ContactsChangeListener = () => void;
@@ -30,7 +30,7 @@ export class DataSource {
                 }
             }
             newContactsList.push(...results)
-           
+
             this.contactsList = newContactsList
             this.notifyContactsChange()
         }
@@ -238,6 +238,16 @@ export interface IChannelDataSource {
     addSubscribers(channel: Channel, uids: string[]): Promise<void>
 
     /**
+     * 获取订阅者
+     * @param channel 
+     */
+    subscribers(channel: Channel, req: {
+        keyword?: string, // 搜索关键字
+        limit?: number, // 每页数量
+        page?: number, // 页码
+    }): Promise<Subscriber[]>
+
+    /**
      * 更新频道设置
      * @param setting 
      * @param channel 
@@ -308,7 +318,7 @@ export interface IChannelDataSource {
      * 更新扩展
      * @param conversationExtra 
      */
-    conversationExtraUpdate(conversationExtra:ConversationExtra): Promise<void>
+    conversationExtraUpdate(conversationExtra: ConversationExtra): Promise<void>
 }
 
 export class ChannelQrcodeResp implements APIResp {

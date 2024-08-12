@@ -74,6 +74,7 @@ body[theme-mode=dark] .wk-emojitoolbar-emojipanel {
 
     display: flex;
     overflow-x: auto;
+    overflow-y: hidden;
 }
 
 .wk-emojipanel-content {

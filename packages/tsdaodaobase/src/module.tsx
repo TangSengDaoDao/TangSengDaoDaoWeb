@@ -9,6 +9,7 @@ import {
   ChannelInfo,
   CMDContent,
   MessageText,
+  Subscriber,
 } from "wukongimjssdk";
 import React, { ElementType } from "react";
 import { Howl, Howler } from "howler";
@@ -33,6 +34,7 @@ import { Card, CardCell } from "./Messages/Card";
 import { GifCell, GifContent } from "./Messages/Gif";
 import { HistorySplitCell, HistorySplitContent } from "./Messages/HistorySplit";
 import { ImageCell, ImageContent } from "./Messages/Image";
+import { JoinOrganizationCell, JoinOrganizationContent } from "./Messages/JoinOrganization";
 import {
   SignalMessageCell,
   SignalMessageContent,
@@ -77,6 +79,7 @@ import { ChannelAvatar } from "./Components/ChannelAvatar";
 import { ScreenshotCell, ScreenshotContent } from "./Messages/Screenshot";
 import ImageToolbar from "./Components/ImageToolbar";
 import { ProhibitwordsService } from "./Service/ProhibitwordsService";
+import { SubscriberList } from "./Components/Subscribers/list";
 
 export default class BaseModule implements IModule {
   messageTone?: Howl;
@@ -111,6 +114,8 @@ export default class BaseModule implements IModule {
             return VoiceCell;
           case MessageContentTypeConst.mergeForward: // 合并转发
             return MergeforwardCell;
+          case MessageContentTypeConst.joinOrganization: // 加入组织
+            return JoinOrganizationCell;
           case MessageContentTypeConst.smallVideo: // 小视频
             return VideoCell;
           case MessageContentTypeConst.historySplit: // 历史消息风格线
@@ -175,6 +180,11 @@ export default class BaseModule implements IModule {
     WKSDK.shared().register(
       MessageContentTypeConst.screenshot,
       () => new ScreenshotContent()
+    );
+    // 加入组织
+    WKSDK.shared().register(
+      MessageContentTypeConst.joinOrganization,
+      () => new JoinOrganizationContent()
     );
 
     // 未知消息
@@ -447,7 +457,7 @@ export default class BaseModule implements IModule {
           icon: WKApp.shared.avatarChannel(message.channel),
           lang: "zh-CN",
           tag: "tag",
-          renotify: true,
+          // renotify: true,
         }
       );
 
@@ -956,7 +966,7 @@ export default class BaseModule implements IModule {
       let addFinishButtonContext: FinishButtonContext;
       let removeFinishButtonContext: FinishButtonContext;
       let addSelectItems: IndexTableItem[];
-      let removeSelectItems: IndexTableItem[];
+      let removeSelectItems: Subscriber[];
       const disableSelectList = data.subscribers.map((subscriber) => {
         return subscriber.uid;
       });
@@ -1013,7 +1023,6 @@ export default class BaseModule implements IModule {
                       addFinishButtonContext.loading(false);
                     },
                     onFinishContext: (context) => {
-                      console.log("onFinishContext------>", context);
                       addFinishButtonContext = context;
                       addFinishButtonContext.disable(true);
                     },
@@ -1022,36 +1031,32 @@ export default class BaseModule implements IModule {
               },
               onRemove: () => {
                 context.push(
-                  <UserSelect
+                  <SubscriberList
+                    channel={channel}
                     onSelect={(items) => {
                       removeSelectItems = items;
                       removeFinishButtonContext.disable(items.length === 0);
                     }}
-                    users={data.subscribers
-                      .filter(
-                        (subscriber) => subscriber.uid !== WKApp.loginInfo.uid
-                      )
-                      .map((item) => {
-                        return new IndexTableItem(
-                          item.uid,
-                          item.name,
-                          item.avatar,
-                        );
-                      })}
-                  ></UserSelect>,
+                    canSelect={true}
+
+                  ></SubscriberList>,
                   {
                     title: "删除群成员",
                     showFinishButton: true,
                     onFinish: async () => {
                       removeFinishButtonContext.loading(true);
-                      await WKApp.dataSource.channelDataSource.removeSubscribers(
+                      WKApp.dataSource.channelDataSource.removeSubscribers(
                         channel,
                         removeSelectItems.map((item) => {
-                          return item.id;
+                          return item.uid;
                         })
-                      );
-                      removeFinishButtonContext.loading(false);
-                      context.pop();
+                      ).then(() => {
+                        removeFinishButtonContext.loading(false);
+                        context.pop();
+                      }).catch((err) => {
+                        Toast.error(err.msg);
+                      });
+
                     },
                     onFinishContext: (context) => {
                       removeFinishButtonContext = context;

@@ -9,7 +9,7 @@ export interface WKNavHeaderProps {
 
 export default class WKNavMainHeader extends Component<WKNavHeaderProps> {
 
-    render() {
+    render(): ReactNode {
         const {rightView,title} = this.props
         return <div className="wk-navheader">
             <div className="wk-navheader-content">

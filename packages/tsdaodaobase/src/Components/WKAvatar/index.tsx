@@ -18,17 +18,19 @@ const defaultAvatarSVG = `
 `;
 
 export interface WKAvatarState {
-    src :string
-  }
+    src: string
+    loadedErr: boolean // 图片是否加载错误
+}
 
-export default class WKAvatar extends Component<WKAvatarProps,WKAvatarState> {
+export default class WKAvatar extends Component<WKAvatarProps, WKAvatarState> {
 
     constructor(props: any) {
         super(props);
         this.state = {
-          src: '',
+            src: this.getImageSrc(),
+            loadedErr: false,
         };
-      }
+    }
     getImageSrc() {
         const { channel, src, random } = this.props
         let imgSrc = ""
@@ -45,10 +47,13 @@ export default class WKAvatar extends Component<WKAvatarProps,WKAvatarState> {
         return imgSrc
     }
     handleImgError() {
-        this.setState({ src: defaultAvatarSVG });
+        this.setState({ src: defaultAvatarSVG, loadedErr: true });
     };
     handleLoad() {
-        this.setState({src: this.getImageSrc()})
+        if(!this.state.loadedErr) {
+            this.setState({ src: this.getImageSrc() })
+        }
+        
     }
     render() {
         const { style } = this.props

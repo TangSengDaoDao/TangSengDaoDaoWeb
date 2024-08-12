@@ -8,6 +8,7 @@ import { SubscribersVM } from "./vm";
 import IndexTable, { IndexTableItem } from "../IndexTable";
 import WKBase, { WKBaseContext } from "../WKBase";
 import RouteContext, { RouteContextConfig } from "../../Service/Context";
+import { SubscriberList } from "./list";
 
 export interface SubscribersProps {
   context: RouteContext<any>;
@@ -108,23 +109,7 @@ export class Subscribers extends Component<SubscribersProps> {
                     className="wk-subscribers-more"
                     onClick={() => {
                       context.push(
-                        <IndexTable
-                          items={vm.subscribers.map((s) => {
-                            const vercode = s.orgData?.vercode;
-                            return new IndexTableItem(
-                              s.uid,
-                              s.remark || s.name,
-                              WKApp.shared.avatarUser(s.uid),
-                            );
-                          })}
-                          onSelect={(item: IndexTableItem[]) => {
-                            const optItem = item[0];
-                            WKApp.shared.baseContext.showUserInfo(
-                              optItem.id,
-                              channel,
-                            );
-                          }}
-                        ></IndexTable>,
+                       <SubscriberList channel={channel} ></SubscriberList>,
                         new RouteContextConfig({
                           title: "成员列表",
                         })
