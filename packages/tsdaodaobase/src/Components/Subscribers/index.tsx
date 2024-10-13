@@ -3,12 +3,13 @@ import React from "react";
 import { Component } from "react";
 import Provider from "../../Service/Provider";
 import WKApp from "../../App";
-import "./index.css";
 import { SubscribersVM } from "./vm";
 import IndexTable, { IndexTableItem } from "../IndexTable";
 import WKBase, { WKBaseContext } from "../WKBase";
 import RouteContext, { RouteContextConfig } from "../../Service/Context";
 import { ChannelSettingRouteData } from "../../Components/ChannelSetting/context";
+import { SubscriberList } from "./list";
+import "./index.css";
 
 export interface SubscribersProps {
   context: RouteContext<any>;
@@ -83,15 +84,15 @@ export class Subscribers extends Component<SubscribersProps> {
                   ) : undefined} */}
                   {vm.showAdd()
                     ? WKApp.endpoints.organizationalTool(
-                      channel,
-                      disableSelectList,
-                      <div className="wk-subscribers-item">
-                        <img
-                          src={require("./assets/icon_add_more_gray.png")}
-                          alt=""
-                        />
-                      </div>
-                    )
+                        channel,
+                        disableSelectList,
+                        <div className="wk-subscribers-item">
+                          <img
+                            src={require("./assets/icon_add_more_gray.png")}
+                            alt=""
+                          />
+                        </div>
+                      )
                     : undefined}
                   {vm.showRemove() ? (
                     <div
@@ -114,23 +115,7 @@ export class Subscribers extends Component<SubscribersProps> {
                     className="wk-subscribers-more"
                     onClick={() => {
                       context.push(
-                        <IndexTable
-                          items={vm.subscribers.map((s) => {
-                            const vercode = s.orgData?.vercode;
-                            return new IndexTableItem(
-                              s.uid,
-                              s.remark || s.name,
-                              WKApp.shared.avatarUser(s.uid),
-                            );
-                          })}
-                          onSelect={(item: IndexTableItem[]) => {
-                            const optItem = item[0];
-                            WKApp.shared.baseContext.showUserInfo(
-                              optItem.id,
-                              channel,
-                            );
-                          }}
-                        ></IndexTable>,
+                        <SubscriberList channel={channel}></SubscriberList>,
                         new RouteContextConfig({
                           title: "成员列表",
                         })
