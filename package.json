@@ -28,7 +28,7 @@
     "eslint-config-custom": "*",
     "prettier": "^2.5.1",
     "rimraf": "^5.0.5",
-    "turbo": "2.0.9"
+    "turbo": "2.2.1"
   },
   "packageManager": "yarn@1.22.19",
   "engines": {
