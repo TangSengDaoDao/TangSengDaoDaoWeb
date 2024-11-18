@@ -337,7 +337,7 @@ export class OrganizationalGroupNew extends Component<
 
   onShowModal() {
     const { channelType } = this.props.channel;
-    this.getJoinOrganization();
+    // this.getJoinOrganization();
     this.setState({
       showModal: true,
       optTitle: channelType === 1 ? "创建群" : "请选择联系人",
