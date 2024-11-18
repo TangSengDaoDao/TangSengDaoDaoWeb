@@ -88,6 +88,8 @@ export default class BaseModule implements IModule {
     return "base";
   }
   init(): void {
+
+
     APIClient.shared.logoutCallback = () => {
       WKApp.shared.logout();
     };
@@ -227,9 +229,7 @@ export default class BaseModule implements IModule {
           cmdContent.param.from_name
         );
       } else if (cmdContent.cmd === "groupAvatarUpdate") {
-        WKApp.shared.changeChannelAvatarTag(
-          new Channel(param.group_no, ChannelTypeGroup)
-        );
+        WKApp.shared.changeChannelAvatarTag(new Channel(param.group_no, ChannelTypeGroup));
         // 群头像更新
         WKSDK.shared().channelManager.fetchChannelInfo(
           new Channel(param.group_no, ChannelTypeGroup)
@@ -343,11 +343,8 @@ export default class BaseModule implements IModule {
             ConversationAction.update
           );
         }
-      } else if (cmdContent.cmd === "userAvatarUpdate") {
-        // 用户头像更新
-        WKApp.shared.changeChannelAvatarTag(
-          new Channel(param.uid, ChannelTypePerson)
-        );
+      } else if (cmdContent.cmd === "userAvatarUpdate") { // 用户头像更新
+        WKApp.shared.changeChannelAvatarTag(new Channel(param.uid, ChannelTypePerson));
         WKApp.dataSource.notifyContactsChange();
       }
     });
@@ -453,16 +450,15 @@ export default class BaseModule implements IModule {
       return;
     }
     if (window.Notification && Notification.permission !== "denied") {
-      const options = {
-        body: description,
-        icon: WKApp.shared.avatarChannel(message.channel),
-        lang: "zh-CN",
-        tag: "tag",
-        renotify: true,
-      };
       const notify = new Notification(
         channelInfo ? channelInfo.orgData.displayName : "通知",
-        options
+        {
+          body: description,
+          icon: WKApp.shared.avatarChannel(message.channel),
+          lang: "zh-CN",
+          tag: "tag",
+          // renotify: true,
+        }
       );
 
       notify.onclick = () => {
@@ -513,7 +509,7 @@ export default class BaseModule implements IModule {
           icon={require("./assets/toolbars/func_screenshot.svg").default}
           onClick={() => {
             if ((window as any).__POWERED_ELECTRON__) {
-              (window as any).ipc.send("screenshots-start", {});
+              (window as any).ipc.send('screenshots-start', {})
             } else {
               window.open("https://www.snipaste.com");
             }
@@ -536,11 +532,10 @@ export default class BaseModule implements IModule {
       const isDark = WKApp.config.themeMode === ThemeMode.dark;
       return {
         title: "发起群聊",
-        icon: require(`${
-          isDark
-            ? "./assets/popmenus_startchat_dark.png"
-            : "./assets/popmenus_startchat.png"
-        }`),
+        icon: require(`${isDark
+          ? "./assets/popmenus_startchat_dark.png"
+          : "./assets/popmenus_startchat.png"
+          }`),
         onClick: () => {
           const channel: any = {
             channelID: localStorage.uid,

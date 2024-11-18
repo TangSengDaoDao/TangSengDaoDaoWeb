@@ -162,15 +162,10 @@ export class EndpointCommon {
     );
   }
 
-  organizationalTool(
-    channel: Channel,
-    disableSelectList?: string[],
-    render?: JSX.Element
-  ): JSX.Element {
+  organizationalTool(channel: Channel, render?: JSX.Element): JSX.Element {
     return EndpointManager.shared.invoke(EndpointCategory.organizational, {
-      channel,
-      disableSelectList,
-      render,
+      channel: channel,
+      render: render,
     });
   }
 
@@ -189,10 +184,9 @@ export class EndpointCommon {
     );
   }
 
-  organizationalLayer(channel: Channel, disableSelectList?: string[]): void {
+  organizationalLayer(channel: Channel): void {
     return EndpointManager.shared.invoke(EndpointCategory.organizationalLayer, {
-      channel,
-      disableSelectList,
+      channel: channel,
     });
   }
 

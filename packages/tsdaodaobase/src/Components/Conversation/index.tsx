@@ -31,7 +31,7 @@ export class Conversation extends Component<ConversationProps> implements Conver
     contextMenusContext!: ContextMenusContext
     avatarMenusContext!: ContextMenusContext // 点击头像弹出的菜单
     _messageInputContext!: MessageInputContext
-    scrollTimer?: NodeJS.Timer
+    scrollTimer: number | null = null
     updateBrowseToMessageSeqAndReminderDoneing: boolean = false
     private _dragFileCallback?: (file: File) => void
 
@@ -249,10 +249,11 @@ export class Conversation extends Component<ConversationProps> implements Conver
     handleScroll(e: any) {
         if (this.scrollTimer) {
             clearTimeout(this.scrollTimer)
+            this.scrollTimer = null
         }
-        this.scrollTimer = setTimeout(() => {
+        this.scrollTimer = window.setTimeout(() => {
             this.handleScrollEnd()
-        }, 500)
+        }, 500) 
         this.contextMenusContext.hide()
         const targetScrollTop = e.target.scrollTop;
         const scrollOffsetTop = e.target.scrollHeight - (targetScrollTop + e.target.clientHeight);

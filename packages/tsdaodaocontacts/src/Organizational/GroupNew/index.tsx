@@ -14,8 +14,6 @@ import {
 import { BasicTreeNodeData } from "@douyinfe/semi-foundation/lib/cjs/tree/foundation";
 import { WKApp, ThemeMode, WKViewQueueHeader } from "@tsdaodao/base";
 import WKAvatar from "@tsdaodao/base/src/Components/WKAvatar";
-import { ContactsStatus } from "@tsdaodao/base/src/Service/DataSource/DataSource";
-
 import "./index.css";
 
 interface IPorpsOrganizationalGroupNew {
@@ -23,7 +21,6 @@ interface IPorpsOrganizationalGroupNew {
     channelID: string;
     channelType: number;
   };
-  disableSelectList?: string[];
   showAdd?: boolean;
   render?: JSX.Element;
   remove?: () => void;
@@ -188,8 +185,7 @@ export class OrganizationalGroupNew extends Component<
       }
 
       OTree.push({
-        label:
-          employeesNum > 0 ? `${item.name}(${employeesNum})` : `${item.name}`,
+        label: employeesNum > 0 ? `${item.name}(${employeesNum})` : `${item.name}`,
         value: item.dept_id,
         key: item.short_no,
         icon: (
@@ -295,14 +291,12 @@ export class OrganizationalGroupNew extends Component<
 
   getFriendData() {
     const setFriendData: any[] = [];
-    WKApp.dataSource.contactsList
-      .filter((c) => c.status !== ContactsStatus.Blacklist)
-      .map((item) => {
-        setFriendData.push({
-          name: item.remark || item.name,
-          uid: item.uid,
-        });
+    WKApp.dataSource.contactsList.map((item) => {
+      setFriendData.push({
+        name: item.name,
+        uid: item.uid,
       });
+    });
     this.setState({
       friendData: [...setFriendData],
       friendSearchData: [...setFriendData],
@@ -405,18 +399,6 @@ export class OrganizationalGroupNew extends Component<
       console.log(this.treeRef);
       this.treeRef && this.treeRef.current.search(value);
     }
-  }
-
-  isDisableItem(id: string) {
-    const { disableSelectList } = this.props;
-    if (disableSelectList && disableSelectList.length > 0) {
-      for (const disableSelect of disableSelectList) {
-        if (disableSelect === id) {
-          return true;
-        }
-      }
-    }
-    return false;
   }
 
   render(): ReactNode {
@@ -549,7 +531,6 @@ export class OrganizationalGroupNew extends Component<
                           <Checkbox
                             key={friend.uid}
                             value={friend.uid}
-                            disabled={this.isDisableItem(friend.uid)}
                             className="friend-opt-item"
                           >
                             <WKAvatar

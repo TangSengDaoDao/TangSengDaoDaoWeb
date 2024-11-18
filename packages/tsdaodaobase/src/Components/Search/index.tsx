@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./index.css"
-import { Input } from "@douyinfe/semi-ui";
+import { Input } from "@douyinfe/semi-ui/lib/es/input";
 import  { IconSearchStroked } from '@douyinfe/semi-icons';
 
 export interface SearchProps {
