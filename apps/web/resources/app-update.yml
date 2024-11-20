@@ -1,0 +1,3 @@
+provider: generic
+url: https://api.botgate.cn/
+updaterCacheDirName: '@tsdaodaoweb-updater'
