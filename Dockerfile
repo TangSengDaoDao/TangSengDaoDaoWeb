@@ -1,4 +1,4 @@
-FROM node:18.17.1 as builder
+FROM node:20.9.0 as builder
 WORKDIR /app
 RUN curl -o- -L https://yarnpkg.com/install.sh | bash
 # RUN yarn config set registry https://registry.npm.taobao.org -g
