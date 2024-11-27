@@ -9,26 +9,26 @@
       "cache": false
     },
     "build": {
-      "outputs": [".next/**"]
+      "outputs": ["build/**"]
     },
     "build-ele": {
-      "outputs": [".next/**"],
+      "outputs": ["dist-ele/**"],
       "dependsOn": ["^build"]
     },
     "build-ele:mac": {
-      "outputs": [".next/**"],
+      "outputs": ["dist-ele/**"],
       "dependsOn": ["^build"]
     },
     "build-ele:win": {
-      "outputs": [".next/**"],
+      "outputs": ["dist-ele/**"],
       "dependsOn": ["^build"]
     },
     "build-ele:linux": {
-      "outputs": [".next/**"],
+      "outputs": ["dist-ele/**"],
       "dependsOn": ["^build"]
     },
     "build-ele:linux-arm64": {
-      "outputs": [".next/**"],
+      "outputs": ["dist-ele/**"],
       "dependsOn": ["^build"]
     },
     "lint": {
