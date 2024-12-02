@@ -187,6 +187,8 @@ export class Conversation extends Component<ConversationProps> implements Conver
             this.uploadReadedIfNeed()
         }
 
+        this.vm.markUnread()
+
     }
 
 
