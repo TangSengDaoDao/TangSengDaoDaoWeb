@@ -15,6 +15,7 @@ import { Channel, ChannelInfo, WKSDK } from "wukongimjssdk";
 import { ChannelInfoListener } from "wukongimjssdk";
 import { ChatMenus } from "../../App";
 import ConversationContext from "../../Components/Conversation/context";
+import { EndpointID } from "../../Service/Const";
 
 export interface ChatContentPageProps {
   channel: Channel;
@@ -50,6 +51,8 @@ export class ChatContentPage extends Component<
   componentWillUnmount() {
     WKSDK.shared().channelManager.removeListener(this.channelInfoListener);
   }
+
+
 
   render(): React.ReactNode {
     const { channel, initLocateMessageSeq } = this.props;
@@ -175,7 +178,17 @@ export default class ChatPage extends Component<any> {
     // WKApp.routeMain.replaceToRoot(<ChatContentPage vm={this.vm}></ChatContentPage>)
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() { }
+
+  
+
+  updateConversation(channel: Channel) {
+    const conversation = WKSDK.shared().conversationManager.findConversation(channel)
+    if(conversation) {
+      conversation.unread = 0
+      conversation.lastMessage = undefined
+    }
+  }
 
   render(): ReactNode {
     return (
@@ -235,6 +248,7 @@ export default class ChatPage extends Component<any> {
                       <ConversationList
                         select={WKApp.shared.openChannel}
                         conversations={vm.conversations}
+                        onClearMessages={this.vm.clearMessages.bind(this.vm)}
                         onClick={(conversation: ConversationWrap) => {
                           vm.selectedConversation = conversation;
                           WKApp.endpoints.showConversation(

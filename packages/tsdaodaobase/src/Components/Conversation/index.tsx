@@ -1,4 +1,4 @@
-import { Channel, ChannelTypeGroup, ChannelTypePerson, ConversationAction, WKSDK, Mention, Message, MessageContent, Reminder, ReminderType, Reply,MessageText } from "wukongimjssdk";
+import { Channel, ChannelTypeGroup, ChannelTypePerson, ConversationAction, WKSDK, Mention, Message, MessageContent, Reminder, ReminderType, Reply, MessageText } from "wukongimjssdk";
 import React, { Component, HTMLProps } from "react";
 import Provider from "../../Service/Provider";
 import ConversationVM from "./vm";
@@ -6,7 +6,7 @@ import "./index.css"
 import { MessageWrap } from "../../Service/Model";
 import WKApp from "../../App";
 import { RevokeCell } from "../../Messages/Revoke";
-import {  MessageContentTypeConst } from "../../Service/Const";
+import { MessageContentTypeConst } from "../../Service/Const";
 import ConversationContext from "./context";
 import MessageInput, { MentionModel, MessageInputContext } from "../MessageInput";
 import ContextMenus, { ContextMenusContext } from "../ContextMenus";
@@ -258,7 +258,7 @@ export class Conversation extends Component<ConversationProps> implements Conver
         }
         this.scrollTimer = window.setTimeout(() => {
             this.handleScrollEnd()
-        }, 500) 
+        }, 500)
         this.contextMenusContext.hide()
         const targetScrollTop = e.target.scrollTop;
         const scrollOffsetTop = e.target.scrollHeight - (targetScrollTop + e.target.clientHeight);
@@ -282,6 +282,14 @@ export class Conversation extends Component<ConversationProps> implements Conver
 
         this.updateBrowseToMessageSeqAndReminderDoneIfNeed()
 
+    }
+
+    // 判断内容是否满一屏幕
+    isFullScreen(viewport: HTMLElement | null) {
+        if (!viewport) {
+            return false
+        }
+        return viewport.scrollHeight > viewport.clientHeight
     }
 
     handleScrollEnd() {
@@ -421,7 +429,7 @@ export class Conversation extends Component<ConversationProps> implements Conver
         }
     }
     // 所有可见的消息
-    allVisiableMessages(vp: HTMLElement | null):Array<MessageWrap> {
+    allVisiableMessages(vp: HTMLElement | null): Array<MessageWrap> {
         const visiableMessages = new Array<MessageWrap>()
         if (!this.vm.messages || this.vm.messages.length === 0) {
             return visiableMessages
@@ -433,7 +441,7 @@ export class Conversation extends Component<ConversationProps> implements Conver
         if (!viewport) {
             return visiableMessages
         }
-        
+
         const targetScrollTop = viewport.scrollTop;
         for (let index = 0; index < this.vm.messages.length; index++) {
             const message = this.vm.messages[index];
@@ -505,7 +513,7 @@ export class Conversation extends Component<ConversationProps> implements Conver
                             <ConversationPositionView onScrollToBottom={async () => {
                                 return this.vm.onDownArrow()
                             }} onReminder={(reminder) => {
-                                return this.vm.syncMessages(reminder.messageSeq,()=>{
+                                return this.vm.syncMessages(reminder.messageSeq, () => {
                                     const newMessageWrap = this.vm.findMessageWithMessageSeq(reminder.messageSeq)
                                     if (newMessageWrap) {
                                         newMessageWrap.locateRemind = true // 设置为闪烁提醒

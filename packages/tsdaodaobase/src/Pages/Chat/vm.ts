@@ -8,6 +8,7 @@ import { ConversationWrap } from "../../Service/Model";
 import { ProviderListener } from "../../Service/Provider";
 import { animateScroll, scroller } from 'react-scroll';
 import { ProhibitwordsService } from "../../Service/ProhibitwordsService";
+import { EndpointID } from "../../Service/Const";
 
 export class ChatVM extends ProviderListener {
     conversations: ConversationWrap[] = new Array()
@@ -181,6 +182,21 @@ export class ChatVM extends ProviderListener {
             }
         }
     }
+
+      async clearMessages(channel: Channel) {
+    
+        const conversationWrap = this.findConversation(channel)
+        if (!conversationWrap) {
+          return
+        }
+        await WKApp.conversationProvider.clearConversationMessages(conversationWrap.conversation)
+        conversationWrap.conversation.lastMessage = undefined
+        conversationWrap.conversation.unread = 0
+        WKApp.endpointManager.invoke(EndpointID.clearChannelMessages, channel)
+        this.sortConversations()
+        this.notifyListener()
+      }
+
 
     setConnectTitleWithConnectStatus(connectStatus: ConnectStatus) {
         if (connectStatus === ConnectStatus.Connected) {

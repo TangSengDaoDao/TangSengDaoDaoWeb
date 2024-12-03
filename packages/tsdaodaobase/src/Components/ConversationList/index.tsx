@@ -21,6 +21,7 @@ export interface ConversationListProps {
     conversations: ConversationWrap[]
     select?: Channel
     onClick?: (conversation: ConversationWrap) => void
+    onClearMessages?: (channel: Channel) => void
 }
 
 export interface ConversationListState {
@@ -234,14 +235,9 @@ export default class ConversationList extends Component<ConversationListProps, C
     }
 
     async onClearMessages(channel: Channel) {
-        const conversation = WKSDK.shared().conversationManager.findConversation(channel)
-        if (!conversation) {
-            return
+        if(this.props.onClearMessages) {
+            this.props.onClearMessages(channel)
         }
-        await WKApp.conversationProvider.clearConversationMessages(conversation)
-        conversation.lastMessage = undefined
-        WKApp.endpointManager.invoke(EndpointID.clearChannelMessages, channel)
-        this.setState({})
     }
 
     render() {
