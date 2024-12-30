@@ -256,9 +256,7 @@ export class ChatVM extends ProviderListener {
         if (conversations && conversations.length > 0) {
             for (const conversation of conversations) {
                 if(conversation.lastMessage?.content && conversation.lastMessage?.contentType == MessageContentType.text) {
-                    if (conversation.lastMessage.content.text) {
-                        conversation.lastMessage.content.text = ProhibitwordsService.shared.filter(conversation.lastMessage.content.text )
-                    }
+                    conversation.lastMessage.content.text = ProhibitwordsService.shared.filter(conversation.lastMessage.content.text)
                 }
                 conversationWraps.push(new ConversationWrap(conversation))
             }

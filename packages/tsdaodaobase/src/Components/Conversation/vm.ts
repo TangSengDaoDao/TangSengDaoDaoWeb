@@ -131,7 +131,7 @@ export default class ConversationVM extends ProviderListener {
         }
     }
 
-
+  
     // 选中消息
     checkedMessage(message: Message, checked: boolean): void {
         let messageWrap = this.findMessageWithClientMsgNo(message.clientMsgNo)
@@ -364,9 +364,7 @@ export default class ConversationVM extends ProviderListener {
             this.orgUnreadCount = unread
             this.unreadCount = unread
             this.currentConversation = conversation
-            if (conversation.lastMessage) {
-                this.updateLastMessageIfNeed(new MessageWrap(conversation.lastMessage))
-            }
+          
 
             this.shouldShowHistorySplit = unread > 0
             if (unread > 0) {
@@ -376,6 +374,10 @@ export default class ConversationVM extends ProviderListener {
 
             } else {
                 this.browseToMessageSeq = conversation.lastMessage?.messageSeq || 0
+            }
+
+            if (conversation.lastMessage) {
+                this.updateLastMessageIfNeed(new MessageWrap(conversation.lastMessage))
             }
 
             WKSDK.shared().conversationManager.openConversation = conversation
@@ -681,7 +683,7 @@ export default class ConversationVM extends ProviderListener {
             this.lastMessage = message
             change = true
         }
-        if (change && this.showScrollToBottomBtn) {
+        if (change) {
             this.refreshNewMsgCount()
         }
     }
@@ -707,7 +709,6 @@ export default class ConversationVM extends ProviderListener {
         if (oldUnreadCount != this.unreadCount) {
             const conversation = WKSDK.shared().conversationManager.findConversation(this.channel)
             if (conversation) {
-                console.log("this.unreadCount--->",this.unreadCount)
                 conversation.unread = this.unreadCount
                 WKSDK.shared().conversationManager.notifyConversationListeners(conversation, ConversationAction.update)
             }

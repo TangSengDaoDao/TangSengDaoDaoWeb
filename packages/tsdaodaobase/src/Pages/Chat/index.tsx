@@ -182,14 +182,6 @@ export default class ChatPage extends Component<any> {
 
   
 
-  updateConversation(channel: Channel) {
-    const conversation = WKSDK.shared().conversationManager.findConversation(channel)
-    if(conversation) {
-      conversation.unread = 0
-      conversation.lastMessage = undefined
-    }
-  }
-
   render(): ReactNode {
     return (
       <Provider
