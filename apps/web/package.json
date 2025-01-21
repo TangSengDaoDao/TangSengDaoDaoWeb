@@ -4,6 +4,10 @@
   "private": true,
   "main": "out-election/main/index.js",
   "homepage": ".",
+  "author": {
+    "name": "budou",
+    "email": "1769794040@qq.com"
+  },
   "scripts": {
     "dev-web": "rsbuild dev",
     "dev-ele": "concurrently -k -n=web,ele -c=green,blue \"yarn dev-web\" \"wait-on tcp:127.0.0.1:3000 && npm-run-all watch\"",
