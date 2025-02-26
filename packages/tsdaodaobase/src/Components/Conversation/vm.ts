@@ -24,7 +24,7 @@ export default class ConversationVM extends ProviderListener {
     currentConversation?: Conversation // 当前最近会话
     messagesOfOrigin: MessageWrap[] = [] // 原始消息集合（不包含时间消息等本地消息）
     browseToMessageSeq: number = 0 //  已经预览到的最新的messageSeq
-    initLocateMessageSeq: number = 0 // 初始定位的消息messageSeq 0为不定位
+    initLocateMessageSeq?: number = 0 // 初始定位的消息messageSeq 0为不定位
     shouldShowHistorySplit: boolean = false // 是否应该显示历史消息分割线
     private _editOn: boolean = false // 是否开启编辑模式
     orgUnreadCount: number = 0 // 原未读数量
@@ -57,10 +57,14 @@ export default class ConversationVM extends ProviderListener {
 
     onFirstMessagesLoaded?: Function // 第一屏消息已加载完成
 
-    constructor(channel: Channel) {
+    constructor(channel: Channel, initLocateMessageSeq?: number) {
         super()
         this.channel = channel
-        // this.initLocateMessageSeq = initLocateMessageSeq
+        if(initLocateMessageSeq==0) {
+            this.initLocateMessageSeq = undefined
+        }else {
+            this.initLocateMessageSeq = initLocateMessageSeq
+        }
     }
 
     get currentReplyMessage() {
@@ -131,7 +135,7 @@ export default class ConversationVM extends ProviderListener {
         }
     }
 
-  
+
     // 选中消息
     checkedMessage(message: Message, checked: boolean): void {
         let messageWrap = this.findMessageWithClientMsgNo(message.clientMsgNo)
@@ -255,11 +259,11 @@ export default class ConversationVM extends ProviderListener {
     didMount(): void {
 
         this.conversationListener = (conversation: Conversation, action: ConversationAction) => {
-            if(!conversation.channel.isEqual(this.channel)) {
+            if (!conversation.channel.isEqual(this.channel)) {
                 return
             }
-            if(action == ConversationAction.update) {
-                console.log("update-2--->",conversation.unread)
+            if (action == ConversationAction.update) {
+                console.log("update-2--->", conversation.unread)
                 this.unreadCount = conversation.unread
             }
         }
@@ -315,8 +319,8 @@ export default class ConversationVM extends ProviderListener {
 
         WKApp.endpointManager.setMethod(EndpointID.clearChannelMessages, (channel: Channel) => {
             if (channel.isEqual(this.channel)) {
-                if(this.messagesOfOrigin.length > 0) {
-                    this.browseToMessageSeq = this.messagesOfOrigin[this.messagesOfOrigin.length-1].messageSeq
+                if (this.messagesOfOrigin.length > 0) {
+                    this.browseToMessageSeq = this.messagesOfOrigin[this.messagesOfOrigin.length - 1].messageSeq
                 }
                 this.messagesOfOrigin = []
                 this.messages = []
@@ -364,7 +368,7 @@ export default class ConversationVM extends ProviderListener {
             this.orgUnreadCount = unread
             this.unreadCount = unread
             this.currentConversation = conversation
-          
+
 
             this.shouldShowHistorySplit = unread > 0
             if (unread > 0) {
@@ -383,7 +387,7 @@ export default class ConversationVM extends ProviderListener {
             WKSDK.shared().conversationManager.openConversation = conversation
         }
 
-        this.requestMessagesOfFirstPage(undefined, () => {
+        this.requestMessagesOfFirstPage(this.initLocateMessageSeq, () => {
             if (this.onFirstMessagesLoaded) {
                 this.onFirstMessagesLoaded()
             }
@@ -404,8 +408,8 @@ export default class ConversationVM extends ProviderListener {
     }
 
     // 加载频道信息完成
-   async loadChannelInfoFinished() {
-        if(this.channel.channelType !== ChannelTypeGroup) {
+    async loadChannelInfoFinished() {
+        if (this.channel.channelType !== ChannelTypeGroup) {
             return
         }
         this.reloadSubscribers()
@@ -416,25 +420,25 @@ export default class ConversationVM extends ProviderListener {
             this.reloadSubscribers()
         })
 
-        if(this.channelInfo?.orgData?.group_type == SuperGroup) { 
+        if (this.channelInfo?.orgData?.group_type == SuperGroup) {
             // 如果是超级群则只获取第一页成员
-          this.subscribers = await this.getFirstPageMembers()
-          WKSDK.shared().channelManager.subscribeCacheMap.set(this.channel.getChannelKey(), this.subscribers)
-          WKSDK.shared().channelManager.notifySubscribeChangeListeners(this.channel)
-          this.notifyListener()
-        }else {
+            this.subscribers = await this.getFirstPageMembers()
+            WKSDK.shared().channelManager.subscribeCacheMap.set(this.channel.getChannelKey(), this.subscribers)
+            WKSDK.shared().channelManager.notifySubscribeChangeListeners(this.channel)
+            this.notifyListener()
+        } else {
             WKSDK.shared().channelManager.syncSubscribes(this.channel)
         }
 
-       
+
     }
 
     // 获取第一页成员列表（超大群）
     getFirstPageMembers() {
-      return WKApp.dataSource.channelDataSource.subscribers(this.channel,{
-              limit: 100,
-              page: 1
-         })
+        return WKApp.dataSource.channelDataSource.subscribers(this.channel, {
+            limit: 100,
+            page: 1
+        })
     }
 
     // 标记提醒已完成
@@ -690,7 +694,7 @@ export default class ConversationVM extends ProviderListener {
 
     // 刷新新消息数量
     refreshNewMsgCount() {
-       
+
         const oldUnreadCount = this.unreadCount
         if (this.browseToMessageSeq == 0) {
             this.unreadCount = 0
@@ -1023,7 +1027,7 @@ export default class ConversationVM extends ProviderListener {
                     }
                 }
                 newMessages.push(message)
-                if (shouldShowHistorySplit && this.initLocateMessageSeq > 0 && message.messageSeq === this.initLocateMessageSeq) {
+                if (shouldShowHistorySplit && this.initLocateMessageSeq && this.initLocateMessageSeq > 0 && message.messageSeq === this.initLocateMessageSeq) {
                     newMessages.push(new MessageWrap(this.getHistorySplit()))
                 }
             }

@@ -3,9 +3,9 @@ import { Conversation } from "../../Components/Conversation";
 import ConversationList from "../../Components/ConversationList";
 import Provider from "../../Service/Provider";
 
-import { Spin, Button, Popover } from "@douyinfe/semi-ui";
-import { IconPlus } from "@douyinfe/semi-icons";
-import { ChatVM } from "./vm";
+import { Spin, Modal, Popover } from "@douyinfe/semi-ui";
+import { IconPlus, IconSearch } from "@douyinfe/semi-icons";
+import { ChatVM, handleGlobalSearchClick } from "./vm";
 import "./index.css";
 import { ConversationWrap } from "../../Service/Model";
 import WKApp, { ThemeMode } from "../../App";
@@ -15,11 +15,12 @@ import { Channel, ChannelInfo, WKSDK } from "wukongimjssdk";
 import { ChannelInfoListener } from "wukongimjssdk";
 import { ChatMenus } from "../../App";
 import ConversationContext from "../../Components/Conversation/context";
-import { EndpointID } from "../../Service/Const";
+import GlobalSearch from "../../Components/GlobalSearch";
+import { ShowConversationOptions } from "../../EndpointCommon";
 
 export interface ChatContentPageProps {
   channel: Channel;
-  initLocateMessageSeq?: number;
+  initLocateMessageSeq?: number; // 打开时定位到某条消息
 }
 
 export interface ChatContentPageState {
@@ -180,7 +181,7 @@ export default class ChatPage extends Component<any> {
 
   componentWillUnmount() { }
 
-  
+
 
   render(): ReactNode {
     return (
@@ -201,6 +202,14 @@ export default class ChatPage extends Component<any> {
                 <div className="wk-chat-content-left">
                   <div className="wk-chat-search">
                     <div className="wk-chat-title">{vm.connectTitle}</div>
+                    <div
+                      style={{ marginRight: '20px', alignItems: 'center', display: 'flex', cursor: 'pointer' }}
+                      onClick={() => {
+                        vm.showGlobalSearch = true;
+                      }}
+                    >
+                      <IconSearch size="large" />
+                    </div>
                     <Popover
                       onClickOutSide={() => {
                         vm.showAddPopover = false;
@@ -220,6 +229,7 @@ export default class ChatPage extends Component<any> {
                     >
                       <div
                         className="wk-chat-search-add"
+                        style={{ alignItems: 'center', display: 'flex' }}
                         onClick={() => {
                           vm.showAddPopover = !vm.showAddPopover;
                         }}
@@ -253,6 +263,23 @@ export default class ChatPage extends Component<any> {
                   </div>
                 </div>
               </div>
+              <Modal
+                visible={vm.showGlobalSearch} 
+                closeOnEsc={true} 
+                onCancel={() => {
+                  vm.showGlobalSearch = false
+                }}
+                footer={null}
+                width="80%"
+                >
+                <div style={{ marginTop: '30px' }}>
+                <GlobalSearch onClick={(item,type:string)=>{
+                    handleGlobalSearchClick(item,type,()=>{
+                      vm.showGlobalSearch = false
+                    })
+                }}/>
+                </div>
+              </Modal>
             </div>
           );
         }}

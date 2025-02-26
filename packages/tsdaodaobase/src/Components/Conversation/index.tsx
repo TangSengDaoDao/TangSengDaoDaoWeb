@@ -480,12 +480,12 @@ export class Conversation extends Component<ConversationProps> implements Conver
     }
 
     render() {
-        const { chatBg, channel } = this.props
+        const { chatBg, channel,initLocateMessageSeq } = this.props
 
         const channelInfo = WKSDK.shared().channelManager.getChannelInfo(channel)
 
         return <Provider create={() => {
-            this.vm = new ConversationVM(channel)
+            this.vm = new ConversationVM(channel,initLocateMessageSeq)
             return this.vm
         }} render={(vm: ConversationVM) => {
             return <>

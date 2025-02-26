@@ -35,6 +35,7 @@ export class GlobalModalOptions {
   footer?: ReactNode;
   className?: string;
   closable?: boolean;
+  onCancel?: () => void;
 }
 
 export interface WKBaseProps {
@@ -248,6 +249,7 @@ export default class WKBase
           visible={this.state.showGlobalModal}
           width={this.state.globalModalOptions?.width}
           footer={this.state.globalModalOptions?.footer}
+          onCancel={this.state.globalModalOptions?.onCancel}
         >
           {this.state.globalModalOptions?.body}
         </Modal>

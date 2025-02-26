@@ -9,6 +9,7 @@ import { ProviderListener } from "../../Service/Provider";
 import { animateScroll, scroller } from 'react-scroll';
 import { ProhibitwordsService } from "../../Service/ProhibitwordsService";
 import { EndpointID } from "../../Service/Const";
+import { ShowConversationOptions } from "../../EndpointCommon";
 
 export class ChatVM extends ProviderListener {
     conversations: ConversationWrap[] = new Array()
@@ -22,6 +23,7 @@ export class ChatVM extends ProviderListener {
     private channelListener!: ChannelInfoListener
     private messageDeleteListener!: MessageDeleteListener
     private conversationListID = "wk-conversationlist"
+    private _showGlobalSearch = false // 是否显示全局搜索
 
 
     set showAddPopover(v: boolean) {
@@ -31,6 +33,15 @@ export class ChatVM extends ProviderListener {
 
     get showAddPopover() {
         return this._showAddPopover
+    }
+
+    set showGlobalSearch(v: boolean) {
+        this._showGlobalSearch = v
+        this.notifyListener()
+    }
+
+    get showGlobalSearch() {
+        return this._showGlobalSearch
     }
 
     set selectedConversation(v: ConversationWrap | undefined) {
@@ -64,7 +75,7 @@ export class ChatVM extends ProviderListener {
         // 根据连接状态设置标题
         this.setConnectTitleWithConnectStatus(WKSDK.shared().connectManager.status)
 
-        if(WKSDK.shared().connectManager.status == ConnectStatus.Connected){ // 如果已经连接则直接加载
+        if (WKSDK.shared().connectManager.status == ConnectStatus.Connected) { // 如果已经连接则直接加载
             this.reloadRequestConversationList()
         }
 
@@ -87,7 +98,7 @@ export class ChatVM extends ProviderListener {
             }
             if (action === ConversationAction.add) {
                 console.log("ConversationAction-----add")
-                if(conversation.lastMessage?.content && conversation.lastMessage?.contentType === MessageContentType.text) {
+                if (conversation.lastMessage?.content && conversation.lastMessage?.contentType === MessageContentType.text) {
                     conversation.lastMessage.content.text = ProhibitwordsService.shared.filter(conversation.lastMessage?.content.text)
                 }
                 this.conversations = [new ConversationWrap(conversation), ...this.conversations]
@@ -97,7 +108,7 @@ export class ChatVM extends ProviderListener {
                 const existConversation = this.findConversation(conversation.channel)
                 if (existConversation) {
                     existConversation.conversation = conversation
-                    if(existConversation.lastMessage?.content && existConversation.lastMessage?.contentType === MessageContentType.text) {
+                    if (existConversation.lastMessage?.content && existConversation.lastMessage?.contentType === MessageContentType.text) {
                         existConversation.lastMessage.content.text = ProhibitwordsService.shared.filter(existConversation.lastMessage?.content.text)
                     }
                 }
@@ -183,11 +194,11 @@ export class ChatVM extends ProviderListener {
         }
     }
 
-      async clearMessages(channel: Channel) {
-    
+    async clearMessages(channel: Channel) {
+
         const conversationWrap = this.findConversation(channel)
         if (!conversationWrap) {
-          return
+            return
         }
         await WKApp.conversationProvider.clearConversationMessages(conversationWrap.conversation)
         conversationWrap.conversation.lastMessage = undefined
@@ -195,7 +206,7 @@ export class ChatVM extends ProviderListener {
         WKApp.endpointManager.invoke(EndpointID.clearChannelMessages, channel)
         this.sortConversations()
         this.notifyListener()
-      }
+    }
 
 
     setConnectTitleWithConnectStatus(connectStatus: ConnectStatus) {
@@ -255,7 +266,7 @@ export class ChatVM extends ProviderListener {
         const conversations = await WKSDK.shared().conversationManager.sync({})
         if (conversations && conversations.length > 0) {
             for (const conversation of conversations) {
-                if(conversation.lastMessage?.content && conversation.lastMessage?.contentType == MessageContentType.text) {
+                if (conversation.lastMessage?.content && conversation.lastMessage?.contentType == MessageContentType.text) {
                     conversation.lastMessage.content.text = ProhibitwordsService.shared.filter(conversation.lastMessage.content.text)
                 }
                 conversationWraps.push(new ConversationWrap(conversation))
@@ -267,5 +278,33 @@ export class ChatVM extends ProviderListener {
         this.notifyListener()
 
         WKApp.menus.refresh()
+    }
+}
+
+
+// 处理搜索内容点击事件
+export function handleGlobalSearchClick(item: any, type: string,hideModal?:()=>void) {
+    if (type === "contacts" || type === "group") {
+        if(hideModal){
+            hideModal()
+        }
+        WKApp.endpoints.showConversation(new Channel(item.channel_id, item.channel_type))
+    } else if (type === "message") {
+        const opts = new ShowConversationOptions()
+        opts.initLocateMessageSeq = item.message_seq
+        if(hideModal){
+            hideModal()
+        }
+        WKApp.endpoints.showConversation(new Channel(item.channel.channel_id, item.channel.channel_type), opts)
+    } else if (type === "file") {
+        // 下载文件
+        const payload = item.payload
+        let downloadURL = WKApp.dataSource.commonDataSource.getImageURL(payload.url || '')
+        if (downloadURL.indexOf("?") != -1) {
+            downloadURL += "&filename=" + payload.name
+        } else {
+            downloadURL += "?filename=" + payload.name
+        }
+        window.open(`${downloadURL}`, 'top');
     }
 }

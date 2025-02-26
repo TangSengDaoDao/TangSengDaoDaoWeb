@@ -11,6 +11,11 @@ export class MessageContextMenus {
   onClick?: () => void;
 }
 
+export class ShowConversationOptions {
+  // 聊天消息定位的messageSeq
+  initLocateMessageSeq?: number;
+}
+
 export class EndpointCommon {
   private _onLogins: VoidFunction[] = []; // 登录成功
 
@@ -32,10 +37,11 @@ export class EndpointCommon {
     }
   }
 
-  showConversation(channel: Channel) {
+  showConversation(channel: Channel, opts?: ShowConversationOptions) {
     WKApp.shared.openChannel = channel;
     EndpointManager.shared.invoke(EndpointID.showConversation, {
       channel: channel,
+      opts: opts,
     });
     WKApp.shared.notifyListener();
   }
@@ -65,21 +71,38 @@ export class EndpointCommon {
       EndpointID.showConversation,
       (param: any) => {
         const channel = param.channel as Channel;
-        const conversation =
-          WKSDK.shared().conversationManager.findConversation(channel);
-        let initLocateMessageSeq = 0;
-        if (
-          conversation &&
-          conversation.lastMessage &&
-          conversation.unread > 0 &&
-          conversation.lastMessage.messageSeq > conversation.unread
-        ) {
-          initLocateMessageSeq =
-            conversation.lastMessage.messageSeq - conversation.unread;
+        let opts: ShowConversationOptions = {}
+        if (param.opts) {
+          opts = param.opts
         }
+
+        let initLocateMessageSeq = 0;
+        if (opts && opts.initLocateMessageSeq && opts.initLocateMessageSeq > 0) {
+          initLocateMessageSeq = opts.initLocateMessageSeq;
+        }
+
+        if (initLocateMessageSeq <= 0) {
+          const conversation =
+            WKSDK.shared().conversationManager.findConversation(channel);
+          if (
+            conversation &&
+            conversation.lastMessage &&
+            conversation.unread > 0 &&
+            conversation.lastMessage.messageSeq > conversation.unread
+          ) {
+            initLocateMessageSeq =
+              conversation.lastMessage.messageSeq - conversation.unread;
+          }
+        }
+
+        let key = channel.getChannelKey()
+        if (initLocateMessageSeq > 0) {
+          key = `${key}-${initLocateMessageSeq}`
+        }
+
         WKApp.routeRight.replaceToRoot(
           <ChatContentPage
-            key={channel.getChannelKey()}
+            key={key}
             channel={channel}
             initLocateMessageSeq={initLocateMessageSeq}
           ></ChatContentPage>

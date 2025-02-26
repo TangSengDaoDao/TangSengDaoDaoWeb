@@ -1,0 +1,53 @@
+
+.wk-item-message {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+
+}
+
+.wk-item-message:hover {
+    background-color: #f0f0f0; /* Change this color to your desired hover color */
+}
+body[theme-mode=dark] .wk-item-message:hover {
+    background-color: #333333; /* Change this color to your desired hover color */
+}
+
+.wk-item-message-content {
+    display: grid;
+    grid-template-columns: 1fr; /* 两列，左边自适应，右边自动宽度 */
+    grid-template-rows: auto auto; /* 两行 */
+    gap: 0px; 
+    min-width: 200px;
+    max-width: 420px;
+
+}
+
+.wk-item-message-name {
+    margin-left: 15px;
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+    grid-column: 1 / 2; /* 第一列 */
+    grid-row: 1 / 2; /* 第一行 */
+}
+
+body[theme-mode=dark] .wk-item-message-name {
+    color: white;
+}
+
+
+.wk-item-message-digest {
+    margin-left: 15px;
+    color: #999;
+    white-space: nowrap; /* 不换行 */
+    overflow: hidden; /* 超出部分隐藏 */
+    text-overflow: ellipsis; /* 超出部分以省略号显示 */
+}
+
+mark {
+    background-color: transparent; /* 移除默认背景色 */
+    color: var(--wk-color-theme); /* 设置文本颜色为红色，可以根据需要更改 */
+}

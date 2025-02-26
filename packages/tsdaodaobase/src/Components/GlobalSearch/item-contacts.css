@@ -1,0 +1,34 @@
+
+.wk-item-contacts {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+
+}
+
+.wk-item-contacts:hover {
+    background-color: #f0f0f0; /* Change this color to your desired hover color */
+}
+
+body[theme-mode=dark] .wk-item-contacts:hover {
+    background-color: #333333; /* Change this color to your desired hover color */
+}
+
+.wk-item-contacts-name {
+    margin-left: 15px;
+    color: var(--wk-text-item);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+body[theme-mode=dark] .wk-item-contacts-name {
+    color: white;
+}
+
+
+mark {
+    background-color: transparent; /* 移除默认背景色 */
+    color: var(--wk-color-theme); /* 设置文本颜色为红色，可以根据需要更改 */
+}

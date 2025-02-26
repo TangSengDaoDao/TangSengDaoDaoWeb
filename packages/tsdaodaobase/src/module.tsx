@@ -80,6 +80,8 @@ import { ScreenshotCell, ScreenshotContent } from "./Messages/Screenshot";
 import ImageToolbar from "./Components/ImageToolbar";
 import { ProhibitwordsService } from "./Service/ProhibitwordsService";
 import { SubscriberList } from "./Components/Subscribers/list";
+import GlobalSearch from "./Components/GlobalSearch";
+import { handleGlobalSearchClick } from "./Pages/Chat/vm";
 
 export default class BaseModule implements IModule {
   messageTone?: Howl;
@@ -1209,6 +1211,40 @@ export default class BaseModule implements IModule {
         });
       },
       1000
+    );
+
+    WKApp.shared.channelSettingRegister(
+      "channel.base.settingMessageHistory",
+      (context) => {
+        const data = context.routeData() as ChannelSettingRouteData;
+        const channel = data.channel
+
+        return new Section({
+          rows: [
+            new Row({
+              cell: ListItem,
+              properties: {
+                title: "查找聊天内容",
+                onClick: () => {
+                  WKApp.shared.baseContext.showGlobalModal({
+                    body: <GlobalSearch channel={channel} onClick={(item: any, type: string) => {
+                      handleGlobalSearchClick(item, type,()=>{
+                        WKApp.shared.baseContext.hideGlobalModal()
+                      })
+                    }} />,
+                    width: "80%",
+                    height: "80%",
+                    onCancel: () => {
+                      WKApp.shared.baseContext.hideGlobalModal()
+                    }
+                  })
+                },
+              },
+            }),
+          ],
+        });
+      },
+      1100
     );
 
     WKApp.shared.channelSettingRegister(
