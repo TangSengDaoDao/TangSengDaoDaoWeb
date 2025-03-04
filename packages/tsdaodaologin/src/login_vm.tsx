@@ -124,12 +124,26 @@ export class LoginVM extends ProviderListener {
     async requestLoginWithUsernameAndPwd(username: string, password: string) {
         this.loginLoading = true
         this.notifyListener()
-        return WKApp.apiClient.post(`user/login`, { "username": username, "password": password, "flag": 1 }).then((result)=>{
+        const device = this.getDevice()
+        let deviceFlag = 1 // web
+        // if(WKApp.shared.isPC) {
+        //     deviceFlag = 2 // pc
+
+        // }
+        return WKApp.apiClient.post(`user/login`, { "username": username, "password": password, "flag": deviceFlag,"device":device }).then((result)=>{
             this.loginSuccess(result)
         }).finally(()=>{
             this.loginLoading = false
             this.notifyListener()
         }) // flag 0.app 1.pc
+    }
+
+    getDevice() {
+        return {
+            "device_id": WKApp.shared.deviceId,
+            "device_name": WKApp.shared.deviceName,
+            "device_model": WKApp.shared.deviceModel,
+        }
     }
 
     loginSuccess(data:any) {
@@ -151,7 +165,10 @@ export class LoginVM extends ProviderListener {
         }
         this.qrcodeLoading = true
         this.notifyListener()
-        WKApp.apiClient.get('user/loginuuid').then((result) => {
+        const device = this.getDevice()
+        WKApp.apiClient.get('user/loginuuid',{
+            param: device,
+        }).then((result) => {
             this.uuid = result.uuid
             this.qrcodeLoading = false
             this.qrcode = result.qrcode
