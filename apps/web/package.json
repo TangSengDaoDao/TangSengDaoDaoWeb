@@ -1,6 +1,6 @@
 {
   "name": "@tsdaodao/web",
-  "version": "1.0.0",
+  "version": "1.0.6",
   "private": true,
   "main": "out-election/main/index.js",
   "homepage": ".",
@@ -39,6 +39,7 @@
     "electron-screenshots": "^0.5.26",
     "howler": "^2.2.4",
     "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "react-app-rewired": "^2.1.8",
     "react-lazyload": "^3.2.0",
     "react-mentions": "^4.3.1",
@@ -60,7 +61,8 @@
     "@types/howler": "^2.2.11",
     "@types/jest": "^24.0.0",
     "@types/node": "^20.10.5",
-    "@types/react": "^16.9.0",
+    "@types/react": "^17.0.2",
+    "@types/react-dom": "^17.0.2",
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
     "customize-cra": "^1.0.0",
@@ -70,7 +72,6 @@
     "kill-port": "^2.0.1",
     "npm-run-all": "^4.1.5",
     "postcss-normalize": "^10.0.1",
-    "react-dom": "^17.0.2",
     "react-scripts": "5.0.0",
     "terser-webpack-plugin": "^5.3.9",
     "tsc-watch": "^6.0.4",
@@ -80,17 +81,5 @@
   },
   "eslintConfig": {
     "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      "> 1%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
   }
 }

@@ -8,6 +8,8 @@ import { resolve } from 'path';
 
 const { publicVars } = loadEnv({ prefixes: ['REACT_APP_'] });
 const PUBLIC_URL = '.'
+const APP_NAME = "唐僧叨叨"
+
 export default defineConfig({
   source: {
     define: {
@@ -15,7 +17,8 @@ export default defineConfig({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       'process.env.PREVIEW': JSON.stringify(process.env.PREVIEW),
       'process.env.PUBLIC_URL': JSON.stringify(PUBLIC_URL),
-      'process.env.REACT_APP_VERSION': JSON.stringify(process.env.npm_package_version),
+      "process.env.APP_NAME": JSON.stringify(APP_NAME),
+      'process.env.APP_VERSION': JSON.stringify(process.env.npm_package_version),
     },
     alias: {
       '@': resolve(__dirname, 'src'),
@@ -25,7 +28,7 @@ export default defineConfig({
     template: resolve(__dirname, 'public/index.html'),
     templateParameters: {
       PUBLIC_URL,
-      APP_TITLE: '唐僧叨叨'
+      title: APP_NAME
     },
   },
   tools: {

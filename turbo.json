@@ -2,10 +2,12 @@
   "$schema": "https://turborepo.org/schema.json",
   "tasks": {
     "dev-web": {
-      "cache": false
+      "cache": false,
+      "persistent": true
     },
     "dev-ele": {
-      "cache": false
+      "cache": false,
+      "persistent": true
     },
     "build-web": {
       "outputs": ["build/**"]
@@ -14,27 +16,28 @@
       "outputs": ["build/**"]
     },
     "build-ele": {
-      "outputs": ["dist-ele/**"],
-      "dependsOn": ["^build-web"]
+      "outputs": ["build/**","dist-ele/**"],
+      "dependsOn": ["build-web"]
     },
     "build-ele:mac": {
-      "outputs": ["dist-ele/**"],
-      "dependsOn": ["^build-web"]
+      "outputs": ["build/**","dist-ele/**"],
+      "dependsOn": ["build-web"]
     },
     "build-ele:win": {
-      "outputs": ["dist-ele/**"],
-      "dependsOn": ["^build-web"]
+      "outputs": ["build/**","dist-ele/**"],
+      "dependsOn": ["build-web"]
     },
     "build-ele:linux": {
-      "outputs": ["dist-ele/**"],
-      "dependsOn": ["^build-web"]
+      "outputs": ["build/**","dist-ele/**"],
+      "dependsOn": ["build-web"]
     },
     "build-ele:linux-arm64": {
-      "outputs": ["dist-ele/**"],
-      "dependsOn": ["^build-web"]
+      "outputs": ["build/**","dist-ele/**"],
+      "dependsOn": ["build-web"]
     },
     "preview": {
-      "cache": false
+      "cache": false,
+      "persistent": true
     },
     "lint": {
       "outputs": []

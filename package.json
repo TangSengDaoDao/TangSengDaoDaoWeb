@@ -10,8 +10,8 @@
     "react-error-overlay": "6.0.11"
   },
   "scripts": {
-    "dev-web": "turbo run dev-web --parallel",
-    "dev-ele": "turbo run dev-ele --parallel",
+    "dev-web": "turbo run dev-web",
+    "dev-ele": "turbo run dev-ele",
     "build-web": "turbo run build-web",
     "build-web:rsdoctor": "turbo run build-web:rsdoctor",
     "build-ele": "turbo run build-ele",
@@ -30,7 +30,7 @@
     "eslint-config-custom": "*",
     "prettier": "^2.5.1",
     "rimraf": "^5.0.5",
-    "turbo": "2.2.1"
+    "turbo": "2.4.4"
   },
   "packageManager": "yarn@1.22.22",
   "engines": {

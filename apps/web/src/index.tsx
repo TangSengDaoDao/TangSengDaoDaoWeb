@@ -13,7 +13,7 @@ import { APP_API_URL, APP_VERSION, APP_NAME } from "@/config";
 import "@/index.css";
 
 WKApp.apiClient.config.apiURL = APP_API_URL;
-WKApp.config.appName = APP_NAME;
+WKApp.config.appName = `${APP_NAME}`;
 WKApp.config.appVersion = `${APP_VERSION}`;
 
 WKApp.apiClient.config.tokenCallback = () => {

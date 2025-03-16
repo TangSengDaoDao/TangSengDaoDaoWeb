@@ -18,7 +18,7 @@ if(!IS_PREVIEW && IS_PORD){
   APP_API_URL = "/api/v1/";
 }
 
-const APP_VERSION = process.env.REACT_APP_VERSION || "0.0.0";
-const APP_NAME = "唐僧叨叨"
+const APP_VERSION = process.env.APP_VERSION || "0.0.0";
+const APP_NAME = process.env.APP_NAME || "唐僧叨叨";
 
 export {APP_API_URL, APP_VERSION, APP_NAME}
