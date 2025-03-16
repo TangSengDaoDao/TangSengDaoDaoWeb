@@ -49,11 +49,13 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
-    "@rsbuild/core": "^1.0.4",
-    "@rsbuild/plugin-react": "^1.0.2",
-    "@rsbuild/plugin-sass": "^1.0.1",
-    "@rsbuild/plugin-svgr": "^1.0.2",
-    "@rsdoctor/rspack-plugin": "^0.4.2",
+    "@douyinfe/semi-rspack-plugin": "^2.76.0",
+    "@rsbuild/core": "^1.2.19",
+    "@rsbuild/plugin-react": "^1.1.1",
+    "@rsbuild/plugin-sass": "^1.2.2",
+    "@rsbuild/plugin-svgr": "^1.0.7",
+    "@rsdoctor/rspack-plugin": "^0.4.13",
+    "@semi-bot/semi-theme-tsdd": "^1.0.1",
     "@tauri-apps/cli": "1.1.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",

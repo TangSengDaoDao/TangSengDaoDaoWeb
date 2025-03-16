@@ -1,7 +1,10 @@
 import { defineConfig, loadEnv } from '@rsbuild/core';
 import { pluginReact } from '@rsbuild/plugin-react';
 import { pluginSvgr } from '@rsbuild/plugin-svgr';
-import { RsdoctorRspackPlugin } from '@rsdoctor/rspack-plugin';
+import { pluginSass } from "@rsbuild/plugin-sass";
+import { RsdoctorRspackPlugin } from "@rsdoctor/rspack-plugin";
+import { SemiRspackPlugin } from "@douyinfe/semi-rspack-plugin";
+
 
 import { resolve } from 'path';
 
@@ -38,14 +41,30 @@ export default defineConfig({
         appendPlugins(
           new RsdoctorRspackPlugin({
             // 插件选项
+            supports:{
+              generateTileGraph: true
+            }
           }),
         );
       }
+      appendPlugins(
+        new SemiRspackPlugin({
+          theme: '@semi-bot/semi-theme-tsdd'
+        })
+      );
     },
   },
   plugins: [
     pluginSvgr({ mixedImport: true }),
     pluginReact(),
+    pluginSass({
+      sassLoaderOptions: {
+        api: "legacy",
+        sassOptions: {
+          silenceDeprecations: ['legacy-js-api', 'import'],
+        },
+      },
+    })
   ],
   output: {
     assetPrefix: PUBLIC_URL,
