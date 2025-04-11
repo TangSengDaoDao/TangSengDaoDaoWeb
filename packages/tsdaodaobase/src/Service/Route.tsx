@@ -1,4 +1,4 @@
-import React, { JSX } from "react";
+import React from "react";
 import WKApp from "../App";
 import { EndpointCategory, EndpointID } from "./Const";
 import { EndpointManager } from "./Module";

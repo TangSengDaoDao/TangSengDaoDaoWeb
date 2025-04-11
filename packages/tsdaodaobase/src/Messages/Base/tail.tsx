@@ -33,6 +33,7 @@ export default class MessageTrail extends Component<MessageTrailProps> {
     render() {
         const { message,timeStyle,statusStyle } = this.props
         return <span className="messageMeta">
+            {message.remoteExtra?.isEdit?<span className="messageTime">已编辑</span>:null}
             <span className="messageTime" style={timeStyle}> {moment(message.timestamp * 1000).format('HH:mm')}</span>
            {message.send?<span className="messageStatus" style={statusStyle}>  {this.getMessageStatusIcon()}</span>:null}
         </span>

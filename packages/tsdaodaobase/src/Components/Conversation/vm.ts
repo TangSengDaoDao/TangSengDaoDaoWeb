@@ -54,19 +54,25 @@ export default class ConversationVM extends ProviderListener {
     selectUID?: string // 点击头像的用户uid
 
     private _currentReplyMessage?: Message // 当前回复的消息
-
+    private _currentHandlerType: number = 0 // 当前处理类型
     onFirstMessagesLoaded?: Function // 第一屏消息已加载完成
 
     constructor(channel: Channel, initLocateMessageSeq?: number) {
         super()
         this.channel = channel
-        if(initLocateMessageSeq==0) {
+        if (initLocateMessageSeq == 0) {
             this.initLocateMessageSeq = undefined
-        }else {
+        } else {
             this.initLocateMessageSeq = initLocateMessageSeq
         }
     }
-
+    get currentHandlerType(): number {
+        return this._currentHandlerType
+    }
+    set currentHandlerType(v: number) {
+        this._currentHandlerType = v
+        this.notifyListener()
+    }
     get currentReplyMessage() {
         return this._currentReplyMessage
     }
@@ -188,6 +194,11 @@ export default class ConversationVM extends ProviderListener {
 
         return WKApp.conversationProvider.revokeMessage(message)
 
+    }
+
+    // 编辑消息
+    async editMessage(messageID: String, messageSeq: number, channelID: String, channelType: number, content: String): Promise<void> {
+        return WKApp.conversationProvider.editMessage(messageID, messageSeq, channelID, channelType, content)
     }
 
     // 仅仅删除本地消息
@@ -575,15 +586,33 @@ export default class ConversationVM extends ProviderListener {
             return
         }
         for (const messageExtra of messageExtras) {
+            this.updateReplyMessageContent(messageExtra)
             const message = this.findMessageWithMessageID(messageExtra.messageID)
             if (message) {
                 message.message.remoteExtra = messageExtra
+                message.resetParts()
             }
         }
         this.notifyListener()
 
     }
 
+    // 修改被回复的消息体
+    updateReplyMessageContent(extra: MessageExtra) {
+        if (!this.messages || this.messages.length <= 0) {
+            return
+        }
+        for (let i = this.messages.length - 1; i >= 0; i--) {
+            const message = this.messages[i]
+            if(message.content.reply === undefined){
+                continue
+            }
+            if (message.content.reply.messageID && message.content.reply.messageID === extra.messageID) {
+                message.content.reply.content = extra.contentEdit
+            }
+        }
+        this.notifyListener()
+    }
     // 通过clientSeq获取消息对象
     findMessageWithClientSeq(clientSeq: number): MessageWrap | undefined {
         if (!this.messages || this.messages.length <= 0) {

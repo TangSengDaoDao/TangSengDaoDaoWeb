@@ -85,6 +85,7 @@ export default class TabAll extends Component<TabAllProps> {
                         {
                             this.props.searchResult?.messages.map((item: any) => {
                                 let digest = "[未知消息]"
+                                console.log("item.content--->",item.content)
                                 if(item.content) {
                                     digest = item.content.conversationDigest
                                 }else {

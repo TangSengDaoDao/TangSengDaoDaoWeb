@@ -58,8 +58,9 @@ export class MessageContentTypeConst {
   static addMembers: number = 1002 // 添加群成员
   static removeMembers: number = 1003 // 删除群成员
   static channelUpdate: number = 1005 // 频道更新
-  static newGroupOwner: number = 1008 // 成为新群主
-  static screenshot:number = 1014 // 截屏消息
+  static newGroupOwner: number = 1008 // 新的管理员
+  static approveGroupMember: number = 1009 // 审批群成员
+  static screenshot:number = 20 // 截屏消息
 
   // 音频通话消息号段 9900 - 9999
   static rtcResult:number = 9989 // 音视频通话结果

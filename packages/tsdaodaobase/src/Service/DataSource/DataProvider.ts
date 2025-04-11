@@ -37,6 +37,16 @@ export interface IConversationProvider {
     revokeMessage(message: Message): Promise<void>
 
     /**
+     * 编辑消息
+     * @param messageID 消息ID
+     * @param messageSeq 消息序号
+     * @param channelID 频道ID
+     * @param channelType 频道类型
+     * @param content 消息内容
+     */
+    editMessage(messageID:String,messageSeq:number,channelID:String,channelType:number,content:String):Promise<void>
+
+    /**
     * 设置最近会话未读数量
     * @param channel 
     */

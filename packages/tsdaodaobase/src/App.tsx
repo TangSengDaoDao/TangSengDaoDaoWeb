@@ -28,7 +28,6 @@ import { ConnectStatus } from "wukongimjssdk";
 import { WKBaseContext } from "./Components/WKBase";
 import StorageService from "./Service/StorageService";
 import { ProhibitwordsService } from "./Service/ProhibitwordsService";
-import { JSX } from "react";
 
 export enum ThemeMode {
   light,
@@ -230,7 +229,7 @@ export default class WKApp extends ProviderListener {
     new Array<MessageDeleteListener>(); // 消息删除监听
 
   supportFavorites = [MessageContentType.text, MessageContentType.image]; // 注册收藏的消息
-
+  supportEdit = [MessageContentType.text]; // 注册编辑的消息
   notSupportForward: number[] = []; // 不支持转发的消息
 
   openChannel?: Channel; // 当前打开的会话频道

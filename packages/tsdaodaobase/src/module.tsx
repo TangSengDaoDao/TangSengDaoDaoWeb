@@ -82,6 +82,7 @@ import { ProhibitwordsService } from "./Service/ProhibitwordsService";
 import { SubscriberList } from "./Components/Subscribers/list";
 import GlobalSearch from "./Components/GlobalSearch";
 import { handleGlobalSearchClick } from "./Pages/Chat/vm";
+import { ApproveGroupMemberCell } from "./Messages/ApproveGroupMember";
 
 export default class BaseModule implements IModule {
   messageTone?: Howl;
@@ -136,6 +137,8 @@ export default class BaseModule implements IModule {
           case MessageContentTypeConst.screenshot:
             return ScreenshotCell;
           case MessageContentType.signalMessage: // 端对端加密错误消息
+          case MessageContentTypeConst.approveGroupMember: // 审批群成员
+            return ApproveGroupMemberCell;
           case 98:
             return SignalMessageCell;
           default:
@@ -610,7 +613,7 @@ export default class BaseModule implements IModule {
         return {
           title: "回复",
           onClick: () => {
-            context.reply(message);
+            context.reply(message, 1);
           },
         };
       }
@@ -1205,7 +1208,29 @@ export default class BaseModule implements IModule {
             },
           })
         );
-
+        rows.push(
+          new Row({
+            cell: ListItem,
+            properties: {
+              title: "备注",
+              subTitle: channelInfo?.orgData?.remark,
+              onClick: () => {
+                this.inputEditPush(
+                  context,
+                  channelInfo?.orgData?.remark || "",
+                  (value: string) => {
+                    return ChannelSettingManager.shared.remark(value, channel).then(() => {
+                      data.refresh()
+                    })
+                  },
+                  "群聊的备注仅自己可见",
+                  15,
+                  true
+                );
+              },
+            },
+          })
+        );
         return new Section({
           rows: rows,
         });
@@ -1228,7 +1253,7 @@ export default class BaseModule implements IModule {
                 onClick: () => {
                   WKApp.shared.baseContext.showGlobalModal({
                     body: <GlobalSearch channel={channel} onClick={(item: any, type: string) => {
-                      handleGlobalSearchClick(item, type,()=>{
+                      handleGlobalSearchClick(item, type, () => {
                         WKApp.shared.baseContext.hideGlobalModal()
                       })
                     }} />,

@@ -1,4 +1,4 @@
-import { Channel, ChannelTypeGroup, ChannelTypePerson, ConversationAction, WKSDK, Mention, Message, MessageContent, Reminder, ReminderType, Reply, MessageText } from "wukongimjssdk";
+import { Channel, ChannelTypeGroup, ChannelTypePerson, ConversationAction, WKSDK, Mention, Message, MessageContent, Reminder, ReminderType, Reply, MessageText, MessageContentType } from "wukongimjssdk";
 import React, { Component, HTMLProps } from "react";
 import Provider from "../../Service/Provider";
 import ConversationVM from "./vm";
@@ -12,7 +12,7 @@ import MessageInput, { MentionModel, MessageInputContext } from "../MessageInput
 import ContextMenus, { ContextMenusContext } from "../ContextMenus";
 import classNames from "classnames";
 import WKAvatar from "../WKAvatar";
-import { IconClose } from "@douyinfe/semi-icons";
+import { IconClose, IconEdit, IconReply } from "@douyinfe/semi-icons";
 import { Toast, Spin } from "@douyinfe/semi-ui";
 import { FlameMessageCell } from "../../Messages/Flame";
 
@@ -89,6 +89,9 @@ export class Conversation extends Component<ConversationProps> implements Conver
     revokeMessage(message: Message): Promise<void> {
         return this.vm.revokeMessage(message)
     }
+    editMessage(messageID: String, messageSeq: number, channelID: String, channelType: number, content: String): Promise<void> {
+        return this.vm.editMessage(messageID, messageSeq, channelID, channelType, content)
+    }
     onTapAvatar(uid: string, event: React.MouseEvent<Element, MouseEvent>): void {
 
         this.vm.selectUID = uid
@@ -130,7 +133,7 @@ export class Conversation extends Component<ConversationProps> implements Conver
     }
 
     // 回复消息
-    reply(message: Message): void {
+    reply(message: Message, handlerType: number): void {
         if (message.fromUID !== WKApp.loginInfo.uid) {
             const channelInfo = WKSDK.shared().channelManager.getChannelInfo(new Channel(message.fromUID, ChannelTypePerson))
             let name = ""
@@ -140,6 +143,11 @@ export class Conversation extends Component<ConversationProps> implements Conver
             this._messageInputContext.addMention(message.fromUID, name)
 
         }
+        if (handlerType === 2) {
+            let content = message.remoteExtra?.isEdit ? message.remoteExtra?.contentEdit?.conversationDigest : message.content.conversationDigest
+            this.insertText(content)
+        }
+        this.vm.currentHandlerType = handlerType
         this.vm.currentReplyMessage = message
     }
 
@@ -480,12 +488,12 @@ export class Conversation extends Component<ConversationProps> implements Conver
     }
 
     render() {
-        const { chatBg, channel,initLocateMessageSeq } = this.props
+        const { chatBg, channel, initLocateMessageSeq } = this.props
 
         const channelInfo = WKSDK.shared().channelManager.getChannelInfo(channel)
 
         return <Provider create={() => {
-            this.vm = new ConversationVM(channel,initLocateMessageSeq)
+            this.vm = new ConversationVM(channel, initLocateMessageSeq)
             return this.vm
         }} render={(vm: ConversationVM) => {
             return <>
@@ -548,7 +556,7 @@ export class Conversation extends Component<ConversationProps> implements Conver
                     </div>
                     <div className="wk-conversation-topview">
                         {
-                            vm.currentReplyMessage ? <ReplyView message={vm.currentReplyMessage} onClose={() => {
+                            vm.currentReplyMessage ? <ReplyView message={vm.currentReplyMessage} vm={vm} onClose={() => {
                                 vm.currentReplyMessage = undefined
                             }}></ReplyView> : undefined
                         }
@@ -596,7 +604,7 @@ export class Conversation extends Component<ConversationProps> implements Conver
 
                             <MessageInput members={this.vm.subscribers.filter((s) => s.uid !== WKApp.loginInfo.uid)} onContext={(ctx) => {
                                 this._messageInputContext = ctx
-                            }} toolbar={this.chatToolbarUI()} context={this} onSend={(text: string, mention?: MentionModel) => {
+                            }} toolbar={this.chatToolbarUI()} context={this} onSend={async (text: string, mention?: MentionModel) => {
                                 const content = new MessageText(text)
                                 if (mention) {
                                     const mn = new Mention()
@@ -605,6 +613,14 @@ export class Conversation extends Component<ConversationProps> implements Conver
                                     content.mention = mn
                                 }
                                 if (vm.currentReplyMessage) {
+                                    if (vm.currentHandlerType === 2) {
+                                        // 编辑消息
+                                        let json = content.encodeJSON()
+                                        json['type'] = MessageContentType.text
+                                        await vm.editMessage(vm.currentReplyMessage.messageID, vm.currentReplyMessage.messageSeq, vm.currentReplyMessage.channel.channelID, vm.currentReplyMessage.channel.channelType, JSON.stringify(json))
+                                        vm.currentReplyMessage = undefined
+                                        return
+                                    }
                                     const reply = new Reply()
                                     reply.messageID = vm.currentReplyMessage.messageID
                                     reply.messageSeq = vm.currentReplyMessage.messageSeq
@@ -796,19 +812,18 @@ class ConversationPositionView extends Component<ConversationPositionViewProps, 
 
 interface ReplyViewProps {
     message: Message
+    vm: ConversationVM
     onClose?: () => void
 }
 class ReplyView extends Component<ReplyViewProps> {
     render(): React.ReactNode {
-        const { message, onClose } = this.props
+        const { message, onClose, vm } = this.props
         const fromChannelInfo = WKSDK.shared().channelManager.getChannelInfo(new Channel(message.fromUID, ChannelTypePerson))
         return <div className="wk-replyview">
-            <div className="wk-replyview-close" onClick={() => {
-                if (onClose) {
-                    onClose()
+            <div className="wk-replyview-close">
+                {
+                    vm.currentHandlerType === 1 ? <IconReply className="wk-replyview-close-icon" /> : <IconEdit className="wk-replyview-close-icon" />
                 }
-            }}>
-                <IconClose className="wk-replyview-close-icon" />
             </div>
             <div className="wk-replyview-content">
                 <div className="wk-replyview-content-first">
@@ -825,9 +840,18 @@ class ReplyView extends Component<ReplyViewProps> {
                 </div>
                 <div className="wk-replyview-content-second">
                     <div className="wk-replyview-content-msg">
-                        {message.content.conversationDigest}
+                        {
+                            message.remoteExtra?.isEdit ? message.remoteExtra?.contentEdit?.conversationDigest : message.content.conversationDigest
+                        }
                     </div>
                 </div>
+            </div>
+            <div className="wk-replyview-close" onClick={() => {
+                if (onClose) {
+                    onClose()
+                }
+            }}>
+                <IconClose className="wk-replyview-close-icon" />
             </div>
         </div>
     }
@@ -859,8 +883,7 @@ class MultiplePanel extends Component<MultiplePanelProps> {
                     }
                 }}>
                     <div className="wk-multiplepanel-content-item-icon">
-                        <svg className="wk-multiplepanel-content-item-icon-svg" aria-hidden="true" viewBox="0 0 1024 1024"><path d="M362.666667 704h554.666666a21.333333 21.333333 0 0 1 21.333334 21.333333v42.666667a21.333333 21.333333 0 0 1-21.333334 21.333333H362.666667a21.333333 21.333333 0 0 1-21.333334-21.333333v-42.666667a21.333333 21.333333 0 0 1 21.333334-21.333333zM106.666667 874.666667h810.666666a21.333333 21.333333 0 0 1 21.333334 21.333333v42.666667a21.333333 21.333333 0 0 1-21.333334 21.333333H106.666667a21.333333 21.333333 0 0 1-21.333334-21.333333v-42.666667a21.333333 21.333333 0 0 1 21.333334-21.333333z m427.093333-661.034667V57.152c0-3.84 1.6-7.530667 4.416-10.24a15.36 15.36 0 0 1 21.184 0L846.72 326.122667a21.205333 21.205333 0 0 1 0 30.698666L559.36 635.754667a15.253333 15.253333 0 0 1-10.602667 4.245333 14.72 14.72 0 0 1-14.976-14.485333v-155.733334H503.893333c-116.053333 0-203.946667 22.762667-257.301333 89.792-4.416 5.546667-9.216 11.264-16.256 20.096a8.106667 8.106667 0 0 1-5.248 3.264c-3.989333 0.512-7.125333-1.536-8.128-6.144-2.730667-14.421333-3.626667-29.866667-3.626667-40.746666 0-175.210667 143.466667-322.410667 320.426667-322.410667z m85.333333 85.333333h-85.333333c-80.277333 0-151.914667 41.984-194.453333 104.981334 47.722667-13.44 102.421333-19.52 164.586666-19.52h115.2v74.410666l120.96-117.397333-120.96-117.504v75.029333z"></path></svg>
-                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path></svg>                    </div>
                     <div className="wk-multiplepanel-content-item-title">
                         逐条转发
                     </div>
@@ -883,8 +906,7 @@ class MultiplePanel extends Component<MultiplePanelProps> {
                     }
                 }}>
                     <div className="wk-multiplepanel-content-item-icon">
-                        <svg className="wk-multiplepanel-content-item-icon-svg" aria-hidden="true" viewBox="0 0 1024 1024"><path d="M362.666667 704h554.666666a21.333333 21.333333 0 0 1 21.333334 21.333333v42.666667a21.333333 21.333333 0 0 1-21.333334 21.333333H362.666667a21.333333 21.333333 0 0 1-21.333334-21.333333v-42.666667a21.333333 21.333333 0 0 1 21.333334-21.333333zM106.666667 874.666667h810.666666a21.333333 21.333333 0 0 1 21.333334 21.333333v42.666667a21.333333 21.333333 0 0 1-21.333334 21.333333H106.666667a21.333333 21.333333 0 0 1-21.333334-21.333333v-42.666667a21.333333 21.333333 0 0 1 21.333334-21.333333z m427.093333-661.034667V57.152c0-3.84 1.6-7.530667 4.416-10.24a15.36 15.36 0 0 1 21.184 0L846.72 326.122667a21.205333 21.205333 0 0 1 0 30.698666L559.36 635.754667a15.253333 15.253333 0 0 1-10.602667 4.245333 14.72 14.72 0 0 1-14.976-14.485333v-155.733334H503.893333c-116.053333 0-203.946667 22.762667-257.301333 89.792-4.416 5.546667-9.216 11.264-16.256 20.096a8.106667 8.106667 0 0 1-5.248 3.264c-3.989333 0.512-7.125333-1.536-8.128-6.144-2.730667-14.421333-3.626667-29.866667-3.626667-40.746666 0-175.210667 143.466667-322.410667 320.426667-322.410667z m85.333333 85.333333h-85.333333c-80.277333 0-151.914667 41.984-194.453333 104.981334 47.722667-13.44 102.421333-19.52 164.586666-19.52h115.2v74.410666l120.96-117.397333-120.96-117.504v75.029333z"></path></svg>
-                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>                    </div>
                     <div className="wk-multiplepanel-content-item-title">
                         删除
                     </div>
