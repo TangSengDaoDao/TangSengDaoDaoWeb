@@ -26,38 +26,48 @@ export interface IConversationProvider {
      * 同步消息扩展
      * @param channel  频道
      * @param version 扩展版本
-     * @param limit 
+     * @param limit
      */
-    syncMessageExtras(channel: Channel, version: number, limit: number): Promise<MessageExtra[]> 
+    syncMessageExtras(channel: Channel, version: number, limit: number): Promise<MessageExtra[]>
 
     /**
       * 撤回消息
-      * @param message 
+      * @param message
       */
     revokeMessage(message: Message): Promise<void>
 
     /**
+     * 编辑消息
+     * @param messageID 消息ID
+     * @param messageSeq 消息序号
+     * @param channelID 频道ID
+     * @param channelType 频道类型
+     * @param content 消息内容
+     */
+    editMessage(messageID:String,messageSeq:number,channelID:String,channelType:number,content:String):Promise<void>
+
+    /**
     * 设置最近会话未读数量
-    * @param channel 
+    * @param channel
     */
     markConversationUnread(channel: Channel,unread:number): Promise<void>
 
     /**
   *  删除最近会话
-  * @param channel 
+  * @param channel
   */
     deleteConversation(channel: Channel): Promise<void>
 
     /**
      * 清空某个最近会话的消息
-     * @param conversation 
+     * @param conversation
      */
     clearConversationMessages(conversation: Conversation): Promise<void>
 
       /**
      *  删除消息
-     * @param messages 
-     * @param Message 
+     * @param messages
+     * @param Message
      */
        deleteMessages(messages: Message[]): Promise<void>
 

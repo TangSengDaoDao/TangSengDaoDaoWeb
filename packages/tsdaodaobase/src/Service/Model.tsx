@@ -1,5 +1,5 @@
 import { Setting } from "wukongimjssdk"
-import { Channel, ChannelInfo, ChannelTypePerson, Conversation, WKSDK, Message, MessageContentType, MessageStatus,MessageText } from "wukongimjssdk"
+import { Channel, ChannelInfo, ChannelTypePerson, Conversation, WKSDK, Message, MessageContentType, MessageStatus, MessageText } from "wukongimjssdk"
 import WKApp from "../App"
 import { MessageContentTypeConst, MessageReasonCode, OrderFactor } from "./Const"
 import { DefaultEmojiService } from "./EmojiService"
@@ -24,7 +24,7 @@ export class ConversationWrap {
 
 
     public get avatar() {
-        if(this.channelInfo&& this.channelInfo.logo && this.channelInfo.logo !== "") {
+        if (this.channelInfo && this.channelInfo.logo && this.channelInfo.logo !== "") {
             return `${WKApp.dataSource.commonDataSource.getImageURL(this.channelInfo.logo)}?v=${WKApp.shared.getChannelAvatarTag(this.channel)}`
         }
         return WKApp.shared.avatarChannel(this.channel)
@@ -40,11 +40,11 @@ export class ConversationWrap {
     public get unread() {
         return this.conversation.unread
     }
-  
+
     public get timestamp() {
         return this.conversation.timestamp
     }
-    public set timestamp(timestamp:number) {
+    public set timestamp(timestamp: number) {
         this.conversation.timestamp = timestamp
     }
 
@@ -53,10 +53,10 @@ export class ConversationWrap {
     }
     public set lastMessage(lastMessage: Message | undefined) {
         this.conversation.lastMessage = lastMessage
-        
+
     }
 
-    public get isMentionMe()  {
+    public get isMentionMe() {
         return this.conversation.isMentionMe
     }
 
@@ -64,7 +64,7 @@ export class ConversationWrap {
         return this.conversation.remoteExtra
     }
 
-    public set isMentionMe(isMentionMe:boolean | undefined) {
+    public set isMentionMe(isMentionMe: boolean | undefined) {
         this.conversation.isMentionMe = isMentionMe
     }
 
@@ -81,28 +81,28 @@ export class ConversationWrap {
     }
 
     public get extra() {
-        if(!this.conversation.extra) {
+        if (!this.conversation.extra) {
             this.conversation.extra = {}
         }
         return this.conversation.extra
     }
-   
 
-    public get category()  {
-        if(!this.conversation.channelInfo || !this.conversation.channelInfo.orgData) {
+
+    public get category() {
+        if (!this.conversation.channelInfo || !this.conversation.channelInfo.orgData) {
             return ""
         }
         const channelInfo = this.conversation.channelInfo;
-        if(channelInfo.orgData.category !=='' && channelInfo.orgData.category ==='solved') {
+        if (channelInfo.orgData.category !== '' && channelInfo.orgData.category === 'solved') {
             return channelInfo.orgData.category
         }
-        if(channelInfo.orgData.category ==='' && channelInfo.orgData.agent_uid==='') {
+        if (channelInfo.orgData.category === '' && channelInfo.orgData.agent_uid === '') {
             return "new"
         }
-        if(channelInfo.orgData.agent_uid === WKApp.loginInfo.uid) {
+        if (channelInfo.orgData.agent_uid === WKApp.loginInfo.uid) {
             return "assignMe"
         }
-        if(channelInfo.orgData.agent_uid!=='') {
+        if (channelInfo.orgData.agent_uid !== '') {
             return "allAssigned"
         }
         return channelInfo.orgData.category
@@ -136,7 +136,7 @@ export class Part {
     text!: string
     data?: any
 
-    constructor(type: PartType, text: string,data?:any) {
+    constructor(type: PartType, text: string, data?: any) {
         this.type = type
         this.text = text
         this.data = data
@@ -145,23 +145,23 @@ export class Part {
 export class MessageWrap {
     public message: Message
     public checked!: boolean // 是否选中
-    public locateRemind?:boolean // 定位到消息后是否需要提醒
+    public locateRemind?: boolean // 定位到消息后是否需要提醒
     constructor(message: Message) {
         this.message = message
         this.order = message.messageSeq * OrderFactor
     }
-    private _parts!: Array<Part>
+    private _parts?: Array<Part>
 
     preMessage?: MessageWrap
     nextMessage?: MessageWrap
     voiceBuff?: any // 声音的二进制文件，用于缓存
-   private  _reasonCode?:number // 消息错误原因代码
-    order:number = 0 // 消息排序号
+    private _reasonCode?: number // 消息错误原因代码
+    order: number = 0 // 消息排序号
     /* tslint:disable-line */
     public get header() {
         return this.message.header
     }
-    public get setting():Setting {
+    public get setting(): Setting {
         return this.message.setting
     }
     public get clientSeq() {
@@ -179,7 +179,7 @@ export class MessageWrap {
     public get fromUID() {
         return this.message.fromUID
     }
-    
+
 
     public get from(): ChannelInfo | undefined {
         return WKSDK.shared().channelManager.getChannelInfo(new Channel(this.fromUID, ChannelTypePerson))
@@ -201,12 +201,12 @@ export class MessageWrap {
         this.message.status = status
     }
     public get reasonCode() {
-        if(this.status == MessageStatus.Normal) {
+        if (this.status == MessageStatus.Normal) {
             return MessageReasonCode.reasonSuccess
         }
-        return  this._reasonCode||MessageReasonCode.reasonUnknown
+        return this._reasonCode || MessageReasonCode.reasonUnknown
     }
-    public set reasonCode(v:number) {
+    public set reasonCode(v: number) {
         this._reasonCode = v
     }
     public get voicePlaying() {
@@ -224,7 +224,7 @@ export class MessageWrap {
     public get readedCount() {
         return this.message.remoteExtra.readedCount
     }
-    public set readedCount(v:number) {
+    public set readedCount(v: number) {
         this.message.remoteExtra.readedCount = v
     }
     public get isDeleted() {
@@ -256,6 +256,11 @@ export class MessageWrap {
 
     public get contentType(): number {
         return this.message.contentType
+    }
+
+    public resetParts() {
+        this._parts = undefined
+        this._parts = this.parts
     }
 
     public get parts(): Array<Part> {
@@ -309,7 +314,10 @@ export class MessageWrap {
         if (this.content.contentType !== MessageContentType.text) {
             return new Array<Part>()
         }
-        const textContent = this.content as MessageText
+        let textContent = this.content as MessageText
+        if (this.message.remoteExtra.isEdit && this.message.remoteExtra.contentEdit !== undefined) {
+            textContent = this.message.remoteExtra.contentEdit as MessageText
+        }
         let text = textContent.text || ''
         const mention = this.content.mention
         if (!mention?.uids || mention.uids.length <= 0) {
@@ -331,11 +339,11 @@ export class MessageWrap {
                 parts.push(new Part(PartType.text, text.substring(0, index)));
             }
             let data = {}
-            if(i<mention.uids.length) {
-                data = {"uid": mention.uids[i]}
+            if (i < mention.uids.length) {
+                data = { "uid": mention.uids[i] }
             }
-           
-            parts.push(new Part(PartType.mention, text.substr(index, mentionMatchResult[0].length),data))
+
+            parts.push(new Part(PartType.mention, text.substr(index, mentionMatchResult[0].length), data))
             text = text.substring(index + mentionMatchResult[0].length);
 
             i++
@@ -357,7 +365,7 @@ export class MessageWrap {
                     const matchResult = text.match(DefaultEmojiService.shared.emojiRegExp())
                     if (!matchResult) {
                         newParts.push(new Part(PartType.text, text))
-                        break 
+                        break
                     }
                     let index = matchResult?.index
                     if (index === undefined) {
@@ -395,7 +403,7 @@ export class MessageWrap {
                     const matchResult = text.match(/((http|ftp|https):\/\/|www.)[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?/)
                     if (!matchResult) {
                         newParts.push(new Part(PartType.text, text))
-                        break 
+                        break
                     }
                     let index = matchResult?.index
                     if (index === undefined) {
@@ -411,18 +419,18 @@ export class MessageWrap {
                     newParts.push(new Part(PartType.link, text.substr(index, matchResult[0].length)));
                     text = text.substring(index + matchResult[0].length);
                 }
-            }else {
+            } else {
                 newParts.push(part)
             }
         }
         return newParts
     }
 
-    public get flame() :boolean {
-        if(this.message.content.contentObj) {
-            return  this.message.content.contentObj.flame === 1
+    public get flame(): boolean {
+        if (this.message.content.contentObj) {
+            return this.message.content.contentObj.flame === 1
         }
-       return false
+        return false
     }
 
     public get remoteExtra() {

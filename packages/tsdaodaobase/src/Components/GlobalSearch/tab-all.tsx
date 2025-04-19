@@ -85,6 +85,7 @@ export default class TabAll extends Component<TabAllProps> {
                         {
                             this.props.searchResult?.messages.map((item: any) => {
                                 let digest = "[未知消息]"
+                                console.log("item.content--->",item.content)
                                 if(item.content) {
                                     digest = item.content.conversationDigest
                                 }else {
@@ -94,7 +95,7 @@ export default class TabAll extends Component<TabAllProps> {
                                         digest = `[${item.payload.name}]`
                                     }
                                 }
-                                
+
 
                                 let sender;
                                 if (item.channel.channel_type !== ChannelTypePerson && item.from_uid && item.from_uid !== "") {
@@ -107,11 +108,11 @@ export default class TabAll extends Component<TabAllProps> {
                                     }
                                 }
 
-                                return <ItemMessage 
-                                key={item.message_idstr} 
-                                sender={sender} 
-                                digest={digest} 
-                                name={item.channel.channel_name} 
+                                return <ItemMessage
+                                key={item.message_idstr}
+                                sender={sender}
+                                digest={digest}
+                                name={item.channel.channel_name}
                                 avatar={WKApp.shared.avatarChannel(new Channel(item.channel.channel_id, item.channel.channel_type))} 
                                 onClick={() => {
                                     if (this.props.onClick) {
