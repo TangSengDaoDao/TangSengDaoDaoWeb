@@ -3,9 +3,9 @@ import { Conversation } from "../../Components/Conversation";
 import ConversationList from "../../Components/ConversationList";
 import Provider from "../../Service/Provider";
 
-import { Spin, Button, Popover } from "@douyinfe/semi-ui";
-import { IconPlus } from "@douyinfe/semi-icons";
-import { ChatVM } from "./vm";
+import { Spin, Modal, Popover } from "@douyinfe/semi-ui";
+import { IconPlus, IconSearch } from "@douyinfe/semi-icons";
+import { ChatVM, handleGlobalSearchClick } from "./vm";
 import "./index.css";
 import { ConversationWrap } from "../../Service/Model";
 import WKApp, { ThemeMode } from "../../App";
@@ -15,10 +15,12 @@ import { Channel, ChannelInfo, WKSDK } from "wukongimjssdk";
 import { ChannelInfoListener } from "wukongimjssdk";
 import { ChatMenus } from "../../App";
 import ConversationContext from "../../Components/Conversation/context";
+import GlobalSearch from "../../Components/GlobalSearch";
+import { ShowConversationOptions } from "../../EndpointCommon";
 
 export interface ChatContentPageProps {
   channel: Channel;
-  initLocateMessageSeq?: number;
+  initLocateMessageSeq?: number; // 打开时定位到某条消息
 }
 
 export interface ChatContentPageState {
@@ -50,6 +52,8 @@ export class ChatContentPage extends Component<
   componentWillUnmount() {
     WKSDK.shared().channelManager.removeListener(this.channelInfoListener);
   }
+
+
 
   render(): React.ReactNode {
     const { channel, initLocateMessageSeq } = this.props;
@@ -165,10 +169,7 @@ export class ChatContentPage extends Component<
   }
 }
 
-export class ChatState {
-
-}
-export default class ChatPage extends Component<any,ChatState> {
+export default class ChatPage extends Component<any> {
   vm!: ChatVM;
   constructor(props: any) {
     super(props);
@@ -178,9 +179,11 @@ export default class ChatPage extends Component<any,ChatState> {
     // WKApp.routeMain.replaceToRoot(<ChatContentPage vm={this.vm}></ChatContentPage>)
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() { }
 
-  render() {
+
+
+  render(): ReactNode {
     return (
       <Provider
         create={() => {
@@ -199,6 +202,14 @@ export default class ChatPage extends Component<any,ChatState> {
                 <div className="wk-chat-content-left">
                   <div className="wk-chat-search">
                     <div className="wk-chat-title">{vm.connectTitle}</div>
+                    <div
+                      style={{ marginRight: '20px', alignItems: 'center', display: 'flex', cursor: 'pointer' }}
+                      onClick={() => {
+                        vm.showGlobalSearch = true;
+                      }}
+                    >
+                      <IconSearch size="large" />
+                    </div>
                     <Popover
                       onClickOutSide={() => {
                         vm.showAddPopover = false;
@@ -218,6 +229,7 @@ export default class ChatPage extends Component<any,ChatState> {
                     >
                       <div
                         className="wk-chat-search-add"
+                        style={{ alignItems: 'center', display: 'flex' }}
                         onClick={() => {
                           vm.showAddPopover = !vm.showAddPopover;
                         }}
@@ -238,6 +250,7 @@ export default class ChatPage extends Component<any,ChatState> {
                       <ConversationList
                         select={WKApp.shared.openChannel}
                         conversations={vm.conversations}
+                        onClearMessages={this.vm.clearMessages.bind(this.vm)}
                         onClick={(conversation: ConversationWrap) => {
                           vm.selectedConversation = conversation;
                           WKApp.endpoints.showConversation(
@@ -250,6 +263,23 @@ export default class ChatPage extends Component<any,ChatState> {
                   </div>
                 </div>
               </div>
+              <Modal
+                visible={vm.showGlobalSearch} 
+                closeOnEsc={true} 
+                onCancel={() => {
+                  vm.showGlobalSearch = false
+                }}
+                footer={null}
+                width="80%"
+                >
+                <div style={{ marginTop: '30px' }}>
+                <GlobalSearch onClick={(item,type:string)=>{
+                    handleGlobalSearchClick(item,type,()=>{
+                      vm.showGlobalSearch = false
+                    })
+                }}/>
+                </div>
+              </Modal>
             </div>
           );
         }}
@@ -281,7 +311,7 @@ class ChatMenusPopover extends Component<
     });
   }
 
-  render() {
+  render(): React.ReactNode {
     const { chatMenus } = this.state;
     const { onItem } = this.props;
     return (

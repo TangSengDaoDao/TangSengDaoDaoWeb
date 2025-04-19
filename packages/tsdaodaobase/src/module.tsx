@@ -9,6 +9,7 @@ import {
   ChannelInfo,
   CMDContent,
   MessageText,
+  Subscriber,
 } from "wukongimjssdk";
 import React, { ElementType } from "react";
 import { Howl, Howler } from "howler";
@@ -33,6 +34,7 @@ import { Card, CardCell } from "./Messages/Card";
 import { GifCell, GifContent } from "./Messages/Gif";
 import { HistorySplitCell, HistorySplitContent } from "./Messages/HistorySplit";
 import { ImageCell, ImageContent } from "./Messages/Image";
+import { JoinOrganizationCell, JoinOrganizationContent } from "./Messages/JoinOrganization";
 import {
   SignalMessageCell,
   SignalMessageContent,
@@ -77,14 +79,22 @@ import { ChannelAvatar } from "./Components/ChannelAvatar";
 import { ScreenshotCell, ScreenshotContent } from "./Messages/Screenshot";
 import ImageToolbar from "./Components/ImageToolbar";
 import { ProhibitwordsService } from "./Service/ProhibitwordsService";
+import { SubscriberList } from "./Components/Subscribers/list";
+import GlobalSearch from "./Components/GlobalSearch";
+import { handleGlobalSearchClick } from "./Pages/Chat/vm";
+import { ApproveGroupMemberCell } from "./Messages/ApproveGroupMember";
 
 export default class BaseModule implements IModule {
   messageTone?: Howl;
+
+  messageNotification?: Notification //  消息通知
+  messageNotificationTimeoutId?: number
 
   id(): string {
     return "base";
   }
   init(): void {
+
     APIClient.shared.logoutCallback = () => {
       WKApp.shared.logout();
     };
@@ -109,6 +119,8 @@ export default class BaseModule implements IModule {
             return VoiceCell;
           case MessageContentTypeConst.mergeForward: // 合并转发
             return MergeforwardCell;
+          case MessageContentTypeConst.joinOrganization: // 加入组织
+            return JoinOrganizationCell;
           case MessageContentTypeConst.smallVideo: // 小视频
             return VideoCell;
           case MessageContentTypeConst.historySplit: // 历史消息风格线
@@ -125,6 +137,8 @@ export default class BaseModule implements IModule {
           case MessageContentTypeConst.screenshot:
             return ScreenshotCell;
           case MessageContentType.signalMessage: // 端对端加密错误消息
+          case MessageContentTypeConst.approveGroupMember: // 审批群成员
+            return ApproveGroupMemberCell;
           case 98:
             return SignalMessageCell;
           default:
@@ -174,6 +188,11 @@ export default class BaseModule implements IModule {
       MessageContentTypeConst.screenshot,
       () => new ScreenshotContent()
     );
+    // 加入组织
+    WKSDK.shared().register(
+      MessageContentTypeConst.joinOrganization,
+      () => new JoinOrganizationContent()
+    );
 
     // 未知消息
     WKApp.messageManager.registerCell(
@@ -217,10 +236,9 @@ export default class BaseModule implements IModule {
           cmdContent.param.from_name
         );
       } else if (cmdContent.cmd === "groupAvatarUpdate") {
-        WKApp.shared.changeChannelAvatarTag(
-          new Channel(param.group_no, ChannelTypeGroup)
-        );
-        // 群头像更新
+        // 改变群头像缓存
+        WKApp.shared.changeChannelAvatarTag(new Channel(param.group_no, ChannelTypeGroup));
+        // 通过触发channelInfoListener来更新UI
         WKSDK.shared().channelManager.fetchChannelInfo(
           new Channel(param.group_no, ChannelTypeGroup)
         );
@@ -333,11 +351,8 @@ export default class BaseModule implements IModule {
             ConversationAction.update
           );
         }
-      } else if (cmdContent.cmd === "userAvatarUpdate") {
-        // 用户头像更新
-        WKApp.shared.changeChannelAvatarTag(
-          new Channel(param.uid, ChannelTypePerson)
-        );
+      } else if (cmdContent.cmd === "userAvatarUpdate") { // 用户头像更新
+        WKApp.shared.changeChannelAvatarTag(new Channel(param.uid, ChannelTypePerson));
         WKApp.dataSource.notifyContactsChange();
       }
     });
@@ -443,32 +458,42 @@ export default class BaseModule implements IModule {
       return;
     }
     if (window.Notification && Notification.permission !== "denied") {
-      const options = {
-        body: description,
-        icon: WKApp.shared.avatarChannel(message.channel),
-        lang: "zh-CN",
-        tag: "tag",
-        renotify: true,
-      };
-      const notify = new Notification(
+
+      if (this.messageNotification) {
+        if (this.messageNotificationTimeoutId) {
+          clearTimeout(this.messageNotificationTimeoutId)
+        }
+        this.messageNotification.close()
+      }
+
+      this.messageNotification = new Notification(
         channelInfo ? channelInfo.orgData.displayName : "通知",
-        options
+        {
+          body: description,
+          icon: WKApp.shared.avatarChannel(message.channel),
+          lang: "zh-CN",
+          tag: "message",
+          // renotify: true,
+        }
       );
 
-      notify.onclick = () => {
-        notify.close();
+
+      this.messageNotification.onclick = () => {
+        this.messageNotification?.close();
         window.focus();
         WKApp.endpoints.showConversation(message.channel);
       };
-      notify.onshow = () => {
-        //5秒后关闭消息框
-        setTimeout(function () {
-          notify.close();
-        }, 5000);
+      this.messageNotification.onshow = () => {
+        console.log("显示通知");
       };
-      notify.onclose = () => {
+      this.messageNotification.onclose = () => {
         console.log("通知关闭");
       };
+      // 5秒后关闭消息框
+      const self = this
+      this.messageNotificationTimeoutId = window.setTimeout(function () {
+        self.messageNotification?.close();
+      }, 5000);
     }
   }
 
@@ -503,7 +528,7 @@ export default class BaseModule implements IModule {
           icon={require("./assets/toolbars/func_screenshot.svg").default}
           onClick={() => {
             if ((window as any).__POWERED_ELECTRON__) {
-              (window as any).ipc.send("screenshots-start", {});
+              (window as any).ipc.send('screenshots-start', {})
             } else {
               window.open("https://www.snipaste.com");
             }
@@ -526,15 +551,14 @@ export default class BaseModule implements IModule {
       const isDark = WKApp.config.themeMode === ThemeMode.dark;
       return {
         title: "发起群聊",
-        icon: require(`${
-          isDark
-            ? "./assets/popmenus_startchat_dark.png"
-            : "./assets/popmenus_startchat.png"
-        }`),
+        icon: require(`${isDark
+          ? "./assets/popmenus_startchat_dark.png"
+          : "./assets/popmenus_startchat.png"
+          }`),
         onClick: () => {
           const channel: any = {
-            channelID: localStorage.uid,
-            channelType: 1,
+            channelID: "",
+            channelType: 0,
           };
           WKApp.endpoints.organizationalLayer(channel);
         },
@@ -589,7 +613,7 @@ export default class BaseModule implements IModule {
         return {
           title: "回复",
           onClick: () => {
-            context.reply(message);
+            context.reply(message, 1);
           },
         };
       }
@@ -961,7 +985,7 @@ export default class BaseModule implements IModule {
       let addFinishButtonContext: FinishButtonContext;
       let removeFinishButtonContext: FinishButtonContext;
       let addSelectItems: IndexTableItem[];
-      let removeSelectItems: IndexTableItem[];
+      let removeSelectItems: Subscriber[];
       const disableSelectList = data.subscribers.map((subscriber) => {
         return subscriber.uid;
       });
@@ -1018,7 +1042,6 @@ export default class BaseModule implements IModule {
                       addFinishButtonContext.loading(false);
                     },
                     onFinishContext: (context) => {
-                      console.log("onFinishContext------>", context);
                       addFinishButtonContext = context;
                       addFinishButtonContext.disable(true);
                     },
@@ -1027,39 +1050,32 @@ export default class BaseModule implements IModule {
               },
               onRemove: () => {
                 context.push(
-                  <UserSelect
+                  <SubscriberList
+                    channel={channel}
                     onSelect={(items) => {
                       removeSelectItems = items;
                       removeFinishButtonContext.disable(items.length === 0);
                     }}
-                    users={data.subscribers
-                      .filter(
-                        (subscriber) => subscriber.uid !== WKApp.loginInfo.uid
-                      )
-                      .map((item) => {
-                        const uid = item.uid;
-                        const name = item.remark || item.name;
-                        const avatar = item.avatar;
-                        return new IndexTableItem(
-                          uid,
-                          name,
-                          avatar
-                        );
-                      })}
-                  ></UserSelect>,
+                    canSelect={true}
+
+                  ></SubscriberList>,
                   {
                     title: "删除群成员",
                     showFinishButton: true,
                     onFinish: async () => {
                       removeFinishButtonContext.loading(true);
-                      await WKApp.dataSource.channelDataSource.removeSubscribers(
+                      WKApp.dataSource.channelDataSource.removeSubscribers(
                         channel,
                         removeSelectItems.map((item) => {
-                          return item.id;
+                          return item.uid;
                         })
-                      );
-                      removeFinishButtonContext.loading(false);
-                      context.pop();
+                      ).then(() => {
+                        removeFinishButtonContext.loading(false);
+                        context.pop();
+                      }).catch((err) => {
+                        Toast.error(err.msg);
+                      });
+
                     },
                     onFinishContext: (context) => {
                       removeFinishButtonContext = context;
@@ -1192,12 +1208,68 @@ export default class BaseModule implements IModule {
             },
           })
         );
-
+        rows.push(
+          new Row({
+            cell: ListItem,
+            properties: {
+              title: "备注",
+              subTitle: channelInfo?.orgData?.remark,
+              onClick: () => {
+                this.inputEditPush(
+                  context,
+                  channelInfo?.orgData?.remark || "",
+                  (value: string) => {
+                    return ChannelSettingManager.shared.remark(value, channel).then(() => {
+                      data.refresh()
+                    })
+                  },
+                  "群聊的备注仅自己可见",
+                  15,
+                  true
+                );
+              },
+            },
+          })
+        );
         return new Section({
           rows: rows,
         });
       },
       1000
+    );
+
+    WKApp.shared.channelSettingRegister(
+      "channel.base.settingMessageHistory",
+      (context) => {
+        const data = context.routeData() as ChannelSettingRouteData;
+        const channel = data.channel
+
+        return new Section({
+          rows: [
+            new Row({
+              cell: ListItem,
+              properties: {
+                title: "查找聊天内容",
+                onClick: () => {
+                  WKApp.shared.baseContext.showGlobalModal({
+                    body: <GlobalSearch channel={channel} onClick={(item: any, type: string) => {
+                      handleGlobalSearchClick(item, type, () => {
+                        WKApp.shared.baseContext.hideGlobalModal()
+                      })
+                    }} />,
+                    width: "80%",
+                    height: "80%",
+                    onCancel: () => {
+                      WKApp.shared.baseContext.hideGlobalModal()
+                    }
+                  })
+                },
+              },
+            }),
+          ],
+        });
+      },
+      1100
     );
 
     WKApp.shared.channelSettingRegister(

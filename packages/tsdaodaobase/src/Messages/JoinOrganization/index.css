@@ -1,0 +1,42 @@
+.wk-join-oraganization {
+  background-color: white;
+  cursor: pointer;
+  border-radius: 8px;
+  width: 100%;
+}
+
+body[theme-mode=dark] .wk-join-oraganization {
+  background-color: var(--wk-color-secondary);
+}
+
+
+.wk-join-oraganization-content {
+  display: flex;
+  padding: 10px;
+  align-items: center;
+}
+
+.wk-join-oraganization-content-name {
+  margin-left: 20px;
+  color: var(--wk-text-item);
+}
+
+.wk-join-oraganization-bottom {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 10px 5px 10px;
+}
+
+.wk-join-oraganization-bottom-flag {
+  font-size: 12px;
+  color: #999;
+}
+
+.wk-join-oraganization-bottom-time {
+  position: absolute;
+  right: 10px;
+  top: -5px;
+  color: #999 !important;
+}

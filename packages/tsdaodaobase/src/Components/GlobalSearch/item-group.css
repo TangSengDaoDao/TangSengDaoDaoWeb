@@ -1,0 +1,32 @@
+
+.wk-item-group {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+
+body[theme-mode=dark] .wk-item-group:hover {
+    background-color: #333333; /* Change this color to your desired hover color */
+}
+
+.wk-item-group:hover {
+    background-color: #f0f0f0; /* Change this color to your desired hover color */
+}
+
+.wk-item-group-name {
+    margin-left: 15px;
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+body[theme-mode=dark] .wk-item-group-name {
+    color: white;
+}
+
+
+
+

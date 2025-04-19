@@ -155,7 +155,7 @@ export class ImageCell extends MessageCell<any, ImageCellState> {
           visible={showPreview}
           noImgDetails={true}
           downloadable={true}
-          rotatable={false}
+          rotatable={true}
           changeable={false}
           showTotal={false}
           onMaskClick={() => {

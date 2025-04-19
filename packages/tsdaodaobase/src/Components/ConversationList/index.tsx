@@ -21,6 +21,7 @@ export interface ConversationListProps {
     conversations: ConversationWrap[]
     select?: Channel
     onClick?: (conversation: ConversationWrap) => void
+    onClearMessages?: (channel: Channel) => void
 }
 
 export interface ConversationListState {
@@ -141,12 +142,14 @@ export default class ConversationList extends Component<ConversationListProps, C
     }
 
     conversationItem(conversationWrap: ConversationWrap) {
-
+        
 
         let channelInfo = conversationWrap.channelInfo
         if (!channelInfo) {
             WKSDK.shared().channelManager.fetchChannelInfo(conversationWrap.channel)
         }
+
+        const avatarKey = WKApp.shared.getChannelAvatarTag(conversationWrap.channel);
 
         const { select, onClick } = this.props
         const typing = TypingManager.shared.getTyping(conversationWrap.channel)
@@ -161,7 +164,7 @@ export default class ConversationList extends Component<ConversationListProps, C
             <div className={classNames("wk-conversationlist-item-content", selected ? "wk-conversationlist-item-selected" : undefined)}>
                 <div className="wk-conversationlist-item-left">
                     <div className="wk-conversationlist-item-avatar-box">
-                        <WKAvatar src={conversationWrap.avatar}></WKAvatar>
+                        <WKAvatar  channel={conversationWrap.channel} key={avatarKey}></WKAvatar>
                         {
                             channelInfo && this.needShowOnlineStatus(channelInfo) ? <OnlineStatusBadge tip={this.getOnlineTip(channelInfo)}></OnlineStatusBadge> : undefined
                         }
@@ -232,14 +235,9 @@ export default class ConversationList extends Component<ConversationListProps, C
     }
 
     async onClearMessages(channel: Channel) {
-        const conversation = WKSDK.shared().conversationManager.findConversation(channel)
-        if (!conversation) {
-            return
+        if(this.props.onClearMessages) {
+            this.props.onClearMessages(channel)
         }
-        await WKApp.conversationProvider.clearConversationMessages(conversation)
-        conversation.lastMessage = undefined
-        WKApp.endpointManager.invoke(EndpointID.clearChannelMessages, channel)
-        this.setState({})
     }
 
     render() {
