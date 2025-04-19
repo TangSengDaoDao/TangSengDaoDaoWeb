@@ -264,8 +264,8 @@ export default class ChatPage extends Component<any> {
                 </div>
               </div>
               <Modal
-                visible={vm.showGlobalSearch} 
-                closeOnEsc={true} 
+                visible={vm.showGlobalSearch}
+                closeOnEsc={true}
                 onCancel={() => {
                   vm.showGlobalSearch = false
                 }}
