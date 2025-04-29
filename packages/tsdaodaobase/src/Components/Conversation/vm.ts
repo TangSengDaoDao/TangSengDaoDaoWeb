@@ -238,17 +238,16 @@ export default class ConversationVM extends ProviderListener {
     // 移除发送中的消息
     removeSendingMessageIfNeed(clientSeq: number, channel: Channel) {
 
-        let sending = ConversationVM.sendQueue.get(channel.getChannelKey())
+        const channelKey = channel.getChannelKey();
+        const sending = ConversationVM.sendQueue.get(channelKey);
+        
         if (!sending) {
-            return
+            return;
         }
-        let i = 0
-        for (const sendingMsg of sending) {
-            if (sendingMsg.clientSeq === clientSeq) {
-                ConversationVM.sendQueue.get(channel.getChannelKey())?.splice(i, 1)
-                return
-            }
-            i++
+        
+        const index = sending.findIndex(msg => msg.clientSeq === clientSeq);
+        if (index !== -1) {
+            sending.splice(index, 1);
         }
     }
 
@@ -1124,6 +1123,16 @@ export default class ConversationVM extends ProviderListener {
     getSendingMessages(channel: Channel) {
         let channelKey = channel.getChannelKey();
         let sending = ConversationVM.sendQueue.get(channelKey);
+        // 检查时间，如果大于指定时间未发送的消息直接删掉,因为没意义了
+        if(sending && sending.length > 0) {
+            const now = Math.floor(new Date().getTime() / 1000);
+            sending = sending.filter(msg => {
+                return (now - msg.timestamp) < 10 * 60; // 10分钟
+            });
+            ConversationVM.sendQueue.set(channelKey, sending);
+
+        }
+
         return sending || [];
     }
     // 获取当前发送中的消息
